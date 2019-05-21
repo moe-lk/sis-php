@@ -364,6 +364,10 @@ class InstitutionClassesTable extends ControllerActionTable
         $Classes = $this;
         $academicPeriodOptions = $this->AcademicPeriods->getYearList();
 
+	$isPrincipal = $this->AccessControl->isPrincipal(); 
+
+	$staffId = $this->Auth->user('id');
+
         $institutionId = $extra['institution_id'];
         $selectedAcademicPeriodId = $this->queryString('academic_period_id', $academicPeriodOptions);
         $this->advancedSelectOptions($academicPeriodOptions, $selectedAcademicPeriodId, [
@@ -371,7 +375,8 @@ class InstitutionClassesTable extends ControllerActionTable
             'callable' => function ($id) use ($Classes, $institutionId) {
                 return $Classes->find()
                     ->where([
-                        $Classes->aliasField('institution_id') => $institutionId,
+			    $Classes->aliasField('institution_id') => $institutionId,
+			     $Classes->aliasField('staff_id') => $staffId,
                         $Classes->aliasField('academic_period_id') => $id
                     ])
                     ->count();
@@ -407,7 +412,8 @@ class InstitutionClassesTable extends ControllerActionTable
 
                 $query = $Classes->find()
                         ->join([$join])
-                        ->where([
+			->where([
+			    $Classes->aliasField('staff_id') => $staffId,
                             $Classes->aliasField('institution_id') => $institutionId,
                             $Classes->aliasField('academic_period_id') => $selectedAcademicPeriodId,
                         ]);
@@ -433,7 +439,13 @@ class InstitutionClassesTable extends ControllerActionTable
     {
         $sortable = !is_null($this->request->query('sort')) ? true : false;
 
-        $query
+        $conditions = [$this->aliasField('academic_period_id') => $extra['selectedAcademicPeriodId']];
+	if(!$this->AccessControl->isPrincipal()){
+		$staffId = $this->Auth->user('id');
+	    	array_push($conditions , [$this->aliasField('staff_id') => $staffId] );
+        }
+  //	$staffId = $this->Auth->user('id');
+	$query
             ->find('byGrades', [
                 'education_grade_id' => $extra['selectedEducationGradeId'],
             ])
@@ -463,7 +475,7 @@ class InstitutionClassesTable extends ControllerActionTable
                     'fields' => ['openemis_no', 'first_name', 'middle_name', 'third_name', 'last_name', 'preferred_name']
                 ]
             ])
-            ->where([$this->aliasField('academic_period_id') => $extra['selectedAcademicPeriodId']])
+	    ->where([$conditions])
             ->group([$this->aliasField('id')]);
 
         if (!$sortable) {
