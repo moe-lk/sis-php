@@ -1,0 +1,3659 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenEMIS Project\n"
+"POT-Creation-Date: 2013-01-17 02:33+0000\n"
+"PO-Revision-Date: 2017-12-22 02:09:42+00:00\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: es\n"
+
+msgid "Home"
+msgstr "Inicio"
+
+msgid "Account"
+msgstr "Cuenta"
+
+msgid "Help"
+msgstr "Ayuda"
+
+msgid "Logout"
+msgstr "Cerrar sesión"
+
+msgid "Institutions"
+msgstr "Instituciones"
+
+msgid "Students"
+msgstr "Estudiantes"
+
+msgid "Teachers"
+msgstr "Docentes"
+
+msgid "Staff"
+msgstr "Personal"
+
+msgid "Reports"
+msgstr "Informes"
+
+msgid "Administration"
+msgstr "Administración"
+
+msgid "--Select--"
+msgstr "-Seleccione-"
+
+msgid "Male"
+msgstr "Masculino"
+
+msgid "Female"
+msgstr "Femenino"
+
+msgid "Select File"
+msgstr "Seleccionar archivo"
+
+msgid "Edit"
+msgstr "Editar"
+
+msgid "View"
+msgstr "Ver"
+
+msgid "Delete"
+msgstr "Eliminar"
+
+msgid "History"
+msgstr "Historial"
+
+msgid "Save"
+msgstr ""
+
+msgid "Cancel"
+msgstr "Cancelar"
+
+msgid "Update"
+msgstr "Actualizar"
+
+msgid "Student"
+msgstr "Estudiante"
+
+msgid "Notice"
+msgstr "Aviso"
+
+msgid "Excel"
+msgstr "Excel"
+
+msgid "%s have been deleted successfully."
+msgstr "%s eliminado exitosamente."
+
+msgid "Add New Student"
+msgstr "Añadir nuevo Estudiante"
+
+msgid "Details"
+msgstr "Detalles"
+
+msgid "Attachments"
+msgstr "Archivos adjuntos"
+
+msgid "Overview"
+msgstr "Vista preliminar"
+
+msgid "Field Options"
+msgstr "Opciones de Campo"
+
+msgid "Assessments"
+msgstr "Evaluaciones"
+
+msgid "Add"
+msgstr "Añadir"
+
+msgid "Attachment"
+msgstr "Archivo adjunto"
+
+msgid "First Name"
+msgstr "Nombre"
+
+msgid "Last Name"
+msgstr "Apellido"
+
+msgid "Gender"
+msgstr "Género"
+
+msgid "Date Of Birth"
+msgstr "Fecha de Nacimiento"
+
+msgid "File"
+msgstr "Archivo"
+
+msgid "Description"
+msgstr "Descripción"
+
+msgid "File Type"
+msgstr "Tipo de Archivo"
+
+msgid "Institution"
+msgstr "Institución"
+
+msgid "Start Date"
+msgstr "Fecha de Inicio"
+
+msgid "End Date"
+msgstr "Fecha de finalización"
+
+msgid "Address"
+msgstr "Dirección"
+
+msgid "Address Area"
+msgstr "Dirección de Área"
+
+msgid "Postal Code"
+msgstr "Código Postal"
+
+msgid "Telephone"
+msgstr "Teléfono"
+
+msgid "Email"
+msgstr "Correo electrónico"
+
+msgid "General"
+msgstr "General"
+
+msgid "Contact"
+msgstr "Contacto"
+
+msgid "No Student found"
+msgstr "No se encontró Estudiante"
+
+msgid "Add New Staff"
+msgstr "Añadir nuevo Personal"
+
+msgid "Qualifications"
+msgstr "Calificaciones"
+
+msgid "Training"
+msgstr "Capacitación"
+
+msgid "Teacher Information"
+msgstr "Información del Docente"
+
+msgid "Other Information"
+msgstr "Otra Información"
+
+msgid "Completed Date"
+msgstr "Fecha de terminación"
+
+msgid "Category"
+msgstr "Categoría"
+
+msgid "Certifications"
+msgstr "Certificaciones"
+
+msgid "Teacher"
+msgstr "Docente"
+
+msgid "Please enter a valid Address"
+msgstr "Ingrese una Dirección válida, por favor."
+
+msgid "Please enter a valid Postal Code"
+msgstr "Ingrese un Código Postal válido, por favor."
+
+msgid "Please enter a valid Email"
+msgstr "Ingrese un Correo electrónico válido, por favor."
+
+msgid "Permissions"
+msgstr "Permisos"
+
+msgid "Users"
+msgstr "Usuarios"
+
+msgid "Add User"
+msgstr "Añadir Usuario"
+
+msgid "Roles"
+msgstr "Roles"
+
+msgid "Add Institution"
+msgstr "Añadir Institución"
+
+msgid "Name"
+msgstr "Nombre"
+
+msgid "Area"
+msgstr "Área"
+
+msgid "Code"
+msgstr "Código"
+
+msgid "Sector"
+msgstr "Sector"
+
+msgid "Provider"
+msgstr "Proveedor"
+
+msgid "Type"
+msgstr "Tipo"
+
+msgid "Ownership"
+msgstr "Propiedad"
+
+msgid "Country"
+msgstr "País"
+
+msgid "Locality"
+msgstr "Localidad"
+
+msgid "Latitude"
+msgstr "Latitud"
+
+msgid "Longitude"
+msgstr "Longitud"
+
+msgid "Status"
+msgstr "Estatus"
+
+msgid "Date Opened"
+msgstr "Fecha de Apertura"
+
+msgid "Date Closed"
+msgstr "Fecha de Clausura"
+
+msgid "Location"
+msgstr "Localización"
+
+msgid "Contact Person"
+msgstr "Persona de contacto"
+
+msgid "Fax"
+msgstr "Fax"
+
+msgid "Website"
+msgstr "Sitio Web"
+
+msgid "Active"
+msgstr "Activo"
+
+msgid "Account Name"
+msgstr "Nombre de la Cuenta"
+
+msgid "Account Number"
+msgstr "Número de la Cuenta"
+
+msgid "Bank"
+msgstr "Banco"
+
+msgid "Grade"
+msgstr "Grado"
+
+msgid "Attendance"
+msgstr "Asistencia"
+
+msgid "Behaviour"
+msgstr "Comportamiento "
+
+msgid "Results"
+msgstr "Resultados"
+
+msgid "Total"
+msgstr "Total"
+
+msgid "Amount"
+msgstr "Monto"
+
+msgid "System Information"
+msgstr "Información del Sistema"
+
+msgid "License"
+msgstr "Licencia"
+
+msgid "Finance"
+msgstr "Finanzas"
+
+msgid "Select"
+msgstr "Seleccionar"
+
+msgid "System"
+msgstr "Sistema"
+
+msgid "Level"
+msgstr "Nivel"
+
+msgid "Cycle"
+msgstr "Ciclo"
+
+msgid "Programme"
+msgstr "Programa"
+
+msgid "Field Of Study"
+msgstr "Campo de estudio"
+
+msgid "Subject"
+msgstr "Asunto"
+
+msgid "Bank Accounts"
+msgstr "Cuentas bancarias"
+
+msgid "Bank Account"
+msgstr "Cuenta bancaria"
+
+msgid "Programmes"
+msgstr "Programas"
+
+msgid "Classes"
+msgstr "Clases"
+
+msgid "Textbooks"
+msgstr "Libros"
+
+msgid "Infrastructure"
+msgstr "Infraestructura"
+
+msgid "Finances"
+msgstr "Finanzas"
+
+msgid "System Setup"
+msgstr "Configuración del Sistema"
+
+msgid "Administrative Boundaries"
+msgstr "Limites Administrativos"
+
+msgid "Education Structure"
+msgstr "Estructura Educativa"
+
+msgid "Custom Fields"
+msgstr "Personalización de Campos"
+
+msgid "System Configurations"
+msgstr "Configuraciones del Sistema"
+
+msgid "Setup"
+msgstr "Configuración"
+
+msgid "Current Password"
+msgstr "Contraseña actual"
+
+msgid "New Password"
+msgstr "Nueva Contraseña"
+
+msgid "Retype New Password"
+msgstr "Vuelva a introducir la Nueva Contraseña"
+
+msgid "Username"
+msgstr "Nombre de usuario"
+
+msgid "Last Login"
+msgstr "Ultimo Ingreso"
+
+msgid "Areas"
+msgstr "Áreas"
+
+msgid "Visible"
+msgstr "Visible"
+
+msgid "Area Level"
+msgstr "Nivel de Área "
+
+msgid "Area Levels"
+msgstr "Niveles de Área"
+
+msgid "Education"
+msgstr "Educación"
+
+msgid "Education Level"
+msgstr "Nivel Educativo"
+
+msgid "Education System"
+msgstr "Sistema Educativo"
+
+msgid "Admission Age"
+msgstr "Edad de Ingreso"
+
+msgid "Programme Orientation"
+msgstr "Programa de Orientación"
+
+msgid "Subjects"
+msgstr "Temas"
+
+msgid "Duration"
+msgstr "Duración"
+
+msgid "Grades"
+msgstr "Grados"
+
+msgid "Option"
+msgstr "Opción"
+
+msgid "Current"
+msgstr "Actual"
+
+msgid "Buildings"
+msgstr "Construcciones"
+
+msgid "Rooms"
+msgstr "Aulas"
+
+msgid "Other"
+msgstr "Otros"
+
+msgid "Training Categories"
+msgstr "Categorías de Capacitaciones"
+
+msgid "Section Break"
+msgstr "Salto de sección"
+
+msgid "List"
+msgstr "Lista"
+
+msgid "Title"
+msgstr "Título"
+
+msgid "Language"
+msgstr "Idioma"
+
+msgid "Password"
+msgstr "Contraseña"
+
+msgid "Login"
+msgstr "Login"
+
+msgid "Function"
+msgstr "Función"
+
+msgid "Configurations"
+msgstr "Configuraciones"
+
+msgid "Role"
+msgstr "Roles"
+
+msgid "Add New User"
+msgstr "Añadir nuevo Usuario"
+
+msgid "Inactive"
+msgstr "Inactivo"
+
+msgid "Institution Reports"
+msgstr "Informes de Institución "
+
+msgid "Staff Reports"
+msgstr "Informes de Personal"
+
+msgid "DataQuality Reports"
+msgstr "Informes de Calidad de datos"
+
+msgid "Types"
+msgstr "Tipos"
+
+msgid "Institution Report"
+msgstr "Informes de Institución "
+
+msgid "Textbook Report"
+msgstr "Informe de Libros de texto"
+
+msgid "Training Report"
+msgstr "Informe de Capacitaciones"
+
+msgid "Building Report"
+msgstr "Informe del Edificio"
+
+msgid "Rooms Report"
+msgstr "Informe de las Aulas"
+
+msgid "Custom"
+msgstr "Personalizado"
+
+msgid "Data Quality"
+msgstr "Calidad de los datos"
+
+msgid "Institutions Report"
+msgstr "Informe de Instituciones "
+
+msgid "Processing"
+msgstr "Procesando"
+
+msgid "Pending"
+msgstr "Pendiente"
+
+msgid "Completed"
+msgstr "Completado"
+
+msgid "Export"
+msgstr "Exportar"
+
+msgid "Security"
+msgstr "Seguridad"
+
+msgid "Value"
+msgstr "Valor"
+
+msgid "No"
+msgstr "No"
+
+msgid "Yes"
+msgstr "Sí"
+
+msgid "Loading..."
+msgstr "Cargando ..."
+
+msgid "Generated"
+msgstr "Generado"
+
+msgid "Classification"
+msgstr "Clasificación"
+
+msgid "Information"
+msgstr "Información"
+
+msgid "Bank Account Name"
+msgstr "Nombre de la cuenta bancaria"
+
+msgid "Bank Branch Name"
+msgstr "Nombre de Sucursal del Banco "
+
+msgid "Class"
+msgstr "Clase"
+
+msgid "Building"
+msgstr "Edificio"
+
+msgid "Room"
+msgstr "Aula"
+
+msgid "Student Name"
+msgstr "Nombre del Estudiante"
+
+msgid "Education Programme"
+msgstr "Programa educativo"
+
+msgid "Education Grade"
+msgstr "Grado educativo "
+
+msgid "Logo"
+msgstr "Logo"
+
+msgid "Data Outliers"
+msgstr "Datos atípicos "
+
+msgid "Data Discrepancy"
+msgstr "Discrepancia de datos"
+
+msgid "Data Discrepancy Variation(%)"
+msgstr "Variación de la Discrepancia de datos (%)"
+
+msgid "Rubrics"
+msgstr "Matrices de valoración"
+
+msgid "Pass Mark"
+msgstr "Abrobado"
+
+msgid "Back"
+msgstr "Atrás"
+
+msgid "Modified By"
+msgstr "Modificado por"
+
+msgid "Modified On"
+msgstr "Modificado el"
+
+msgid "Created By"
+msgstr "Creado por"
+
+msgid "Created On"
+msgstr "Creado en"
+
+msgid "Descriptions"
+msgstr "Descripción"
+
+msgid "Visits"
+msgstr "Visitas"
+
+msgid "Color"
+msgstr "Color"
+
+msgid "Date"
+msgstr "Fecha"
+
+msgid "Comment"
+msgstr "Comentarios"
+
+msgid "Visit Type"
+msgstr "Tipo de visita"
+
+msgid "National Code"
+msgstr "Código nacional"
+
+msgid "International Code"
+msgstr "Código internacional"
+
+msgid "Identities"
+msgstr "identidades"
+
+msgid "Number"
+msgstr "Número"
+
+msgid "Issue Date"
+msgstr "Fecha de emisión"
+
+msgid "Expiry Date"
+msgstr "Fecha de expiración"
+
+msgid "Courses"
+msgstr "Cursos"
+
+msgid "Sessions"
+msgstr "Sesiones"
+
+msgid "All"
+msgstr "Todo"
+
+msgid "New"
+msgstr "Nuevo"
+
+msgid "Pending for Approval"
+msgstr "Pendiente de aprobación"
+
+msgid "Course Code"
+msgstr "Código del Curso"
+
+msgid "Course Title"
+msgstr "Título del Curso"
+
+msgid "Course Description"
+msgstr "Descripción del Curso"
+
+msgid "Credit Hours"
+msgstr "Créditos por hora"
+
+msgid "Mode of Delivery"
+msgstr "Modo de entrega"
+
+msgid "Training Provider"
+msgstr "Proovedor de Capacitación"
+
+msgid "Training Requirement"
+msgstr "Requisitos de Capacitación"
+
+msgid "Training Level"
+msgstr "Nivel de Capacitación"
+
+msgid "Submit for Approval"
+msgstr "Enviar para su aprobación"
+
+msgid "Trainer"
+msgstr "Instructor"
+
+msgid "Trainees"
+msgstr "Instructores"
+
+msgid "Course"
+msgstr "Curso"
+
+msgid "Needs"
+msgstr "Necesidades"
+
+msgid "Training Needs"
+msgstr "Necesidades de la Capacitación"
+
+msgid "Training Results"
+msgstr "Resultados de la Capacitación"
+
+msgid "Result"
+msgstr "Resultado"
+
+msgid "Comments"
+msgstr "Comentarios"
+
+msgid "Nationalities"
+msgstr "Nacionalidades"
+
+msgid "SMS"
+msgstr "SMS"
+
+msgid "Logs"
+msgstr "Registros"
+
+msgid "Enabled"
+msgstr ""
+
+msgid "Message"
+msgstr "Mensaje"
+
+msgid "Download"
+msgstr "Descargar"
+
+msgid "Confirm"
+msgstr "Confirmar"
+
+msgid "Field of Studies"
+msgstr "Campo de estudios"
+
+msgid "Levels"
+msgstr "Niveles"
+
+msgid "Providers"
+msgstr "Proveedores"
+
+msgid "Statuses"
+msgstr ""
+
+msgid "Add Trainee"
+msgstr "Agregar aprendiz"
+
+msgid "Course Type"
+msgstr "Tipo de Curso"
+
+msgid "Course Types"
+msgstr "Tipos de Cursos"
+
+msgid "Groups"
+msgstr "Grupos"
+
+msgid "Action"
+msgstr "Acción"
+
+msgid "Format"
+msgstr "Formato"
+
+msgid "Middle Name"
+msgstr "Segundo Nombre"
+
+msgid "Preferred Name"
+msgstr "Nombre preferido"
+
+msgid "Max Resolution: %s pixels"
+msgstr "Resolución máxima: %s pixels"
+
+msgid "Trainings"
+msgstr "Capacitaciones"
+
+msgid "Shifts"
+msgstr "Turnos"
+
+msgid "Training Reports"
+msgstr "Informe de capacitaciones"
+
+msgid "Clear"
+msgstr "Limpiar"
+
+msgid "Hours"
+msgstr "Horas"
+
+msgid "Search"
+msgstr "Buscar"
+
+msgid "Advanced Search"
+msgstr "Busqueda avanzada"
+
+msgid "Education Cycle"
+msgstr "Ciclo de educación"
+
+msgid "Nursery"
+msgstr "Guardería"
+
+msgid "Auto Generated User ID"
+msgstr "ID OpenEMIS auto generado."
+
+msgid "Custom Validation"
+msgstr "Validación personalizada"
+
+msgid "LDAP Configuration"
+msgstr "Configuración del LDAP"
+
+msgid "Version"
+msgstr "Versión"
+
+msgid "Authentication"
+msgstr "Autenticación"
+
+msgid "Nationality"
+msgstr "Nacionalidad"
+
+msgid "Behaviour Report"
+msgstr "Informe de conductas."
+
+msgid "Survey"
+msgstr "Encuesta"
+
+msgid "Synchronized"
+msgstr "Sincronizado"
+
+msgid "New Staff"
+msgstr "Nuevo Personal"
+
+msgid "Contacts"
+msgstr "Contactos"
+
+msgid "Languages"
+msgstr "Idiomas"
+
+msgid "Special Needs"
+msgstr "Necesidades especiales"
+
+msgid "Awards"
+msgstr "Premios"
+
+msgid "Memberships"
+msgstr "Membresías"
+
+msgid "Licenses"
+msgstr "Licencias"
+
+msgid "Positions"
+msgstr "Posición"
+
+msgid "Leave"
+msgstr "Licencia laboral"
+
+msgid "Extracurricular"
+msgstr "Extracurricular"
+
+msgid "Employment"
+msgstr "Puesto"
+
+msgid "Salary"
+msgstr "Salario"
+
+msgid "Health"
+msgstr "Salud"
+
+msgid "Immunizations"
+msgstr "Vacunas"
+
+msgid "Medications"
+msgstr "Medicamentos"
+
+msgid "Allergies"
+msgstr "Alergias"
+
+msgid "Tests"
+msgstr "Pruebas"
+
+msgid "Consultations"
+msgstr "Consultas"
+
+msgid "Achievements"
+msgstr "Logros"
+
+msgid "Mobile"
+msgstr "Móvil"
+
+msgid "Phone"
+msgstr "Teléfono"
+
+msgid "Preferred"
+msgstr "Preferencias"
+
+msgid "Writing"
+msgstr "Escribiendo"
+
+msgid "Reading"
+msgstr "Leyendo"
+
+msgid "Speaking"
+msgstr "Hablando"
+
+msgid "Listening"
+msgstr "Escuchando"
+
+msgid "Issuer"
+msgstr "Editor"
+
+msgid "Employment Status"
+msgstr "Estatus del empleo"
+
+msgid "Graduate Year"
+msgstr "Año de graduación"
+
+msgid "Number Of Days"
+msgstr "Número de días"
+
+msgid "Deductions"
+msgstr "Deducciones"
+
+msgid "Additions"
+msgstr "Incorporaciones"
+
+msgid "Conditions"
+msgstr "Condiciones"
+
+msgid "Relationship"
+msgstr "Parentesco"
+
+msgid "Dosage"
+msgstr "Dosis"
+
+msgid "Severe"
+msgstr "Severo"
+
+msgid "Treatment"
+msgstr "Tratamiento"
+
+msgid "Appointment"
+msgstr "Nombramiento"
+
+msgid "Contract"
+msgstr "Contrato"
+
+msgid "Weighting"
+msgstr "Ponderación"
+
+msgid "Evaluator"
+msgstr "Evaluador"
+
+msgid "Add Criteria"
+msgstr "Agregar criterio"
+
+msgid "Date Enabled"
+msgstr "Fecha habilitada"
+
+msgid "Date Disabled"
+msgstr "Fecha deshabilitada"
+
+msgid "Criteria"
+msgstr "Criterio"
+
+msgid "Reorder"
+msgstr "Reordenar"
+
+msgid "There are no records."
+msgstr "No hay registros."
+
+msgid "Options"
+msgstr "Opciones."
+
+msgid "Total Weighting(%)"
+msgstr "Coecifiente de ponderación total (%)"
+
+msgid "Grand Total Weighting(%)"
+msgstr "Gran tortal del Coeficiente de ponderación (%)"
+
+msgid "Report Generated"
+msgstr ""
+
+msgid "Staff Type"
+msgstr "Tipo de Personal"
+
+msgid "Position"
+msgstr "Posición"
+
+msgid "File size should not be larger than %s."
+msgstr "* El Tamaño del archivo no debe ser mayor de 2 MB."
+
+msgid "*Maximum 5 files are permitted on single upload. Each file size should not be larger than 2MB."
+msgstr "* Se permite un máximo de cinco archivos por carga. Cada archivo no debe ser mayor de 2MB."
+
+msgid "Result Type"
+msgstr "Tipo de resultado"
+
+msgid "Add Trainer"
+msgstr "Agregar Instructor"
+
+msgid "Trainers"
+msgstr "Instructores"
+
+msgid "Download Template"
+msgstr "Descargar Plantilla"
+
+msgid "%s Record(s) have been updated"
+msgstr "%s Registos han sido actualizados"
+
+msgid "Column %s only accepts 0 or 1 as input."
+msgstr "La Columna %s sólo acepta 0 ó 1 como entrada."
+
+msgid "Row %s: %s"
+msgstr "Fila %s: %s"
+
+msgid "Training Result"
+msgstr "Resultado de la Capacitación"
+
+msgid "User ID"
+msgstr "User ID"
+
+msgid "(1=Pass/0=Fail)"
+msgstr "(1=Aprobado / 0=Fracaso)"
+
+msgid "Training Priority"
+msgstr "Prioridad de Capacitación"
+
+msgid "Course Catalogue"
+msgstr "Catálogo de Cursos"
+
+msgid "Need Category"
+msgstr "Categoría necesaria"
+
+msgid "Specialisation"
+msgstr "Especialización"
+
+msgid "Years"
+msgstr "Años"
+
+msgid "Staff with User ID %s does not exist."
+msgstr "Personal con User ID %s no existe"
+
+msgid "Staff with User ID %s does not meet the Course requirement."
+msgstr "El Personal con User ID %s no cumple con el requisito del curso."
+
+msgid "translations"
+msgstr "Traducciones"
+
+msgid "Absence"
+msgstr "Ausencia"
+
+msgid "From"
+msgstr "de"
+
+msgid "To"
+msgstr "para"
+
+msgid "Reason"
+msgstr "Razón"
+
+msgid "Time"
+msgstr "Hora"
+
+msgid "Remove"
+msgstr "Remover"
+
+msgid "Shift"
+msgstr "Turno"
+
+msgid "Start Time"
+msgstr "Hora de inicio"
+
+msgid "End Time"
+msgstr "Hora de finalización"
+
+msgid "Shift Details"
+msgstr "Detalles del turno"
+
+msgid "Teaching"
+msgstr "Enseñanza"
+
+msgid "Reset"
+msgstr "Reiniciar"
+
+msgid "Guardians"
+msgstr "Tutores"
+
+msgid "Maps"
+msgstr "Mapas"
+
+msgid "Fees"
+msgstr "Honorarios"
+
+msgid "Fee Types"
+msgstr "Tipos de honorario"
+
+msgid "Add Student"
+msgstr "Agregar estudiante"
+
+msgid "Add Staff"
+msgstr "Agregar personal"
+
+msgid "Custom Field"
+msgstr "Personalizar Campo"
+
+msgid "Promoted"
+msgstr "Promovido"
+
+msgid "Sections"
+msgstr "Sección"
+
+msgid "Repeated"
+msgstr "Repetido"
+
+msgid "Academic Periods"
+msgstr "Periodos académicos"
+
+msgid "Surveys"
+msgstr "Encuestas"
+
+msgid "Communications"
+msgstr "Comunicación"
+
+msgid "Dashboard"
+msgstr "Dashboard"
+
+msgid "Infrastructures"
+msgstr "Infraestructuras"
+
+msgid "Notices"
+msgstr "Notificaciones"
+
+msgid "Transfer Status"
+msgstr "Estatus de transferencia"
+
+msgid "Student Transfer Reason"
+msgstr "Razón de transferencia de estudiante"
+
+msgid "Academic"
+msgstr "Académico"
+
+msgid "Total Institutions"
+msgstr "Total de instituciones"
+
+msgid "Total Students"
+msgstr "Total de estudiantes"
+
+msgid "Total Staff"
+msgstr "Total de personal"
+
+msgid "About"
+msgstr "Acerca de"
+
+msgid "Preferences"
+msgstr "Preferencias"
+
+msgid "Forms"
+msgstr "Formularios"
+
+msgid "Third Name"
+msgstr "Tercer nombre"
+
+msgid "Birthplace Area"
+msgstr "Área Natal"
+
+msgid "Modified User"
+msgstr "Usuario modificado"
+
+msgid "Modified"
+msgstr "Modificado"
+
+msgid "Created User"
+msgstr "Usuario creado"
+
+msgid "Created"
+msgstr "Creado"
+
+msgid "Absences"
+msgstr "Ausencias"
+
+msgid "Behaviours"
+msgstr "Conductas"
+
+msgid "Extracurriculars"
+msgstr "Extracurriculares"
+
+msgid "Alternative Name"
+msgstr "Nombre alternativo"
+
+msgid "Area Administrative"
+msgstr "Área Administrativa"
+
+msgid "(Area (Education"
+msgstr "(Área (Educación"
+
+msgid "Career"
+msgstr "Carrera"
+
+msgid "Professional"
+msgstr "Desarrollo profesional"
+
+msgid "Salaries"
+msgstr "Salarios"
+
+msgid "Workflow"
+msgstr "Flujo de trabajo"
+
+msgid "Workbench"
+msgstr "Mesa de trabajo"
+
+msgid "Received Date"
+msgstr "Fecha de recepción"
+
+msgid "Request Title"
+msgstr "Título de solicitud"
+
+msgid "Transferred"
+msgstr "Transferido"
+
+msgid "Pending Transfer"
+msgstr "Transferencia pendiente"
+
+msgid "Graduated"
+msgstr "Graduado"
+
+msgid "All Statuses"
+msgstr "Todos los estatus"
+
+msgid "Student Status"
+msgstr "Estatus del estudiante"
+
+msgid "Photo"
+msgstr "Foto"
+
+msgid "Actions"
+msgstr "Conducta"
+
+msgid "All Grades"
+msgstr "Todos los grados"
+
+msgid "Display"
+msgstr "Mostrar"
+
+msgid "records"
+msgstr "registros"
+
+msgid "Showing %s to %s of %s records"
+msgstr "Mostrando %s para %s de %s registros"
+
+msgid "Next Academic Period"
+msgstr "Próximo periodo académico"
+
+msgid "Academic Period"
+msgstr "Periodo Académico"
+
+msgid "Transfer Requests"
+msgstr "Solicitudes de transferencia"
+
+msgid "Transfer"
+msgstr "Transferir"
+
+msgid "Promotion / Graduation"
+msgstr "Promoción / Graduación"
+
+msgid "Questions"
+msgstr "Preguntas"
+
+msgid "Draft"
+msgstr "Borrador"
+
+msgid "Enrolled"
+msgstr "Inscrito"
+
+msgid "Position Type"
+msgstr "Tipo de posición"
+
+msgid "Staff Status"
+msgstr "Estatus del personal"
+
+msgid "Pages"
+msgstr "Páginas"
+
+msgid "Fields"
+msgstr "Campos"
+
+msgid "Infrastructure Level"
+msgstr "Nivel de infraestructura"
+
+msgid "Size"
+msgstr "Tamaño"
+
+msgid "Infrastructure Ownership"
+msgstr "Propietario de la infraestructura"
+
+msgid "Year Acquired"
+msgstr "Año de adquisición"
+
+msgid "Year Disposed"
+msgstr "Año disponible"
+
+msgid "Infrastructure Condition"
+msgstr "Condición de la infraestructura"
+
+msgid "Area Administratives"
+msgstr "Áreas Administrativas"
+
+msgid "Number Of Students By Year"
+msgstr "Número de estudiantes por año"
+
+msgid "Number Of Staff"
+msgstr "Número de personal"
+
+msgid "Date On File"
+msgstr "Fecha del archivo"
+
+msgid "New Value"
+msgstr "Nuevo valor"
+
+msgid "Old Value"
+msgstr "Antiguo valor"
+
+msgid "Field"
+msgstr "Campo"
+
+msgid "Module"
+msgstr "Módulo"
+
+msgid "Female Students"
+msgstr "Estudiantes femeninas"
+
+msgid "Male Students"
+msgstr "Estudiantes masculinos"
+
+msgid "Home Room Teacher"
+msgstr "Docente del Aula"
+
+msgid "Class Name"
+msgstr "Nombre de la clase"
+
+msgid "Subject Name"
+msgstr "Nombre de la Materia"
+
+msgid "User ID or Name"
+msgstr "User ID o Nombre"
+
+msgid "Photo Content"
+msgstr "Contenido de la foto"
+
+msgid "Contact Type"
+msgstr "Tipo de contacto"
+
+msgid "Contact Value"
+msgstr "Valor de Contacto"
+
+msgid "Identity Type"
+msgstr "Tipo de identificación"
+
+msgid "Identity Number"
+msgstr "Número de identificación"
+
+msgid "Special Need"
+msgstr "Necesidad especial"
+
+msgid "Student Behaviour Category"
+msgstr "Categoría de la Conducta del estudiante"
+
+msgid "Date Of Behaviour"
+msgstr "Fecha de Conducta"
+
+msgid "No Available Classes"
+msgstr "No ha clases disponibles"
+
+msgid "Assessment"
+msgstr "Evaluación"
+
+msgid "To Be Completed By"
+msgstr "Debe ser completado por"
+
+msgid "Last Modified"
+msgstr "ültima modificación"
+
+msgid "Completed On"
+msgstr "Completado en"
+
+msgid "All Positions"
+msgstr "Todas las posiciones"
+
+msgid "Genders"
+msgstr "Género"
+
+msgid "Birthplace Areas"
+msgstr "Áreas Natales"
+
+msgid "Address Areas"
+msgstr "Dirección de Área"
+
+msgid "Expires On"
+msgstr "Expira en"
+
+msgid "Started On"
+msgstr "Comenzó en"
+
+msgid "Evaluation Date"
+msgstr "Fecha de evaluación"
+
+msgid "Employments"
+msgstr "Empleos"
+
+msgid "Employment Type"
+msgstr "Tipo de empleo"
+
+msgid "Employment Date"
+msgstr "Fecha de empleo"
+
+msgid "EducationSubject"
+msgstr "Tema educativo"
+
+msgid "Staff Absence Reason"
+msgstr "Razón de ausencia del personal"
+
+msgid "Days"
+msgstr "Días"
+
+msgid "Date To"
+msgstr "Fecha para"
+
+msgid "Date From"
+msgstr "Fecha de"
+
+msgid "Staff Leave Type"
+msgstr "Tipo de vacaciones del personal"
+
+msgid "Document No"
+msgstr "No de documento"
+
+msgid "Extracurricular Type"
+msgstr "Tipo de extracurricular"
+
+msgid "Points"
+msgstr "Puntos"
+
+msgid "Grade/Score"
+msgstr "Grado / Calificación"
+
+msgid "Membership"
+msgstr "Afiliación"
+
+msgid "License Number"
+msgstr "Número de licencia"
+
+msgid "License Type"
+msgstr "Tipo de licencia"
+
+msgid "Staff Training Category"
+msgstr "Categoría de la Capacitación del personal"
+
+msgid "Remarks"
+msgstr "Observaciones"
+
+msgid "Bank Branch"
+msgstr "Sucursal bancaria"
+
+msgid "Bank Name"
+msgstr "Nombre del Banco"
+
+msgid "Net Salary"
+msgstr "Salario neto"
+
+msgid "Gross Salary"
+msgstr "Salario bruto"
+
+msgid "Salary Date"
+msgstr "Fecha de pago de salarios"
+
+msgid "Feature"
+msgstr "Característica"
+
+msgid "Number Of Classes"
+msgstr "Cantidad de clases"
+
+msgid "Time Of Behaviour"
+msgstr "Tiempo de Conducta"
+
+msgid "Identity"
+msgstr "Identidad"
+
+msgid "Education Grades"
+msgstr "Grados de educación"
+
+msgid "Subject Code"
+msgstr "Código del asunto"
+
+msgid "Create New"
+msgstr "Crear Nuevo"
+
+msgid "Staff Attendances"
+msgstr "Asistencias del personal"
+
+msgid "Pending Admission"
+msgstr "Admisión pendiente"
+
+msgid "Rejected"
+msgstr "Rechazado"
+
+msgid "Home Page"
+msgstr "Página de inicio"
+
+msgid "Pending Dropout"
+msgstr "Deserción pendiente"
+
+msgid "Execute"
+msgstr "Ejecutar"
+
+msgid "File Content"
+msgstr "Contenido del archivo"
+
+msgid "No Teacher Assigned"
+msgstr "No hay docente asignado"
+
+msgid "All Classes"
+msgstr "Todas las clases"
+
+msgid "Student Behaviours"
+msgstr "Conducta del estudiante"
+
+msgid "Student Attendances"
+msgstr "Asistencias de los estudiantes"
+
+msgid "Total Fee"
+msgstr "Honorario total"
+
+msgid "Amount Paid"
+msgstr "Cantidad pagada"
+
+msgid "Outstanding Fee"
+msgstr "Honorario Destacado"
+
+msgid "Staff Behaviours"
+msgstr "Conducta del personal"
+
+msgid "Survey Form"
+msgstr "Formulario de encuesta"
+
+msgid "Rubric Template"
+msgstr "Plantilla para Matriz de valoración"
+
+msgid "Academic Period Level"
+msgstr "Nivel del periodo académico"
+
+msgid "Quality Visit Type"
+msgstr "Tipo de calidad de visita"
+
+msgid "Labels"
+msgstr "Etiquetas"
+
+msgid "Guardian"
+msgstr "Tutor"
+
+msgid "Guardian Relation"
+msgstr "Relación con el Tutor"
+
+msgid "Student Fees"
+msgstr "Tarifas del estudiante"
+
+msgid "Add Addition"
+msgstr "Agregar adición"
+
+msgid "Add Deduction"
+msgstr "Agregar deducción"
+
+msgid "Absence Type"
+msgstr "Tipo ausencia"
+
+msgid "Age"
+msgstr "Edad"
+
+msgid "Copyright"
+msgstr "Copyright"
+
+msgid "All rights reserved."
+msgstr "Todos los derechos reservados."
+
+msgid "Directory"
+msgstr "Directorio"
+
+msgid "Audit"
+msgstr "Auditoría"
+
+msgid "Import Students"
+msgstr "Importar estudiantes"
+
+msgid "Select File To Import"
+msgstr "Seleccionar archivo para importar"
+
+msgid "Import"
+msgstr "Importar"
+
+msgid "Network Connectivity"
+msgstr "Conectividad de red"
+
+msgid "Open"
+msgstr "Abierto"
+
+msgid "Blood Type"
+msgstr "Tipo de sangre"
+
+msgid "Doctor Name"
+msgstr "Nombre del Médico"
+
+msgid "Doctor Contact"
+msgstr "Contacto del Médico"
+
+msgid "Healths"
+msgstr "Salud"
+
+msgid "Health Insurance"
+msgstr "Seguro médico"
+
+msgid "Medical Facility"
+msgstr "Centro Médico"
+
+msgid "Health Allergies"
+msgstr "Salud - Alergías"
+
+msgid "Health Allergy Type"
+msgstr "Salud - Tipo de Alergías"
+
+msgid "Health Consultations"
+msgstr "Salud - Consultas"
+
+msgid "Health Consultation Type"
+msgstr "Salud - Tipo de Consulta"
+
+msgid "Health Families"
+msgstr "Salud - Familias"
+
+msgid "Families"
+msgstr "Familias"
+
+msgid "Health Relationship"
+msgstr "Salud - Relaciones"
+
+msgid "Health Condition"
+msgstr "Salud - Condición"
+
+msgid "Health Histories"
+msgstr "Salud - Historial"
+
+msgid "Histories"
+msgstr "Historial"
+
+msgid "Health Immunization Type"
+msgstr "Salud - Tipo de inmunización"
+
+msgid "Health Tests"
+msgstr "Salud - Pruebas"
+
+msgid "Health Test Type"
+msgstr "Salud - Tipo de pruebas"
+
+msgid "Map"
+msgstr "Mapa"
+
+msgid "Health Immunizations"
+msgstr "Salud - Inmunizaciones"
+
+msgid "Health Medications"
+msgstr "Salud - Medicamentos"
+
+msgid "Building Status"
+msgstr "Estatus del edificio"
+
+msgid "Building Ownership"
+msgstr "Propietario del edificio"
+
+msgid "Building Type"
+msgstr "Tipo de edificio"
+
+msgid "Single Grade"
+msgstr "Grado individual"
+
+msgid "Multi Grade"
+msgstr "Grado multiple"
+
+msgid "Single Grade Classes"
+msgstr "Clases con grados individuales"
+
+msgid "Select Teacher or Leave Blank"
+msgstr "Seleccione un Docente o dejar en blanco"
+
+msgid ".Are you sure you want to delete this record"
+msgstr ""
+
+msgid "From Academic Period"
+msgstr "De Período Académico"
+
+msgid "To Academic Period"
+msgstr "Para Período Académico"
+
+msgid "From Grade"
+msgstr "De Grado"
+
+msgid "To Grade"
+msgstr "Para Grado"
+
+msgid "Next grade in the Education Structure is not available in this Institution or no Next Academic Period defined"
+msgstr "El siguiente Grado en la estructura de la educación no está disponible en esta Institución o no ha sido definido en ningún período académico próximo."
+
+msgid "Current Grade"
+msgstr "Grado actual"
+
+msgid "Next Education Grade"
+msgstr "Próximo Grado educativo"
+
+msgid "User Name"
+msgstr "Nombre de usuario"
+
+msgid "Student Absences"
+msgstr "Ausencias del estudiante"
+
+msgid "Full Day"
+msgstr "Día completo"
+
+msgid "Staff Absences"
+msgstr "Ausencias del personal"
+
+msgid "For Year %s"
+msgstr "Por Año %s"
+
+msgid "Select Period"
+msgstr "Seleccionar periodo"
+
+msgid "Select Class"
+msgstr "Seleccionar clase"
+
+msgid "No Programme Grade Fees"
+msgstr "No. Tarifas Programa de Grado"
+
+msgid "Non-Teaching"
+msgstr "No hay docentes"
+
+msgid "No Notices"
+msgstr "No. de Notificación"
+
+msgid "Parent"
+msgstr "Pariente"
+
+msgid "Staff Employments"
+msgstr "Empleos del personal"
+
+msgid "This Institution"
+msgstr "Esta institución"
+
+msgid "Other Institution"
+msgstr "Otra institución"
+
+msgid "Promotion"
+msgstr "Promoción"
+
+msgid "Students have been promoted "
+msgstr "Los estudiantes han sido promovidos"
+
+msgid "Undo"
+msgstr "Deshacer"
+
+msgid "Effective Date"
+msgstr "Fecha vigente"
+
+msgid "Current Staff List"
+msgstr ""
+
+msgid "Past Staff List"
+msgstr ""
+
+msgid "Model"
+msgstr ""
+
+msgid "<Not In School>"
+msgstr ""
+
+msgid "Add Next Programme"
+msgstr ""
+
+msgid "Add Question"
+msgstr ""
+
+msgid "Add Subject"
+msgstr ""
+
+msgid "Assessment Items"
+msgstr ""
+
+msgid "Class Grades"
+msgstr ""
+
+msgid "Comment Required"
+msgstr ""
+
+msgid "Criterias"
+msgstr ""
+
+msgid "Date range is not within the academic period."
+msgstr ""
+
+msgid "Default"
+msgstr ""
+
+msgid "Download Failed Records"
+msgstr ""
+
+msgid "Download Successful Records"
+msgstr ""
+
+msgid "Email already exists in the system"
+msgstr ""
+
+msgid "Form"
+msgstr ""
+
+msgid "Issue Date Should be Earlier Than Expiry Date"
+msgstr ""
+
+msgid "Next Step"
+msgstr ""
+
+msgid "No Available Rubrics"
+msgstr ""
+
+msgid "No Available Students"
+msgstr ""
+
+msgid "No Staff"
+msgstr ""
+
+msgid "No Subjects"
+msgstr ""
+
+msgid "No Surveys"
+msgstr ""
+
+msgid "Payment Date"
+msgstr ""
+
+msgid "Rubric Section"
+msgstr ""
+
+msgid "Section"
+msgstr ""
+
+msgid "Students have been promoted"
+msgstr ""
+
+msgid "Students Out of School"
+msgstr ""
+
+msgid "System Groups"
+msgstr ""
+
+msgid "System Roles"
+msgstr ""
+
+msgid "The record has been added successfully."
+msgstr ""
+
+msgid "The record has been updated successfully."
+msgstr ""
+
+msgid "The record is not added due to errors encountered."
+msgstr ""
+
+msgid "The record is not updated due to errors encountered."
+msgstr ""
+
+msgid "There are no available Students for Promotion / Graduation"
+msgstr ""
+
+msgid "This guardian has already added."
+msgstr ""
+
+msgid "Total FTE"
+msgstr ""
+
+msgid "Unable to delete this record due to payments by students already exists"
+msgstr ""
+
+msgid "User Groups"
+msgstr ""
+
+msgid "User Roles"
+msgstr ""
+
+msgid "Area Education"
+msgstr ""
+
+msgid "Institution Fees"
+msgstr ""
+
+msgid "Contact Number"
+msgstr ""
+
+msgid "Homeroom Teacher"
+msgstr ""
+
+msgid "Institution Class"
+msgstr ""
+
+msgid "Assigned"
+msgstr ""
+
+msgid "End of Assignment"
+msgstr ""
+
+msgid "Pending Change in Assignment"
+msgstr ""
+
+msgid "Pending Transfer In"
+msgstr ""
+
+msgid "Pending Transfer Out"
+msgstr ""
+
+msgid "Pending Approval"
+msgstr ""
+
+msgid "Transfer Type"
+msgstr ""
+
+msgid "Full Transfer"
+msgstr ""
+
+msgid "Partial Transfer"
+msgstr ""
+
+msgid "Staff Transfer"
+msgstr ""
+
+msgid "Staff Transfer Approvals"
+msgstr ""
+
+msgid "Staff Transfer Requests"
+msgstr ""
+
+msgid "Student Absence Reasons"
+msgstr ""
+
+msgid "Staff Absence Reasons"
+msgstr ""
+
+msgid "Student Admission"
+msgstr ""
+
+msgid "All associated information related to this record will also be removed."
+msgstr ""
+
+msgid "Are you sure you want to delete this record?"
+msgstr ""
+
+msgid "Institution Classes"
+msgstr ""
+
+msgid "Browse"
+msgstr ""
+
+msgid "There are no students selected"
+msgstr ""
+
+msgid "No Options"
+msgstr ""
+
+msgid "Emergency"
+msgstr ""
+
+msgid "Personal"
+msgstr ""
+
+msgid "Work"
+msgstr ""
+
+msgid "Difficulty"
+msgstr ""
+
+msgid "Homeroom Teacher Name"
+msgstr ""
+
+msgid "Total Mark"
+msgstr ""
+
+msgid "Course Name"
+msgstr ""
+
+msgid "Training Course"
+msgstr ""
+
+msgid "Training Session"
+msgstr ""
+
+msgid "Pending For Deactivation"
+msgstr ""
+
+msgid "Staff Transfer Approved"
+msgstr ""
+
+msgid "Transfer From"
+msgstr ""
+
+msgid "Transfer To"
+msgstr ""
+
+msgid "No of Records"
+msgstr ""
+
+msgid "Search Results"
+msgstr ""
+
+msgid "-- Select --"
+msgstr ""
+
+msgid "Editable"
+msgstr ""
+
+msgid "Institution Filter"
+msgstr ""
+
+msgid "All Institutions"
+msgstr ""
+
+msgid "Student Absence"
+msgstr ""
+
+msgid "Staff Absence"
+msgstr ""
+
+msgid "Student Teacher Ratio"
+msgstr ""
+
+msgid "Student Classroom Ratio"
+msgstr ""
+
+msgid "Not Completed"
+msgstr ""
+
+msgid "Potential Student Duplicates"
+msgstr ""
+
+msgid "Potential Staff Duplicates"
+msgstr ""
+
+msgid "Shift Type"
+msgstr ""
+
+msgid "Add Comment"
+msgstr ""
+
+msgid "Full Time Equivalent"
+msgstr ""
+
+msgid "Owner"
+msgstr ""
+
+msgid "Occupier"
+msgstr ""
+
+msgid "No. of Students Present"
+msgstr ""
+
+msgid "No. of Students Absent"
+msgstr ""
+
+msgid "No. of Students Late"
+msgstr ""
+
+msgid "No. of Staff Present"
+msgstr ""
+
+msgid "No. of Staff Absent"
+msgstr ""
+
+msgid "No. of Staff Late"
+msgstr ""
+
+msgid "All Assessments"
+msgstr ""
+
+msgid "Room Type"
+msgstr ""
+
+msgid "To Be Deleted"
+msgstr ""
+
+msgid "Associated Records"
+msgstr ""
+
+msgid "Delete operation is not allowed as there are other information linked to this record"
+msgstr ""
+
+msgid "Overview edit will only take effect when classes permission is granted"
+msgstr ""
+
+msgid "From Education Grade"
+msgstr ""
+
+msgid "Delete operation is not allowed as there are other information linked to this record. "
+msgstr ""
+
+msgid "Both latitude and longitude value have to be set for map to render"
+msgstr ""
+
+msgid "Examinations"
+msgstr ""
+
+msgid "End of Usage"
+msgstr ""
+
+msgid "Student Programmes"
+msgstr ""
+
+msgid "Student Account"
+msgstr ""
+
+msgid "Exams"
+msgstr ""
+
+msgid "--Select Area--"
+msgstr ""
+
+msgid "Room Status"
+msgstr ""
+
+msgid "All Room Types"
+msgstr ""
+
+msgid "In Use"
+msgstr ""
+
+msgid "Staff Transfer Approval"
+msgstr ""
+
+msgid "Staff Transfer Request"
+msgstr ""
+
+msgid "Promotion / Repeat"
+msgstr ""
+
+msgid "Internal Search"
+msgstr ""
+
+msgid "Filter"
+msgstr ""
+
+msgid "Individual Promotion / Repeat"
+msgstr ""
+
+msgid "No Workbench Data"
+msgstr ""
+
+msgid "No options"
+msgstr ""
+
+msgid "Objective"
+msgstr ""
+
+msgid "Experiences"
+msgstr ""
+
+msgid "Target Populations"
+msgstr ""
+
+msgid "Training Providers"
+msgstr ""
+
+msgid "Course Prerequisites"
+msgstr ""
+
+msgid "Specialisations"
+msgstr ""
+
+msgid "Result Types"
+msgstr ""
+
+msgid "Appraisals"
+msgstr ""
+
+msgid "Requests"
+msgstr ""
+
+msgid "Visit Requests"
+msgstr ""
+
+msgid "Assignee"
+msgstr ""
+
+msgid "Date Of Visit"
+msgstr ""
+
+msgid "Select Target Populations"
+msgstr ""
+
+msgid "Select Providers"
+msgstr ""
+
+msgid "Select Courses"
+msgstr ""
+
+msgid "Select Specialisations"
+msgstr ""
+
+msgid "Select Result Types"
+msgstr ""
+
+msgid "Accredited"
+msgstr ""
+
+msgid "Pending For Accreditation"
+msgstr ""
+
+msgid "Pending For Recommendation"
+msgstr ""
+
+msgid "Closed"
+msgstr ""
+
+msgid "This field cannot be left empty"
+msgstr ""
+
+msgid "Delete operation is not allowed as there are other information linked to this record."
+msgstr ""
+
+msgid "Students have graduated"
+msgstr ""
+
+msgid "User Type"
+msgstr ""
+
+msgid "Others"
+msgstr ""
+
+msgid "Grading Types"
+msgstr ""
+
+msgid "Max"
+msgstr ""
+
+msgid "Min"
+msgstr ""
+
+msgid "Staff Subjects"
+msgstr ""
+
+msgid "Education Subject"
+msgstr ""
+
+msgid "Assessment Grading Type"
+msgstr ""
+
+msgid "Period Weight"
+msgstr ""
+
+msgid "Assessment Periods"
+msgstr ""
+
+msgid "Templates"
+msgstr ""
+
+msgid "Subject Weight"
+msgstr ""
+
+msgid "Marks"
+msgstr ""
+
+msgid "Grading Options"
+msgstr ""
+
+msgid "Add New Option"
+msgstr ""
+
+msgid "Registration Start Date"
+msgstr ""
+
+msgid "Registration End Date"
+msgstr ""
+
+msgid "Examination"
+msgstr ""
+
+msgid "Examination Items"
+msgstr ""
+
+msgid "Weight"
+msgstr ""
+
+msgid "Grading Type"
+msgstr ""
+
+msgid "Centres"
+msgstr ""
+
+msgid "Exam Centres"
+msgstr ""
+
+msgid "Select Examination"
+msgstr ""
+
+msgid "Accounts"
+msgstr ""
+
+msgid "Examination Students"
+msgstr ""
+
+msgid "Registration Number"
+msgstr ""
+
+msgid "Register"
+msgstr ""
+
+msgid "Unregister"
+msgstr ""
+
+msgid "Examination Education Grade"
+msgstr ""
+
+msgid "Exam Centre"
+msgstr ""
+
+msgid "Registered"
+msgstr ""
+
+msgid "Registered Students"
+msgstr ""
+
+msgid "Not Registered Students"
+msgstr ""
+
+msgid "Not Registered"
+msgstr ""
+
+msgid "Total Registered"
+msgstr ""
+
+msgid "All Examinations"
+msgstr ""
+
+msgid "Linked Institutions"
+msgstr ""
+
+msgid "Invigilators"
+msgstr ""
+
+msgid "Invigilator"
+msgstr ""
+
+msgid "Number Of Seats"
+msgstr ""
+
+msgid "Auto Assign To Rooms"
+msgstr ""
+
+msgid "Bulk Register"
+msgstr ""
+
+msgid "Examination Centre"
+msgstr ""
+
+msgid "Create As"
+msgstr ""
+
+msgid "Single Register"
+msgstr ""
+
+msgid "Registration Directory"
+msgstr ""
+
+msgid "Special Needs Difficulty"
+msgstr ""
+
+msgid "Exam Results"
+msgstr ""
+
+msgid "Student without Class"
+msgstr ""
+
+msgid "Staff Positions"
+msgstr ""
+
+msgid "Staff Classes"
+msgstr ""
+
+msgid "Staff Leave"
+msgstr ""
+
+msgid "Staff Awards"
+msgstr ""
+
+msgid "Staff Qualifications"
+msgstr ""
+
+msgid "Staff Extracurriculars"
+msgstr ""
+
+msgid "Staff Memberships"
+msgstr ""
+
+msgid "Staff Licenses"
+msgstr ""
+
+msgid "Staff Appraisals"
+msgstr ""
+
+msgid "Final Rating"
+msgstr ""
+
+msgid "Staff Bank Accounts"
+msgstr ""
+
+msgid "Staff Salaries"
+msgstr ""
+
+msgid "Addition Set"
+msgstr ""
+
+msgid "Deduction Set"
+msgstr ""
+
+msgid "Training Result Type"
+msgstr ""
+
+msgid "Pending For Approval"
+msgstr "Pendiente de aprobación"
+
+msgid "Approved"
+msgstr ""
+
+msgid "Custom Field (Student)"
+msgstr ""
+
+msgid "Unassigned"
+msgstr ""
+
+msgid "Select Subject"
+msgstr ""
+
+msgid "More Actions"
+msgstr ""
+
+msgid "Submit For Deactivation"
+msgstr ""
+
+msgid "Field Type"
+msgstr ""
+
+msgid "Systems"
+msgstr ""
+
+msgid "Periods"
+msgstr ""
+
+msgid "All Data"
+msgstr ""
+
+msgid "Custom Field (Institution)"
+msgstr ""
+
+msgid "Custom Field (Staff)"
+msgstr ""
+
+msgid "Index"
+msgstr ""
+
+msgid "Preferred Language"
+msgstr ""
+
+msgid "Updates"
+msgstr ""
+
+msgid "Excel Templates"
+msgstr ""
+
+msgid "External Search"
+msgstr ""
+
+msgid "%s with %s"
+msgstr ""
+
+msgid "Transfer of student %s from %s"
+msgstr ""
+
+msgid "%s in %s"
+msgstr ""
+
+msgid "%s of %s"
+msgstr ""
+
+msgid "%s from %s"
+msgstr ""
+
+msgid "Transfer of staff %s to %s"
+msgstr ""
+
+msgid "Staff Transfer Approved of %s from %s"
+msgstr ""
+
+msgid "Admission of student %s"
+msgstr ""
+
+msgid "Withdraw request of %s"
+msgstr ""
+
+msgid "%s in %s on %s"
+msgstr ""
+
+msgid "%s applying for session %s in %s"
+msgstr ""
+
+msgid "Results of %s"
+msgstr ""
+
+msgid "Allocated To"
+msgstr ""
+
+msgid "Textbook ID"
+msgstr ""
+
+msgid "Condition"
+msgstr ""
+
+msgid "Profile"
+msgstr ""
+
+msgid "Profiles"
+msgstr ""
+
+msgid "Height"
+msgstr ""
+
+msgid "Body Mass Index"
+msgstr ""
+
+msgid "Body Mass"
+msgstr ""
+
+msgid "Promote From"
+msgstr ""
+
+msgid "Promote To"
+msgstr ""
+
+msgid "Region"
+msgstr ""
+
+msgid "Zone"
+msgstr ""
+
+msgid "Shared"
+msgstr ""
+
+msgid "Textbook"
+msgstr ""
+
+msgid "Textbook Condition"
+msgstr ""
+
+msgid "Textbook Conditions"
+msgstr ""
+
+msgid "Textbook Status"
+msgstr ""
+
+msgid "Indexes"
+msgstr ""
+
+msgid "Number Of Risk Index"
+msgstr ""
+
+msgid "Indexes Criterias"
+msgstr ""
+
+msgid "Institution Student Indexes"
+msgstr ""
+
+msgid "Operator"
+msgstr ""
+
+msgid "Less than or equal to"
+msgstr ""
+
+msgid "Threshold"
+msgstr ""
+
+msgid "References"
+msgstr ""
+
+msgid "Generate"
+msgstr ""
+
+msgid "Generated By"
+msgstr ""
+
+msgid "Generated On"
+msgstr ""
+
+msgid "Not Generated"
+msgstr ""
+
+msgid "Total Index"
+msgstr ""
+
+msgid "Counsellings"
+msgstr ""
+
+msgid "Counselling"
+msgstr ""
+
+msgid "Intervention"
+msgstr ""
+
+msgid "Counselor"
+msgstr ""
+
+msgid "Guidance Type"
+msgstr ""
+
+msgid "File Name"
+msgstr ""
+
+msgid "All associated information related to this record will also be removed. Are you sure you want to delete this record?"
+msgstr ""
+
+msgid "This field is required."
+msgstr ""
+
+msgid "Not active homeroom teacher"
+msgstr ""
+
+msgid "Not active teaching staff"
+msgstr ""
+
+msgid "Number Of Student By Stage"
+msgstr ""
+
+msgid "Number Of Staff By Type"
+msgstr ""
+
+msgid "Number Of Staff By Year"
+msgstr ""
+
+msgid "File attachment is required"
+msgstr ""
+
+msgid "Secondary Staff"
+msgstr ""
+
+msgid "Secondary Teacher"
+msgstr ""
+
+msgid "Multi-grade"
+msgstr ""
+
+msgid "Secondary Home Room Teacher"
+msgstr ""
+
+msgid "Select Textbooks"
+msgstr ""
+
+msgid "Select Education Subject"
+msgstr ""
+
+msgid "Select Education Grade"
+msgstr ""
+
+msgid "Select Academic Term"
+msgstr ""
+
+msgid "All Genders"
+msgstr ""
+
+msgid "No Room Allocated"
+msgstr ""
+
+msgid "Teacher(s)"
+msgstr ""
+
+msgid "Past Teachers"
+msgstr ""
+
+msgid "Institution Textbooks"
+msgstr ""
+
+msgid "No Textbooks"
+msgstr ""
+
+msgid "Add Textbook"
+msgstr ""
+
+msgid "Pending Withdraw"
+msgstr ""
+
+msgid "Withdraw"
+msgstr ""
+
+msgid "Withdrawn"
+msgstr ""
+
+msgid "The current password was not matched."
+msgstr ""
+
+msgid "Password should contain at least 1 uppercase character"
+msgstr ""
+
+msgid "Password should contain at least 1 number"
+msgstr ""
+
+msgid "Password should contain at least 1 non-alphanumeric character"
+msgstr ""
+
+msgid "Both passwords do not match"
+msgstr ""
+
+msgid "There must be at least one Preferred Nationality"
+msgstr ""
+
+msgid "Relation"
+msgstr ""
+
+msgid "Edit Profile"
+msgstr ""
+
+msgid "Edit Relation"
+msgstr ""
+
+msgid "Guardian User"
+msgstr ""
+
+msgid "No Guardian found."
+msgstr ""
+
+msgid "No Guardian"
+msgstr ""
+
+msgid "No Results"
+msgstr ""
+
+msgid "No Examination Results"
+msgstr ""
+
+msgid "No Student Fees"
+msgstr ""
+
+msgid "Report Card"
+msgstr ""
+
+msgid "Report Cards"
+msgstr ""
+
+msgid "transition"
+msgstr ""
+
+msgid "Last Executer"
+msgstr ""
+
+msgid "Last Execution Date"
+msgstr ""
+
+msgid "Behaviour Classification"
+msgstr ""
+
+msgid "Classifications"
+msgstr ""
+
+msgid "Submit For Verification & Authentication"
+msgstr ""
+
+msgid "Rating"
+msgstr ""
+
+msgid "Competency Set"
+msgstr ""
+
+msgid "Competencies / Goals"
+msgstr ""
+
+msgid "Competencies"
+msgstr ""
+
+msgid "Competency"
+msgstr ""
+
+msgid "Import Salaries"
+msgstr ""
+
+msgid "Submit For Approval"
+msgstr ""
+
+msgid "Training Need Category"
+msgstr ""
+
+msgid "Applications"
+msgstr ""
+
+msgid "Apply"
+msgstr ""
+
+msgid "Number Of Months"
+msgstr ""
+
+msgid "Number Of Hours"
+msgstr ""
+
+msgid "Number Of Years"
+msgstr ""
+
+msgid "Training Field Of Study"
+msgstr ""
+
+msgid "Training Course Type"
+msgstr ""
+
+msgid "Training Mode Of Delivery"
+msgstr ""
+
+msgid "Field of Study"
+msgstr ""
+
+msgid "Field Of Studies"
+msgstr ""
+
+msgid "All Days"
+msgstr ""
+
+msgid "Linked Cases"
+msgstr ""
+
+msgid "Case Number"
+msgstr ""
+
+msgid "Student Competencies"
+msgstr ""
+
+msgid "All Competencies"
+msgstr ""
+
+msgid "Competency Template"
+msgstr ""
+
+msgid "Competency Period"
+msgstr ""
+
+msgid "Competency Item"
+msgstr ""
+
+msgid "Competency Assessment period"
+msgstr ""
+
+msgid "Changes will be automatically saved when any value is changed"
+msgstr ""
+
+msgid "All Items"
+msgstr ""
+
+msgid "Items"
+msgstr ""
+
+msgid "Competency Items"
+msgstr ""
+
+msgid "Competency Grading Type"
+msgstr ""
+
+msgid "No Assessments"
+msgstr ""
+
+msgid "Student result will be save after the result has been entered."
+msgstr ""
+
+msgid "Examination Results"
+msgstr ""
+
+msgid "Report Card Comments"
+msgstr ""
+
+msgid "Select Report Card"
+msgstr ""
+
+msgid "All Report Cards"
+msgstr ""
+
+msgid "Report Card Statuses"
+msgstr ""
+
+msgid "Payments"
+msgstr ""
+
+msgid "Add Payment"
+msgstr ""
+
+msgid "Add New Payment"
+msgstr ""
+
+msgid "All Land Types"
+msgstr ""
+
+msgid "Institution Lands"
+msgstr ""
+
+msgid "Land Type"
+msgstr ""
+
+msgid "Land Status"
+msgstr ""
+
+msgid "Institution Buildings"
+msgstr ""
+
+msgid "All Building Types"
+msgstr ""
+
+msgid "Institution Floors"
+msgstr ""
+
+msgid "All Floor Types"
+msgstr ""
+
+msgid "Floor Type"
+msgstr ""
+
+msgid "Floor Status"
+msgstr ""
+
+msgid "Institution Rooms"
+msgstr ""
+
+msgid "Enrolment Information"
+msgstr ""
+
+msgid "Cases"
+msgstr ""
+
+msgid "Linked Records"
+msgstr ""
+
+msgid "The password is automatically generated by the system"
+msgstr ""
+
+msgid "Directories"
+msgstr ""
+
+msgid "Business"
+msgstr ""
+
+msgid "Probation"
+msgstr ""
+
+msgid "Extension"
+msgstr ""
+
+msgid "Termination"
+msgstr ""
+
+msgid "Resignation"
+msgstr ""
+
+msgid "Retirement"
+msgstr ""
+
+msgid "Temporary"
+msgstr ""
+
+msgid "Institutions with No Students"
+msgstr ""
+
+msgid "Institutions with No Staff"
+msgstr ""
+
+msgid "Area Education Code"
+msgstr ""
+
+msgid "Area Administrative Code"
+msgstr ""
+
+msgid "Year Opened"
+msgstr ""
+
+msgid "Year Closed"
+msgstr ""
+
+msgid "Area Code"
+msgstr ""
+
+msgid "No Of Seats"
+msgstr ""
+
+msgid "Preferred Nationality"
+msgstr ""
+
+msgid "All Nationalities"
+msgstr ""
+
+msgid "Previous Institution Student"
+msgstr ""
+
+msgid "System Usage"
+msgstr ""
+
+msgid "No previous login"
+msgstr ""
+
+msgid "Logged in within the last 7 days"
+msgstr ""
+
+msgid "All Exam Centres"
+msgstr ""
+
+msgid "Registered Students by Examination Centre"
+msgstr ""
+
+msgid "Training Need Type"
+msgstr ""
+
+msgid "Pending Review"
+msgstr ""
+
+msgid "Session Participants"
+msgstr ""
+
+msgid "Institution Types"
+msgstr ""
+
+msgid "Synchronize"
+msgstr ""
+
+msgid "Areas (Education)"
+msgstr ""
+
+msgid "Area Levels (Education)"
+msgstr ""
+
+msgid "Areas (Administrative)"
+msgstr ""
+
+msgid "Area Levels (Administrative)"
+msgstr ""
+
+msgid "Data will be synchronized from"
+msgstr ""
+
+msgid "New Area"
+msgstr ""
+
+msgid "Missing Area"
+msgstr ""
+
+msgid "Security Group Affected"
+msgstr ""
+
+msgid "Institution Affected"
+msgstr ""
+
+msgid "Area Administrative Level"
+msgstr ""
+
+msgid "Is Main Country"
+msgstr ""
+
+msgid "Education Level Isced"
+msgstr ""
+
+msgid "Cycles"
+msgstr ""
+
+msgid "Education Certification"
+msgstr ""
+
+msgid "Education Field Of Study"
+msgstr ""
+
+msgid "Next Programmes"
+msgstr ""
+
+msgid "Cycle - (Programme)"
+msgstr ""
+
+msgid "Education Stage"
+msgstr ""
+
+msgid "Hours Required"
+msgstr ""
+
+msgid "Auto Allocation"
+msgstr ""
+
+msgid "Grade Subjects"
+msgstr ""
+
+msgid "If this option is set to Yes, students will be allocated automatically to this subject upon enrolment to a class"
+msgstr ""
+
+msgid "Stages"
+msgstr ""
+
+msgid "Education Programme Orientation"
+msgstr ""
+
+msgid "Network Connectivities"
+msgstr ""
+
+msgid "Localities"
+msgstr ""
+
+msgid "Ownerships"
+msgstr ""
+
+msgid "Sectors"
+msgstr ""
+
+msgid "Shift Options"
+msgstr ""
+
+msgid "Report Card Comment Codes"
+msgstr ""
+
+msgid "Student Behaviour Categories"
+msgstr ""
+
+msgid "Student Transfer Reasons"
+msgstr ""
+
+msgid "Student Withdraw Reasons"
+msgstr ""
+
+msgid "Guidance Types"
+msgstr ""
+
+msgid "Staff Behaviour Categories"
+msgstr ""
+
+msgid "Staff Leave Types"
+msgstr ""
+
+msgid "Is Mandatory"
+msgstr ""
+
+msgid "Is Unique"
+msgstr ""
+
+msgid "Validation Rule"
+msgstr ""
+
+msgid "Validation Rules"
+msgstr ""
+
+msgid "Rules"
+msgstr ""
+
+msgid "Rule"
+msgstr ""
+
+msgid "Custom Module"
+msgstr ""
+
+msgid "Apply To All"
+msgstr ""
+
+msgid "Custom Filters"
+msgstr ""
+
+msgid "Add Field"
+msgstr ""
+
+msgid "Add Section"
+msgstr ""
+
+msgid "Length"
+msgstr ""
+
+msgid "Decimal Place"
+msgstr ""
+
+msgid "Create Table"
+msgstr ""
+
+msgid "Add Columns"
+msgstr ""
+
+msgid "Add Rows"
+msgstr ""
+
+msgid "Module Name"
+msgstr ""
+
+msgid "Field Name"
+msgstr ""
+
+msgid "Translations"
+msgstr ""
+
+msgid "Label"
+msgstr ""
+
+msgid "Default Value"
+msgstr ""
+
+msgid "Prefix Value"
+msgstr ""
+
+msgid "Enable"
+msgstr ""
+
+msgid "Validation Pattern"
+msgstr ""
+
+msgid "External Data Source"
+msgstr ""
+
+msgid "Attributes"
+msgstr ""
+
+msgid "Attribute Name"
+msgstr ""
+
+msgid "Product Lists"
+msgstr ""
+
+msgid "Student Admission Age"
+msgstr ""
+
+msgid "Credentials"
+msgstr ""
+
+msgid "Select Criteria"
+msgstr ""
+
+msgid "Absences Excused"
+msgstr ""
+
+msgid "Overage"
+msgstr ""
+
+msgid "Status Repeated"
+msgstr ""
+
+msgid "Add Area"
+msgstr ""
+
+msgid "Import Institutions."
+msgstr ""
+
+msgid "All Subjects"
+msgstr ""
+
+msgid "My Subjects"
+msgstr ""
+
+msgid "Import Textbooks"
+msgstr ""
+
+msgid "My Classes"
+msgstr ""
+
+msgid "Student Profile"
+msgstr ""
+
+msgid "Transfer Request"
+msgstr ""
+
+msgid "Transfer Approval"
+msgstr ""
+
+msgid "Withdraw Request"
+msgstr ""
+
+msgid "Student Withdraw"
+msgstr ""
+
+msgid "Account Username"
+msgstr ""
+
+msgid "Import Student Attendances"
+msgstr ""
+
+msgid "Undo Student Status"
+msgstr ""
+
+msgid "Competency Results"
+msgstr ""
+
+msgid "Competency Comments"
+msgstr ""
+
+msgid "Staff Profile"
+msgstr ""
+
+msgid "Import Staff Attendances"
+msgstr ""
+
+msgid "Transfer Approvals"
+msgstr ""
+
+msgid "Change in Staff Assignment"
+msgstr ""
+
+msgid "Import Staff"
+msgstr ""
+
+msgid "Generate/Download"
+msgstr ""
+
+msgid "Publish/Unpublish"
+msgstr ""
+
+msgid "Guardian Profile"
+msgstr ""
+
+msgid "Student Body Mass"
+msgstr ""
+
+msgid "Salary List"
+msgstr ""
+
+msgid "Salary Details"
+msgstr ""
+
+msgid "Import Staff Salaries"
+msgstr ""
+
+msgid "Import Users"
+msgstr ""
+
+msgid "Academic Period Levels"
+msgstr ""
+
+msgid "Education Systems"
+msgstr ""
+
+msgid "Education Levels"
+msgstr ""
+
+msgid "Education Cycles"
+msgstr ""
+
+msgid "Education Programmes"
+msgstr ""
+
+msgid "Education Grade Subjects"
+msgstr ""
+
+msgid "Webhooks"
+msgstr ""
+
+msgid "Alerts"
+msgstr ""
+
+msgid "Alert Rules"
+msgstr ""
+
+msgid "Workflows"
+msgstr ""
+
+msgid "Steps"
+msgstr ""
+
+msgid "Exam Centre Rooms"
+msgstr ""
+
+msgid "Exam Centre Exams"
+msgstr ""
+
+msgid "Exam Centre Subjects"
+msgstr ""
+
+msgid "Exam Centre Students"
+msgstr ""
+
+msgid "Exam Centre Invigilators"
+msgstr ""
+
+msgid "Exam Centre Linked Institutions"
+msgstr ""
+
+msgid "Import Results"
+msgstr ""
+
+msgid "Import Examination Rooms"
+msgstr ""
+
+msgid "Competency Setup"
+msgstr ""
+
+msgid "question"
+msgstr ""
+
+msgid "Survey Questions"
+msgstr ""
+
+msgid "Survey Question"
+msgstr ""
+
+msgid "All Surveys"
+msgstr ""
+
+msgid "Dependent Question"
+msgstr ""
+
+msgid "Show Options"
+msgstr ""
+
+msgid "Dropdown Question Options"
+msgstr ""
+
+msgid "Select Question Options"
+msgstr ""
+
+msgid "Select Some Options"
+msgstr ""
+
+msgid "Dependent On"
+msgstr ""
+
+msgid "Select One"
+msgstr ""
+
+msgid "Template"
+msgstr ""
+
+msgid "Weighting Type"
+msgstr ""
+
+msgid "Percentage"
+msgstr ""
+
+msgid "rubric"
+msgstr ""
+
+msgid "Security Roles"
+msgstr ""
+
+msgid "Start"
+msgstr ""
+
+msgid "Stop"
+msgstr ""
+
+msgid "Running"
+msgstr ""
+
+msgid "License Renewal"
+msgstr ""
+
+msgid "License Validity"
+msgstr ""
+
+msgid "Retirement Warning"
+msgstr ""
+
+msgid "Staff Employment"
+msgstr ""
+
+msgid "All Features"
+msgstr ""
+
+msgid "Method"
+msgstr ""
+
+msgid "Rule Setup"
+msgstr ""
+
+msgid "Alert Content"
+msgstr ""
+
+msgid "Keywords"
+msgstr ""
+
+msgid "Processed Date"
+msgstr ""
+
+msgid "Target Population Selection"
+msgstr ""
+
+msgid "Import Trainees"
+msgstr ""
+
+msgid "No Trainee found."
+msgstr ""
+
+msgid "No Trainer found."
+msgstr ""
+
+msgid "Submit for Registration"
+msgstr ""
+
+msgid "Pending For Registration"
+msgstr ""
+
+msgid "Pending For Review"
+msgstr ""
+
+msgid "Pending For Evaluation"
+msgstr ""
+
+msgid "Submit For Evaluation"
+msgstr ""
+
+msgid "Pending For Posting"
+msgstr ""
+
+msgid "Posted"
+msgstr ""
+
+msgid "Excel Template"
+msgstr ""
+
+msgid "Academic Term"
+msgstr ""
+
+msgid "Edit Academic Term"
+msgstr ""
+
+msgid "All Templates"
+msgstr ""
+
+msgid "Criteria Grading Options"
+msgstr ""
+
+msgid "Add New Examination Item"
+msgstr ""
+
+msgid "Add Examination Item"
+msgstr ""
+
+msgid "Add Examination Centre"
+msgstr ""
+
+msgid "Link Examination"
+msgstr ""
+
+msgid "Add Special Need Type"
+msgstr ""
+
+msgid "Add All Special Need Type"
+msgstr ""
+
+msgid "Special Need Type"
+msgstr ""
+
+msgid "Select Special Need Type"
+msgstr ""
+
+msgid "Special Need Accommodations"
+msgstr ""
+
+msgid "Examination Date"
+msgstr ""
+
+msgid "All Rooms"
+msgstr ""
+
+msgid "Add Invigilator"
+msgstr ""
+
+msgid "Linked Institution"
+msgstr ""
+
+msgid "Auto Assign To Room"
+msgstr ""
+
+msgid "Register for Examination"
+msgstr ""
+
+msgid "Single Student Registration"
+msgstr ""
+
+msgid "You need to configure Examination Items first"
+msgstr ""
+
+msgid "Select Education Level"
+msgstr ""
+
+msgid "Select Education Programme"
+msgstr ""
+
+msgid "All Education Subject"
+msgstr ""
+
+msgid "Author"
+msgstr ""
+
+msgid "Publisher"
+msgstr ""
+
+msgid "Year Published"
+msgstr ""
+
+msgid "Principal Comments Required"
+msgstr ""
+
+msgid "Homeroom Teacher Comments Required"
+msgstr ""
+
+msgid "Teacher Comments Required"
+msgstr ""
+
+msgid "Filters"
+msgstr ""
+
+msgid "Workflow Model"
+msgstr ""
+
+msgid "Select Workflow"
+msgstr ""
+
+msgid "All Workflows"
+msgstr ""
+
+msgid "Deletable"
+msgstr ""
+
+msgid "Add workflow steps"
+msgstr ""
+
+msgid "Workflow Step Name"
+msgstr ""
+
+msgid "Workflow Name"
+msgstr ""
+
+msgid "No Available Workflow Steps"
+msgstr ""
+
+msgid "Workflow Step"
+msgstr ""
+
+msgid "Next Workflow Step"
+msgstr ""
+
+msgid "Allow By Assignee"
+msgstr ""
+
+msgid "Post Events"
+msgstr ""
+
+msgid "Add Event"
+msgstr ""
+
+msgid "All Models"
+msgstr ""
+
+msgid "Workflow Statuses Steps Mapping"
+msgstr ""
+
+msgid "Statuses Steps"
+msgstr ""
+
+msgid "Changelog"
+msgstr ""
+
+msgid "Date Released"
+msgstr ""
+
+msgid "Date Approved"
+msgstr ""
+
+msgid "Localization"
+msgstr ""
+
+msgid "Approved By"
+msgstr ""
+
+msgid "Training Session Results"
+msgstr ""
+
+msgid "Staff Training Needs"
+msgstr ""
+
+msgid "Language ISO code should be 2 letters"
+msgstr ""
