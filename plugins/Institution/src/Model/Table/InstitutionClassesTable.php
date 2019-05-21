@@ -439,10 +439,14 @@ class InstitutionClassesTable extends ControllerActionTable
     {
         $sortable = !is_null($this->request->query('sort')) ? true : false;
 
-        $conditions = [$this->aliasField('academic_period_id') => $extra['selectedAcademicPeriodId']];
+	$institutionId = $extra['institution_id'];
+
+        $condition = [$this->aliasField('institution_id') => $institutionId,$this->aliasField('academic_period_id') => $extra['selectedAcademicPeriodId']];
+	$subCondition = [$this->aliasField('institution_id') => $institutionId,$this->aliasField('academic_period_id') => $extra['selectedAcademicPeriodId']];
 	if(!$this->AccessControl->isPrincipal()){
 		$staffId = $this->Auth->user('id');
-	    	array_push($conditions , [$this->aliasField('staff_id') => $staffId] );
+		array_push($condition , [$this->aliasField('staff_id') => $staffId] );
+		array_push($subCondition , [$this->aliasField('secondary_staff_id') => $staffId] );
         }
   //	$staffId = $this->Auth->user('id');
 	$query
@@ -475,7 +479,8 @@ class InstitutionClassesTable extends ControllerActionTable
                     'fields' => ['openemis_no', 'first_name', 'middle_name', 'third_name', 'last_name', 'preferred_name']
                 ]
             ])
-	    ->where([$conditions])
+	    ->where([$condition])
+	    ->orWhere([$subCondition])
             ->group([$this->aliasField('id')]);
 
         if (!$sortable) {
