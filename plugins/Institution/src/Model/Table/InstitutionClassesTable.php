@@ -95,7 +95,7 @@ class InstitutionClassesTable extends ControllerActionTable
             ->allowEmpty('staff_id')
             ->allowEmpty('secondary_staff_id')
 	    ->requirePresence('name')
-	   // ->requirePresence('no_of_students')
+	    ->requirePresence('no_of_students')
             ->add('name', 'ruleUniqueNamePerAcademicPeriod', [
                 'rule' => 'uniqueNamePerAcademicPeriod',
                 'provider' => 'table',
@@ -189,7 +189,7 @@ class InstitutionClassesTable extends ControllerActionTable
        // $this->field('academic_period', ['type' => 'integer', 'visible' => ['view' => true, 'edit' => true]]);
         $this->field('class_number', ['visible' => false]);
        // $this->field('no_of_students' ,  ['visible' => true]);
-	$this->field('modified_user_id', ['visible' => true]);
+       // $this->field('modified_user_id', ['visible' => true]);
         $this->field('modified', ['visible' => false]);
         $this->field('created_user_id', ['visible' => false]);
         $this->field('created', ['visible' => false]);
@@ -228,7 +228,7 @@ class InstitutionClassesTable extends ControllerActionTable
         $this->field('multigrade');
       
         $this->setFieldOrder([
-            'name','staff_id', 'secondary_staff_id','no_of_students', 'multigrade', 'total_male_students', 'total_female_students', 'total_students', 'subjects'
+            'name','staff_id', 'secondary_staff_id','no_of_students','multigrade', 'total_male_students', 'total_female_students', 'total_students', 'subjects'
     	]);
 	/**$this->setFieldOrder([
             'academic_period_id', 'name', 'no_of_students', 'institution_shift_id', 'education_grades', 'total_male_students', 'total_female_students',
@@ -888,6 +888,10 @@ class InstitutionClassesTable extends ControllerActionTable
         } else {
             return $entity->institution_shift->shift_option->name;
         }
+    }
+
+    public function onGetNoOfStudents(Event $event, Entity $entity){
+        return $entity->no_of_students;
     }
 
     public function onGetStaffId(Event $event, Entity $entity)

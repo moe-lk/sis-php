@@ -248,9 +248,7 @@ function InstitutionClassStudentsController($scope, $q, $window, $http, UtilsSvc
         postData.academic_period_id = Controller.academicPeriodId;
         if(classStudents.length > Controller.noStudents){
             AlertSvc.error(Controller, 'The number of students per class has reached the  limit of '+Controller.noStudents+' students.');
-        }
-	
-	if(classStudents.length > Controller.maxStudentsPerClass){
+        }else if(classStudents.length > Controller.maxStudentsPerClass){
             AlertSvc.error(Controller, 'The number of students per class has reached the maximum limit of '+Controller.maxStudentsPerClass+' students.');
         }else{
             InstitutionClassStudentsSvc.saveClass(postData)

@@ -8,8 +8,10 @@
 				<thead>
 					<tr>
 						<th><?= $this->Label->get('InstitutionClasses.class'); ?></th>
+						<th><?= __('No Of Students'); ?> </th>
 						<th><?= $this->Label->get('InstitutionClasses.staff_id'); ?></th>
 						<th><?= $this->Label->get('InstitutionClasses.secondary_staff_id'); ?> </th>
+						
 					</tr>
 				</thead>
 
@@ -68,6 +70,33 @@
 						<td class="<?= $tdClass ?>">
 							<?php
 								echo $this->Form->input($field['fieldName'], $field['attr']);
+							?>
+							<?php if (!empty($attrErrors) && isset($attrErrors['name'])) : ?>
+								<ul class="error-message" style="margin-left:20px">
+								<?php foreach ($attrErrors['name'] as $error) : ?>
+									<li><?= $error ?></li>
+								<?php endforeach ?>
+								</ul>
+							<?php endif; ?>
+							<?= $this->Form->hidden(sprintf('MultiClasses.%d.class_number', $i), array(
+								'value' => $startingClassNumber
+							));?>
+						</td>
+						
+						<?php 
+							$field2 = [
+							'fieldName' => 'MultiClasses[' . $i . '][no_of_students]',
+							'attr' => [
+								'id' => 'multiclasses-' . $i . '-no_of_students',
+								'label' => false,
+								'name' => 'MultiClasses[' . $i . '][no_of_students]',
+								'value' => 40,
+							],
+						];
+						?>
+						<td class="<?= $tdClass ?>">
+							<?php
+								echo $this->Form->input($field2['fieldName'], $field2['attr']);
 							?>
 							<?php if (!empty($attrErrors) && isset($attrErrors['name'])) : ?>
 								<ul class="error-message" style="margin-left:20px">

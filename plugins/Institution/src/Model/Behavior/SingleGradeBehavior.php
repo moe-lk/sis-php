@@ -111,7 +111,8 @@ class SingleGradeBehavior extends Behavior
             'select' => false
         ]);
 
-        $grade = [];
+	$grade = [];
+	$noOfStudents = '';
         if ($model->EducationGrades->exists(['id' => $selectedEducationGradeId])) {
             $grade = $model->EducationGrades->get($selectedEducationGradeId)->toArray();
         }
@@ -122,11 +123,12 @@ class SingleGradeBehavior extends Behavior
             'data'      => [    'numberOfClasses'   => $numberOfClasses,
                                 'staffOptions'      => $model->getStaffOptions($institutionId, 'add', $selectedAcademicPeriodId),
                                 'existedClasses'    => $model->getExistedClasses($institutionId, $selectedAcademicPeriodId, $selectedEducationGradeId),
-                                'grade'             => $grade
+                                'grade'             => $grade,
+                                'no_of_students'    => $noOfStudents
             ]
         ]);
-
-	$model->fields['no_of_students']['visible'] = true;
+	
+	$model->fields['no_of_students']['visible'] = false;
         $model->fields['name']['visible'] = false;
         $model->fields['students']['visible'] = false;
         $model->fields['staff_id']['visible'] = false;
@@ -136,7 +138,7 @@ class SingleGradeBehavior extends Behavior
         $model->fields['total_male_students']['visible'] = false;
         $model->fields['total_female_students']['visible'] = false;   
         $model->setFieldOrder([
-            'academic_period_id', 'education_grade', 'institution_shift_id','no_of_students', 'class_number', 'number_of_classes', 'single_grade_field'
+            'academic_period_id', 'education_grade', 'institution_shift_id', 'class_number', 'number_of_classes', 'single_grade_field'
         ]);
     }
 
@@ -161,7 +163,7 @@ class SingleGradeBehavior extends Behavior
                     $requestData['MultiClasses'][$key]['institution_id'] = $commonData['institution_id'];
                     $requestData['MultiClasses'][$key]['academic_period_id'] = $commonData['academic_period_id'];
                     $requestData['MultiClasses'][$key]['education_grades']['_ids'] = [$commonData['education_grade']];
-		    $requestData['MultiClasses'][$key]['no_of_students'] = $commonData['no_of_students'];
+		  //  $requestData['MultiClasses'][$key]['no_of_students'] = $commonData['no_of_students'];
 		}
 
                 $classes = $model->newEntities($requestData['MultiClasses']);
@@ -195,7 +197,7 @@ class SingleGradeBehavior extends Behavior
                      * unset all field validation except for "name" to trigger validation error in ControllerActionComponent
                      */
                     foreach ($model->fields as $value) {
-                        if ($value['field'] != 'name' || $value['field'] != 'staff_id') {
+                        if ($value['field'] != 'name' || $value['field'] != 'no_of_students' || $value['field'] != 'staff_id') {
                             $model->validator()->remove($value['field']);
                         }
                     }
