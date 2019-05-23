@@ -18,7 +18,7 @@ $this->start('panelBody');
     </div>
 
 	<?php foreach ($highChartDatas as $key => $highChartData) : ?>
-		<div class="highchart col-md-6" style="visibility: hidden">
+		<div class="highchart col-md-6" style="">
 			<?php echo $highChartData; ?>
 		</div>
 	<?php endforeach ?>

@@ -127,8 +127,9 @@ class SingleGradeBehavior extends Behavior
                                 'no_of_students'    => $noOfStudents
             ]
         ]);
-	
+      	
 	$model->fields['no_of_students']['visible'] = false;
+	$model->fields['no_of_students']['label'] = 'No of students as per register';
         $model->fields['name']['visible'] = false;
         $model->fields['students']['visible'] = false;
         $model->fields['staff_id']['visible'] = false;

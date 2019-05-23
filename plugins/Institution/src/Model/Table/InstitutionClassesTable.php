@@ -194,7 +194,7 @@ class InstitutionClassesTable extends ControllerActionTable
         $this->field('created_user_id', ['visible' => false]);
         $this->field('created', ['visible' => false]);
         
-	$this->field('no_of_students', ['type' => 'integer', 'visible' => ['index'=>true, 'view'=>true, 'edit'=>true]]);
+	$this->field('no_of_students', [  'attr' => ['label' => __('Number of students as per register')] ,'type' => 'integer', 'visible' => ['index'=>true, 'view'=>true, 'edit'=>true]]);
         //$this->field('academic_period_id', ['type' => 'select', 'visible' => ['view' => true, 'edit' => true]]);
         $this->field('institution_shift_id', ['type' => 'select', 'visible' => ['view' => true, 'edit' => true]]);
 
@@ -222,7 +222,7 @@ class InstitutionClassesTable extends ControllerActionTable
             'visible' => ['view' => true]
         ]);
 
-        $this->field('staff_id', ['type' => 'select', 'options' => [], 'visible' => ['index'=>true, 'view'=>true, 'edit'=>true], 'attr' => ['label' => $this->getMessage($this->aliasField('staff_id'))]]);
+        $this->field('staff_id', ['type' => 'select', 'options' => [], 'visible' => ['index'=>true, 'view'=>true, 'edit'=>true], 'attr' => ['label' => __('Classroom Teacher')]]);
         $this->field('secondary_staff_id', ['type' => 'select', 'options' => [], 'visible' => ['index'=>true, 'view'=>true, 'edit'=>true]]);
 
         $this->field('multigrade');
@@ -376,7 +376,7 @@ class InstitutionClassesTable extends ControllerActionTable
                 return $Classes->find()
                     ->where([
 			    $Classes->aliasField('institution_id') => $institutionId,
-			     $Classes->aliasField('staff_id') => $staffId,
+			    // $Classes->aliasField('staff_id') => $staffId,
                         $Classes->aliasField('academic_period_id') => $id
                     ])
                     ->count();
@@ -413,7 +413,7 @@ class InstitutionClassesTable extends ControllerActionTable
                 $query = $Classes->find()
                         ->join([$join])
 			->where([
-			    $Classes->aliasField('staff_id') => $staffId,
+			  //  $Classes->aliasField('staff_id') => $staffId,
                             $Classes->aliasField('institution_id') => $institutionId,
                             $Classes->aliasField('academic_period_id') => $selectedAcademicPeriodId,
                         ]);
@@ -441,13 +441,14 @@ class InstitutionClassesTable extends ControllerActionTable
 
 	$institutionId = $extra['institution_id'];
 
-        $condition = [$this->aliasField('institution_id') => $institutionId,$this->aliasField('academic_period_id') => $extra['selectedAcademicPeriodId']];
+//        $condition = [$this->aliasField('academic_period_id') => $extra['selectedAcademicPeriodId']];
 	$subCondition = [$this->aliasField('institution_id') => $institutionId,$this->aliasField('academic_period_id') => $extra['selectedAcademicPeriodId']];
-	if(!$this->AccessControl->isPrincipal()){
+	if(!$this->AccessControl->isPrincipal() && !$this->AccessControl->isAdmin()){
 		$staffId = $this->Auth->user('id');
-		array_push($condition , [$this->aliasField('staff_id') => $staffId] );
+	//	array_push($condition , [$this->aliasField('staff_id') => $staffId] );
 		array_push($subCondition , [$this->aliasField('secondary_staff_id') => $staffId] );
-        }
+	}
+	
   //	$staffId = $this->Auth->user('id');
 	$query
             ->find('byGrades', [
@@ -479,7 +480,9 @@ class InstitutionClassesTable extends ControllerActionTable
                     'fields' => ['openemis_no', 'first_name', 'middle_name', 'third_name', 'last_name', 'preferred_name']
                 ]
             ])
-	    ->where([$condition])
+	    ->where([
+	    		$this->aliasField('institution_id') => $institutionId,$this->aliasField('academic_period_id') => $extra['selectedAcademicPeriodId']
+	    ])
 	    ->orWhere([$subCondition])
             ->group([$this->aliasField('id')]);
 

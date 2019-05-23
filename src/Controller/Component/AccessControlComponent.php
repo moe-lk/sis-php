@@ -419,14 +419,16 @@ class AccessControlComponent extends Component
         $separator = $this->config('separator');
         $userId = $this->Auth->user('id');
         $GroupRoles = TableRegistry::get('Security.SecurityGroupUsers');
-
+       // $session = $request->session();
+        $institutionId = $this->Session->read('Institution.Institutions.id');
         $userRole = $GroupRoles
             ->find()
             ->contain('SecurityRoles')
             ->order(['SecurityRoles.order'])
             ->where([
                 $GroupRoles->aliasField('security_user_id') => $userId,
-                'SecurityRoles.code' => 'PRINCIPAL',
+    //		 $GroupRoles->aliasField('institution_id') => $institutionId,
+		'SecurityRoles.code' => 'PRINCIPAL',
             ])
             ->first();
         return $userRole->security_role->code == 'PRINCIPAL';

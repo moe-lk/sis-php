@@ -716,13 +716,16 @@ class StudentsTable extends ControllerActionTable
             $query->where([$this->aliasField('education_grade_id') => $selectedEducationGrades]);
         }
 
+	$staffId = $this->Auth->user('id');
         $query->where([$this->aliasField('academic_period_id') => $selectedAcademicPeriod]);
 
+	//$query->where([$this->aliasField('staff_id') => $staffId]);
         // Start: sort by class column
         $session = $request->session();
         $institutionId = $session->read('Institution.Institutions.id');
 
-        $query->find('withClass', ['institution_id' => $institutionId, 'period_id' => $selectedAcademicPeriod]);
+	
+	$query->find('withClass', ['institution_id' => $institutionId, 'period_id' => $selectedAcademicPeriod]);
 
         $sortList = ['InstitutionClasses.name'];
         if (array_key_exists('sortWhitelist', $extra['options'])) {
@@ -760,7 +763,7 @@ class StudentsTable extends ControllerActionTable
 
         // POCOR-2547 sort list of staff and student by name
         if (!isset($request->query['sort'])) {
-            $query->order([$this->Users->aliasField('first_name'), $this->Users->aliasField('last_name')]);
+            $query->order([$this->Users->aliasField('first_name')]);
         }
 
         $this->controller->set(compact('statusOptions', 'academicPeriodOptions', 'educationGradesOptions'));

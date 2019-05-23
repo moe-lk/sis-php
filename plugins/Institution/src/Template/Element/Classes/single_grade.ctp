@@ -8,9 +8,9 @@
 				<thead>
 					<tr>
 						<th><?= $this->Label->get('InstitutionClasses.class'); ?></th>
-						<th><?= __('No Of Students'); ?> </th>
+						<th><?= __('No Of Students as Per Register'); ?> </th>
 						<th><?= $this->Label->get('InstitutionClasses.staff_id'); ?></th>
-						<th><?= $this->Label->get('InstitutionClasses.secondary_staff_id'); ?> </th>
+						<th><?= __('Secondary Teacher') ?> </th>
 						
 					</tr>
 				</thead>

@@ -55,14 +55,14 @@ $this->start('panelBody');
         </div>
     </div>
     <div class="input string required">
-        <label><?= __('Number of Students') ?></label>
+        <label><?= __('Number of students as per register') ?></label>
         <input ng-model="InstitutionClassStudentsController.noStudents" type="string" >
         <div ng-if="InstitutionClassStudentsController.postError.name" class="error-message">
             <p ng-repeat="error in InstitutionClassStudentsController.postError.noStudents">{{ error }}</p>
         </div>
     </div>
     <div class="input select">
-        <label><?= __('Home Room Teacher') ?></label>
+        <label><?= __('Classroom Teacher') ?></label>
         <div class="input-select-wrapper">
             <select name="InstitutionClasses[staff_id]" id="institutionclasses-staff-id"
                 ng-options="option.id as option.name for option in InstitutionClassStudentsController.teacherOptions"
