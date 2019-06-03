@@ -17,13 +17,15 @@ class AddStudentAddmisionNumber extends AbstractMigration
             ->addColumn('admission_id', 'integer', [
                 'default' => 0,
                 'null' => true,
-            ]);
+            ])
+            ->save();
         $table2 = $this->table('institution_students');
         $table2
             ->addColumn('admission_id', 'integer', [
                 'default' => 0,
                 'null' => true,
-            ]);
+            ])
+            ->save();
 
     }
 
@@ -31,11 +33,13 @@ class AddStudentAddmisionNumber extends AbstractMigration
     {
         $table1 = $this->table('institution_student_admission');
         $table1
-            ->removeColumn('admission_id');
+            ->removeColumn('admission_id')
+            ->save();
 
         $table1 = $this->table('institution_students');
         $table1
-            ->removeColumn('admission_id');
+            ->removeColumn('admission_id')
+            ->save();
 
     }
 }
