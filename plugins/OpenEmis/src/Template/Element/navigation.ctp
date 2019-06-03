@@ -1,12 +1,12 @@
 <?php
 $navigations = [];
 if (isset($_navigations)) {
-	$navigations = $_navigations;
+    $navigations = $_navigations;
 }
 
 $selectedLink = '';
 if (isset($ControllerAction) && array_key_exists('selectedLink', $ControllerAction)) {
-	$selectedLink = implode('-', $ControllerAction['selectedLink']);
+    $selectedLink = implode('-', $ControllerAction['selectedLink']);
 }
 $institutionId = $this->Session->read('Institution.Institutions.id');
 $userId = $this->request->cookies['csrfToken'];
@@ -14,18 +14,24 @@ $userId = $this->request->cookies['csrfToken'];
 ?>
 
 <div class="left-menu">
+	<!-- <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+				<ul id="nav-menu-1" class="nav nav-level-1 collapse in" role="tabpanel" data-level="1">
+			<li><a  href="https://dashboard.sis.moe.gov.lk/dashboard/script/principal_dashboard.js?token=<?php echo $userId; ?>&id=<?php echo dechex($institutionId); ?>" id="Institutions-dashboard" target="_blank"><span><i class="fa kd-reports"></i></span><b>Dashboard</b></a></li>
+			</ul>
+	</div> -->
 	<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
 		<?php echo $this->Navigation->render($navigations) ?>
 	</div>
-	<div class="left-menu">
+</div>
+<!-- <div class="left-menu">
 	<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-			<ul id="nav-menu-1" class="nav nav-level-1 collapse in" role="tabpanel" data-level="1">
-		<li><a  href="https://dashboard.sis.moe.gov.lk/dashboard/script/principal_dashboard.js?token=<?php echo $userId;?>&id=<?php echo $institutionId; ?>" id="Institutions-dashboard" target="_blank"><span><i class="fa kd-reports"></i></span><b>Dashboard</b></a></li>
-		</ul>
+				<ul id="nav-menu-1" class="nav nav-level-1 collapse in" role="tabpanel" data-level="1">
+			<li><a  href="https://dashboard.sis.moe.gov.lk/dashboard/script/principal_dashboard.js?token=<?php echo $userId; ?>&id=<?php echo dechex($institutionId); ?>" id="Institutions-dashboard" target="_blank"><span><i class="fa kd-reports"></i></span><b>Dashboard</b></a></li>
+			</ul>
 	</div>
-</div>
+</div> -->
 
-</div>
+
 
 <script type="text/javascript">
 $(document).ready(function() {
@@ -40,13 +46,13 @@ $(document).ready(function() {
 		});
 	})
 
-	var action = '<?= $selectedLink ?>';
+	var action = '<?=$selectedLink?>';
 	$('#' + action).addClass('nav-active');
 	var ul = $('#' + action).parents('ul');
 
 	ul.each(function() {
 		$(this).addClass('in');
-		$(this).siblings('a.accordion-toggle').removeClass('collapsed'); 
+		$(this).siblings('a.accordion-toggle').removeClass('collapsed');
 	});
 });
 </script>
