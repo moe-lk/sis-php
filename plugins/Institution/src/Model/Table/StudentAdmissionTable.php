@@ -391,7 +391,7 @@ class StudentAdmissionTable extends ControllerActionTable
         $this->field('comment', ['type' => 'hidden']);
         $this->field('start_date', ['type' => 'hidden']);
         $this->field('end_date', ['type' => 'hidden']);
-        $this->field('admission_id', ['type' => 'string']);
+        $this->field('admission_id', ['type' => 'string' ,'attr' => ['label' => 'Admission Number']]);
         $this->field('admission_id', ['after' => 'student_status_id']);
         $this->setFieldOrder(['status_id', 'admission__id', 'assignee_id', 'student_id', 'academic_period_id', 'education_grade_id', 'institution_class_id']);
     }
