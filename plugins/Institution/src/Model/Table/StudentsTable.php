@@ -1,22 +1,17 @@
 <?php
 namespace Institution\Model\Table;
 
+use App\Model\Table\ControllerActionTable;
 use ArrayObject;
-
+use Cake\Core\Configure;
+use Cake\Datasource\ResultSetInterface;
 use Cake\Event\Event;
-use Cake\I18n\Time;
 use Cake\Network\Request;
 use Cake\ORM\Entity;
 use Cake\ORM\Query;
 use Cake\ORM\ResultSet;
 use Cake\ORM\TableRegistry;
-use Cake\Utility\Text;
 use Cake\Validation\Validator;
-use Cake\Chronos\Date;
-use Cake\Datasource\ResultSetInterface;
-use Cake\Core\Configure;
-
-use App\Model\Table\ControllerActionTable;
 
 class StudentsTable extends ControllerActionTable
 {
@@ -51,7 +46,7 @@ class StudentsTable extends ControllerActionTable
         $this->addBehavior('Excel', [
             'excludes' => ['start_year', 'end_year', 'previous_institution_student_id'],
             'pages' => ['index'],
-            'autoFields' => false
+            'autoFields' => false,
         ]);
 
         $this->addBehavior('HighChart', [
@@ -59,23 +54,23 @@ class StudentsTable extends ControllerActionTable
                 '_function' => 'getNumberOfStudentsByYear',
                 'chart' => ['type' => 'column', 'borderWidth' => 1],
                 'xAxis' => ['title' => ['text' => __('Years')]],
-                'yAxis' => ['title' => ['text' => __('Total')]]
+                'yAxis' => ['title' => ['text' => __('Total')]],
             ],
             'number_of_students_by_stage' => [
                 '_function' => 'getNumberOfStudentsByStage',
                 'chart' => ['type' => 'column', 'borderWidth' => 1],
                 'xAxis' => ['title' => ['text' => __('Education')]],
-                'yAxis' => ['title' => ['text' => __('Total')]]
+                'yAxis' => ['title' => ['text' => __('Total')]],
             ],
             'institution_student_gender' => [
-                '_function' => 'getNumberOfStudentsByGender'
+                '_function' => 'getNumberOfStudentsByGender',
             ],
             'institution_student_age' => [
-                '_function' => 'getNumberOfStudentsByAge'
+                '_function' => 'getNumberOfStudentsByAge',
             ],
             'institution_class_student_grade' => [
-                '_function' => 'getNumberOfStudentsByGradeByInstitution'
-            ]
+                '_function' => 'getNumberOfStudentsByGradeByInstitution',
+            ],
         ]);
         $this->addBehavior('Import.ImportLink');
 
@@ -86,7 +81,7 @@ class StudentsTable extends ControllerActionTable
          */
         $advancedSearchFieldOrder = [
             'first_name', 'middle_name', 'third_name', 'last_name',
-            'contact_number', 'identity_type', 'identity_number'
+            'contact_number', 'identity_type', 'identity_number',
         ];
 
         $this->addBehavior('AdvanceSearch', [
@@ -96,25 +91,25 @@ class StudentsTable extends ControllerActionTable
                 'education_grade_id',
                 'academic_period_id',
                 'student_status_id',
-                'previous_institution_student_id'
+                'previous_institution_student_id',
             ],
-            'order' => $advancedSearchFieldOrder
+            'order' => $advancedSearchFieldOrder,
         ]);
 
         $this->addBehavior('User.AdvancedIdentitySearch', [
-            'associatedKey' => $this->aliasField('student_id')
+            'associatedKey' => $this->aliasField('student_id'),
         ]);
         $this->addBehavior('User.AdvancedContactNumberSearch', [
-            'associatedKey' => $this->aliasField('student_id')
+            'associatedKey' => $this->aliasField('student_id'),
         ]);
         $this->addBehavior('User.AdvancedSpecificNameTypeSearch', [
-            'modelToSearch' => $this->Users
+            'modelToSearch' => $this->Users,
         ]);
         /**
          * End Advance Search Types
          */
         $this->addBehavior('ControllerAction.Image'); // To be verified
-        if (!in_array('Risks', (array)Configure::read('School.excludedPlugins'))) {
+        if (!in_array('Risks', (array) Configure::read('School.excludedPlugins'))) {
             $this->addBehavior('Risk.Risks');
         }
     }
@@ -139,7 +134,7 @@ class StudentsTable extends ControllerActionTable
 
         $validator
             ->add('start_date', 'ruleCompareDate', [
-                'rule' => ['compareDate', 'end_date', false]
+                'rule' => ['compareDate', 'end_date', false],
             ])
             ->add('end_date', [
             ])
@@ -151,34 +146,34 @@ class StudentsTable extends ControllerActionTable
             ->add('student_name', 'ruleStudentNotEnrolledInAnyInstitutionAndSameEducationSystem', [
                 'rule' => ['studentNotEnrolledInAnyInstitutionAndSameEducationSystem', []],
                 'on' => 'create',
-                'last' => true
+                'last' => true,
             ])
             ->add('student_name', 'ruleStudentNotCompletedGrade', [
                 'rule' => ['studentNotCompletedGrade', []],
                 'on' => 'create',
-                'last' => true
+                'last' => true,
             ])
             ->add('student_name', 'ruleCheckAdmissionAgeWithEducationCycleGrade', [
                 'rule' => ['checkAdmissionAgeWithEducationCycleGrade'],
-                'on' => 'create'
+                'on' => 'create',
             ])
             ->allowEmpty('class')
             ->add('class', 'ruleClassMaxLimit', [
                 'rule' => ['checkInstitutionClassMaxLimit'],
-                'on' => 'create'
+                'on' => 'create',
             ])
             ->add('gender_id', 'rulecompareStudentGenderWithInstitution', [
-                'rule' => ['compareStudentGenderWithInstitution']
+                'rule' => ['compareStudentGenderWithInstitution'],
             ])
             ->add('education_grade_id', 'ruleCheckProgrammeEndDate', [
                 'rule' => ['checkProgrammeEndDate', 'education_grade_id'],
-                'on' => 'create'
+                'on' => 'create',
             ])
             ->add('start_date', 'ruleCheckProgrammeEndDateAgainstStudentStartDate', [
                 'rule' => ['checkProgrammeEndDateAgainstStudentStartDate', 'start_date'],
-                'on' => 'create'
+                'on' => 'create',
             ])
-            ;
+        ;
         return $validator;
     }
 
@@ -206,7 +201,7 @@ class StudentsTable extends ControllerActionTable
                 'StudentStatuses',
                 'EducationGrades',
                 'AcademicPeriods',
-                'Users.MainNationalities'
+                'Users.MainNationalities',
             ])
             ->select([
                 'openemis_no' => 'Users.openemis_no',
@@ -226,7 +221,7 @@ class StudentsTable extends ControllerActionTable
                 'student_third_name' => 'Users.third_name',
                 'student_last_name' => 'Users.last_name',
                 'nationalities' => 'MainNationalities.name',
-                'class_name' => 'InstitutionClasses.name'
+                'class_name' => 'InstitutionClasses.name',
             ])
             ->leftJoin(
                 [$ClassStudents->alias() => $ClassStudents->table()],
@@ -235,16 +230,16 @@ class StudentsTable extends ControllerActionTable
                     $ClassStudents->aliasField('institution_id = ') . $this->aliasField('institution_id'),
                     $ClassStudents->aliasField('education_grade_id = ') . $this->aliasField('education_grade_id'),
                     $ClassStudents->aliasField('student_status_id = ') . $this->aliasField('student_status_id'),
-                    $ClassStudents->aliasField('academic_period_id = ') . $this->aliasField('academic_period_id')
+                    $ClassStudents->aliasField('academic_period_id = ') . $this->aliasField('academic_period_id'),
                 ]
             )
             ->leftJoin(
                 [$Classes->alias() => $Classes->table()],
                 [
-                    $Classes->aliasField('id = ') . $ClassStudents->aliasField('institution_class_id')
+                    $Classes->aliasField('id = ') . $ClassStudents->aliasField('institution_class_id'),
                 ]
             );
-            
+
         if ($periodId > 0) {
             $query->where([$this->aliasField('academic_period_id') => $periodId]);
         }
@@ -266,91 +261,91 @@ class StudentsTable extends ControllerActionTable
             'key' => 'Institutions.name',
             'field' => 'institution_name',
             'type' => 'string',
-            'label' => __('Institution')
+            'label' => __('Institution'),
         ];
 
         $extraField[] = [
             'key' => 'Users.openemis_no',
             'field' => 'openemis_no',
             'type' => 'string',
-            'label' => ''
+            'label' => '',
         ];
 
         $extraField[] = [
             'key' => 'Users.gender_id',
             'field' => 'gender_name',
             'type' => 'string',
-            'label' => ''
+            'label' => '',
         ];
 
         $extraField[] = [
             'key' => 'Users.date_of_birth',
             'field' => 'date_of_birth',
             'type' => 'date',
-            'label' => ''
+            'label' => '',
         ];
 
         $extraField[] = [
             'key' => 'Users.identity_number',
             'field' => 'identity_number',
             'type' => 'string',
-            'label' => __($identity->name)
+            'label' => __($identity->name),
         ];
 
         $extraField[] = [
             'key' => 'MainNationalities.name',
             'field' => 'nationalities',
             'type' => 'string',
-            'label' => __('Nationalities')
+            'label' => __('Nationalities'),
         ];
 
         $extraField[] = [
             'key' => 'StudentStatuses.name',
             'field' => 'student_status',
             'type' => 'string',
-            'label' => __('Student Status')
+            'label' => __('Student Status'),
         ];
 
         $extraField[] = [
             'key' => 'Users.student_name',
             'field' => 'student_name',
             'type' => 'string',
-            'label' => __('Student')
+            'label' => __('Student'),
         ];
 
         $extraField[] = [
             'key' => 'EducationGrades.name',
             'field' => 'education_grade',
             'type' => 'string',
-            'label' => __('Education Grades')
+            'label' => __('Education Grades'),
         ];
 
         $extraField[] = [
             'key' => 'InstitutionClasses.name',
             'field' => 'class_name',
             'type' => 'string',
-            'label' => __('Class')
+            'label' => __('Class'),
         ];
 
         $extraField[] = [
             'key' => 'AcademicPeriods.name',
             'field' => 'academic_period',
             'type' => 'string',
-            'label' => __('Academic Period')
+            'label' => __('Academic Period'),
         ];
 
         $extraField[] = [
             'key' => 'InstitutionStudents.start_date',
             'field' => 'start_date',
             'type' => 'date',
-            'label' => ''
+            'label' => '',
         ];
 
         $extraField[] = [
             'key' => 'InstitutionStudents.end_date',
             'field' => 'end_date',
             'type' => 'date',
-            'label' => ''
+            'label' => '',
         ];
 
         $fields->exchangeArray($extraField);
@@ -379,7 +374,7 @@ class StudentsTable extends ControllerActionTable
             $nationalities = $entity['user']['nationalities'];
             foreach ($nationalities as $nationality) {
                 if (isset($nationality['nationalities_look_up']['name'])) {
-                    $str .= $nationality['nationalities_look_up']['name'].', ';
+                    $str .= $nationality['nationalities_look_up']['name'] . ', ';
                 }
             }
         }
@@ -396,7 +391,7 @@ class StudentsTable extends ControllerActionTable
         ($entity->student_middle_name) ? $studentName[] = $entity->student_middle_name : '';
         ($entity->student_third_name) ? $studentName[] = $entity->student_third_name : '';
         ($entity->student_last_name) ? $studentName[] = $entity->student_last_name : '';
-        
+
         return implode(' ', $studentName);
     }
 
@@ -407,7 +402,7 @@ class StudentsTable extends ControllerActionTable
         $options = array_merge($options, $newOptions);
 
         // targetInstitutionId is used to determine the error message, whether it is enrolled in 'this' or 'other' institution
-        $targetInstitutionId = (array_key_exists('targetInstitutionId', $options))? $options['targetInstitutionId']: null;
+        $targetInstitutionId = (array_key_exists('targetInstitutionId', $options)) ? $options['targetInstitutionId'] : null;
 
         $enrolledInstitutionIds = $this->enrolledInAnyInstitution($studentId, $systemId, $options);
 
@@ -428,7 +423,7 @@ class StudentsTable extends ControllerActionTable
     {
         $newOptions['select'] = ['institution_id', 'education_grade_id'];
         $options = array_merge($options, $newOptions);
-        $getInstitutions = (array_key_exists('getInstitutions', $options))? $options['getInstitutions']: false;
+        $getInstitutions = (array_key_exists('getInstitutions', $options)) ? $options['getInstitutions'] : false;
 
         $EducationGradesTable = TableRegistry::get('Education.EducationGrades');
 
@@ -466,7 +461,7 @@ class StudentsTable extends ControllerActionTable
 
         $conditions = [
             $this->aliasField('student_id') => $studentId,
-            $this->aliasField('student_status_id') => $status
+            $this->aliasField('student_status_id') => $status,
         ];
 
         if (array_key_exists('excludeInstitutions', $options) && !empty($options['excludeInstitutions'])) {
@@ -496,7 +491,7 @@ class StudentsTable extends ControllerActionTable
                 [
                     $ClassStudents->aliasField('student_id = ') . $this->aliasField('student_id'),
                     $ClassStudents->aliasField('education_grade_id = ') . $this->aliasField('education_grade_id'),
-                    $ClassStudents->aliasField('student_status_id = ') . $this->aliasField('student_status_id')
+                    $ClassStudents->aliasField('student_status_id = ') . $this->aliasField('student_status_id'),
                 ]
             )
             ->leftJoin(
@@ -504,7 +499,7 @@ class StudentsTable extends ControllerActionTable
                 [
                     $Classes->aliasField('id = ') . $ClassStudents->aliasField('institution_class_id'),
                     $Classes->aliasField('academic_period_id') => $periodId,
-                    $Classes->aliasField('institution_id') => $institutionId
+                    $Classes->aliasField('institution_id') => $institutionId,
                 ]
             );
     }
@@ -523,12 +518,12 @@ class StudentsTable extends ControllerActionTable
                 $this->Users->aliasField('middle_name'),
                 $this->Users->aliasField('third_name'),
                 $this->Users->aliasField('last_name'),
-                $this->Users->aliasField('preferred_name')
+                $this->Users->aliasField('preferred_name'),
             ])
             ->contain($this->Users->alias())
             ->where([
                 $this->aliasField('institution_id') => $institutionId,
-                $this->aliasField('academic_period_id') => $academicPeriodId
+                $this->aliasField('academic_period_id') => $academicPeriodId,
             ])
             ->formatResults(function (ResultSetInterface $results) {
                 $returnResult = [];
@@ -546,6 +541,7 @@ class StudentsTable extends ControllerActionTable
     public function beforeAction(Event $event, ArrayObject $extra)
     {
         $this->field('previous_institution_student_id', ['type' => 'hidden']);
+        $this->field('admission_id', ['type' => 'string', 'attr' => ['label' => 'Admission No']]);
     }
 
     public function beforeDelete(Event $event, Entity $entity)
@@ -566,6 +562,8 @@ class StudentsTable extends ControllerActionTable
         $this->field('academic_period_id', ['visible' => false]);
         $this->field('class', ['after' => 'education_grade_id']);
         $this->field('student_status_id', ['after' => 'class']);
+        $this->field('admission_id', ['type' => 'string']);
+        $this->field('admission_id', ['after' => 'student_status_id']);
         $this->fields['start_date']['visible'] = false;
         $this->fields['end_date']['visible'] = false;
         $this->fields['class']['sort'] = ['field' => 'InstitutionClasses.name'];
@@ -582,7 +580,7 @@ class StudentsTable extends ControllerActionTable
             self::PENDING_ADMISSION => 'StudentAdmission',
             self::PENDING_TRANSFERIN => 'StudentTransferIn',
             self::PENDING_TRANSFEROUT => 'StudentTransferOut',
-            self::PENDING_WITHDRAW => 'StudentWithdraw'
+            self::PENDING_WITHDRAW => 'StudentWithdraw',
         ];
 
         if (array_key_exists($selectedStatus, $pendingStatuses)) {
@@ -597,7 +595,7 @@ class StudentsTable extends ControllerActionTable
             'class' => 'btn btn-xs btn-default icon-big',
             'data-toggle' => 'tooltip',
             'data-placement' => 'bottom',
-            'escape' => false
+            'escape' => false,
         ];
         $buttons = $extra['indexButtons'];
 
@@ -606,20 +604,20 @@ class StudentsTable extends ControllerActionTable
                 'permission' => ['Institutions', 'Promotion', 'add'],
                 'action' => 'Promotion',
                 'icon' => '<i class="fa kd-graduate"></i>',
-                'title' => __('Promotion / Graduation')
+                'title' => __('Promotion / Graduation'),
             ],
             'transfer' => [
                 'permission' => ['Institutions', 'Transfer', 'add'],
                 'action' => 'Transfer',
                 'icon' => '<i class="fa kd-transfer"></i>',
-                'title' => __('Transfer')
+                'title' => __('Transfer'),
             ],
             'undo' => [
                 'permission' => ['Institutions', 'Undo', 'add'],
                 'action' => 'Undo',
                 'icon' => '<i class="fa kd-undo"></i>',
-                'title' => __('Undo')
-            ]
+                'title' => __('Undo'),
+            ],
         ];
 
         if (Configure::read('schoolMode')) {
@@ -631,7 +629,7 @@ class StudentsTable extends ControllerActionTable
                 $button = [
                     'type' => 'button',
                     'attr' => $btnAttr,
-                    'url' => [0 => 'add']
+                    'url' => [0 => 'add'],
                 ];
                 $button['url']['action'] = $attr['action'];
                 $button['attr']['title'] = $attr['title'];
@@ -671,12 +669,12 @@ class StudentsTable extends ControllerActionTable
 
         $educationGradesOptions = $InstitutionEducationGrades
             ->find('list', [
-                    'keyField' => 'EducationGrades.id',
-                    'valueField' => 'EducationGrades.name'
-                ])
+                'keyField' => 'EducationGrades.id',
+                'valueField' => 'EducationGrades.name',
+            ])
             ->select([
-                    'EducationGrades.id', 'EducationGrades.name'
-                ])
+                'EducationGrades.id', 'EducationGrades.name',
+            ])
             ->contain(['EducationGrades'])
             ->where(['institution_id' => $institutionId])
             ->group('education_grade_id')
@@ -699,8 +697,8 @@ class StudentsTable extends ControllerActionTable
         $this->advancedSelectOptions($academicPeriodOptions, $selectedAcademicPeriod, [
             'message' => '{{label}} - ' . $this->getMessage($this->aliasField('noStudents')),
             'callable' => function ($id) use ($studentTable, $institutionId) {
-                return $studentTable->find()->where(['institution_id'=>$institutionId, 'academic_period_id'=>$id])->count();
-            }
+                return $studentTable->find()->where(['institution_id' => $institutionId, 'academic_period_id' => $id])->count();
+            },
         ]);
 
         $request->query['academic_period_id'] = $selectedAcademicPeriod;
@@ -716,16 +714,15 @@ class StudentsTable extends ControllerActionTable
             $query->where([$this->aliasField('education_grade_id') => $selectedEducationGrades]);
         }
 
-	$staffId = $this->Auth->user('id');
+        $staffId = $this->Auth->user('id');
         $query->where([$this->aliasField('academic_period_id') => $selectedAcademicPeriod]);
 
-	//$query->where([$this->aliasField('staff_id') => $staffId]);
+        //$query->where([$this->aliasField('staff_id') => $staffId]);
         // Start: sort by class column
         $session = $request->session();
         $institutionId = $session->read('Institution.Institutions.id');
 
-	
-	$query->find('withClass', ['institution_id' => $institutionId, 'period_id' => $selectedAcademicPeriod]);
+        $query->find('withClass', ['institution_id' => $institutionId, 'period_id' => $selectedAcademicPeriod]);
 
         $sortList = ['InstitutionClasses.name'];
         if (array_key_exists('sortWhitelist', $extra['options'])) {
@@ -747,16 +744,17 @@ class StudentsTable extends ControllerActionTable
         //select specific field that is used on the page, photo_content is generated by LazyEagerLoader (javascript)
         //the rest of fields are called by onGet function.
         $query->select([
-                $this->aliasField('id'),
-                'Users.id',
-                'Users.openemis_no',
-                'Users.first_name',
-                'Users.middle_name',
-                'Users.third_name',
-                'Users.last_name',
-                'Users.preferred_name',
-                'student_status_id'
-            ]);
+            $this->aliasField('id'),
+            'Users.id',
+            'Users.openemis_no',
+            'Users.first_name',
+            'Users.middle_name',
+            'Users.third_name',
+            'Users.last_name',
+            'Users.preferred_name',
+            'student_status_id',
+            'admission_id',
+        ]);
 
         // POCOR-2869 implemented to hide the retrieval of records from another school resulting in duplication - proper fix will be done in SOJOR-437
         $query->group([$this->aliasField('student_id'), $this->aliasField('academic_period_id'), $this->aliasField('institution_id'), $this->aliasField('education_grade_id'), $this->aliasField('student_status_id')]);
@@ -792,7 +790,7 @@ class StudentsTable extends ControllerActionTable
             $this->field('reason', ['type' => 'custom_status_reason']);
             $this->field('comment');
             $this->setFieldOrder([
-                'photo_content', 'openemis_no', 'student_id', 'student_status_id', 'reason', 'comment'
+                'photo_content', 'openemis_no', 'student_id', 'student_status_id', 'reason', 'comment',
             ]);
         } elseif ($code != 'CURRENT') { // only enrolled students can be edited or removed
             $this->toggle('remove', false);
@@ -817,12 +815,12 @@ class StudentsTable extends ControllerActionTable
             $event->stopPropagation();
             $urlParams = $this->url('view');
             return $this->controller->redirect($urlParams);
-        // End PHPOE-1897
+            // End PHPOE-1897
         } else {
             $this->field('student_id', [
                 'type' => 'readonly',
                 'order' => 10,
-                'attr' => ['value' => $entity->user->name_with_id]
+                'attr' => ['value' => $entity->user->name_with_id],
             ]);
 
             $this->field('education_grade_id', ['type' => 'readonly', 'attr' => ['value' => $entity->education_grade->programme_grade_name]]);
@@ -832,7 +830,7 @@ class StudentsTable extends ControllerActionTable
             $period = $entity->academic_period;
             $dateOptions = [
                 'startDate' => $period->start_date->format('d-m-Y'),
-                'endDate' => $period->end_date->format('d-m-Y')
+                'endDate' => $period->end_date->format('d-m-Y'),
             ];
 
             $this->fields['start_date']['date_options'] = $dateOptions;
@@ -872,7 +870,7 @@ class StudentsTable extends ControllerActionTable
 
             $indexDashboard = 'dashboard';
 
-            $indexElements = (isset($this->controller->viewVars['indexElements']))?$this->controller->viewVars['indexElements'] :[] ;
+            $indexElements = (isset($this->controller->viewVars['indexElements'])) ? $this->controller->viewVars['indexElements'] : [];
 
             $indexElements[] = ['name' => 'Institution.Students/controls', 'data' => [], 'options' => [], 'order' => 0];
 
@@ -885,14 +883,14 @@ class StudentsTable extends ControllerActionTable
                         'modelArray' => $InstitutionArray,
                     ],
                     'options' => [],
-                    'order' => 2
+                    'order' => 2,
                 ];
             }
 
             foreach ($indexElements as $key => $value) {
-                if ($value['name']=='OpenEmis.ControllerAction/index') {
+                if ($value['name'] == 'OpenEmis.ControllerAction/index') {
                     $indexElements[$key]['order'] = 3;
-                } elseif ($value['name']=='OpenEmis.pagination') {
+                } elseif ($value['name'] == 'OpenEmis.pagination') {
                     $indexElements[$key]['order'] = 4;
                 }
             }
@@ -910,23 +908,23 @@ class StudentsTable extends ControllerActionTable
             TableRegistry::get('Institution.InstitutionClassStudents'),
             TableRegistry::get('Institution.InstitutionSubjectStudents'),
             TableRegistry::get('Institution.StudentUser'),
-            $this->Users
+            $this->Users,
         ];
         $this->dispatchEventToModels('Model.Students.afterSave', [$entity], $this, $listeners);
 
         //if new record has no previous_institution_student_id value yet, then try to update it.
         if (!$entity->has('previous_institution_student_id')) {
             $prevInstitutionStudent = $this
-                                ->find()
-                                ->where([
-                                    $this->aliasField('student_id') => $entity->student_id,
-                                    $this->aliasField('id <> ') => $entity->id,
-                                ])
-                                ->order([
-                                    'created' => 'desc',
-                                    'start_date' => 'desc'
-                                ])
-                                ->first();
+                ->find()
+                ->where([
+                    $this->aliasField('student_id') => $entity->student_id,
+                    $this->aliasField('id <> ') => $entity->id,
+                ])
+                ->order([
+                    'created' => 'desc',
+                    'start_date' => 'desc',
+                ])
+                ->first();
 
             if ($prevInstitutionStudent) { //if has previous record.
                 $this->updateAll(
@@ -991,7 +989,7 @@ class StudentsTable extends ControllerActionTable
                             $StudentTransfersTable->aliasField('previous_institution_id') => $institutionId,
                             $StudentTransfersTable->aliasField('previous_education_grade_id') => $educationGradeId,
                             $StudentTransfersTable->aliasField('previous_academic_period_id') => $academicPeriodId,
-                            $StudentTransfersTable->aliasField('status_id IN ') => $approvedStatuses
+                            $StudentTransfersTable->aliasField('status_id IN ') => $approvedStatuses,
                         ])
                         ->first();
 
@@ -1012,7 +1010,7 @@ class StudentsTable extends ControllerActionTable
                             $WithdrawRequestsTable->aliasField('academic_period_id') => $academicPeriodId,
                             $WithdrawRequestsTable->aliasField('institution_id') => $institutionId,
                             $WithdrawRequestsTable->aliasField('education_grade_id') => $educationGradeId,
-                            $WithdrawRequestsTable->aliasField('status_id').' IN ' => $approvedStatus,
+                            $WithdrawRequestsTable->aliasField('status_id') . ' IN ' => $approvedStatus,
                         ])
                         ->first();
 
@@ -1056,14 +1054,14 @@ class StudentsTable extends ControllerActionTable
                     'plugin' => 'Institution',
                     'institutionId' => $institutionId,
                     'controller' => 'StudentHistories',
-                    'action' => 'index'
+                    'action' => 'index',
                 ];
 
                 $buttons['history'] = $buttons['view'];
                 $buttons['history']['label'] = $icon . __('History');
                 $buttons['history']['url'] = $this->ControllerAction->setQueryString($url, [
                     'security_user_id' => $entity->_matchingData['Users']->id,
-                    'user_type' => 'Student'
+                    'user_type' => 'Student',
                 ]);
             }
             // end POCOR-3125 history button permission
@@ -1101,7 +1099,7 @@ class StudentsTable extends ControllerActionTable
             ->find()
             ->where([$this->aliasField('student_id') => $studentId,
                 $this->aliasField('institution_id') => $institutionId,
-                $this->aliasField('student_status_id') => $statuses['CURRENT']
+                $this->aliasField('student_status_id') => $statuses['CURRENT'],
             ])
             ->count();
         return $status > 0;
@@ -1109,15 +1107,15 @@ class StudentsTable extends ControllerActionTable
 
     public function checkIfCanTransfer($student, $institutionId)
     {
-        $gradeId = ($student->has('education_grade_id'))? $student->education_grade_id: null;
-        $studentId = ($student->has('student_id'))? $student->student_id: null;
+        $gradeId = ($student->has('education_grade_id')) ? $student->education_grade_id : null;
+        $studentId = ($student->has('student_id')) ? $student->student_id : null;
         if (empty($gradeId) || empty($studentId)) {
             // missing critical parameter - grade, student_id - cant transfer
             return false;
         }
 
         // check if student exists in current year
-        $academicPeriodId = ($student->has('academic_period_id'))? $student->academic_period_id: null;
+        $academicPeriodId = ($student->has('academic_period_id')) ? $student->academic_period_id : null;
         $currentAcademicPeriod = $this->AcademicPeriods->getCurrent();
         if ($academicPeriodId != $currentAcademicPeriod) {
             return false;
@@ -1155,12 +1153,12 @@ class StudentsTable extends ControllerActionTable
                 ->find('list', [
                     'keyField' => 'id',
 
-                    'valueField' => 'programme_grade_name'
+                    'valueField' => 'programme_grade_name',
                 ])
                 ->find('visible')
                 ->where([
-                    $this->EducationGrades->aliasField('order').' > ' => $studentEducationGrade->order,
-                    $this->EducationGrades->aliasField('education_programme_id') => $studentEducationGrade->education_programme_id
+                    $this->EducationGrades->aliasField('order') . ' > ' => $studentEducationGrade->order,
+                    $this->EducationGrades->aliasField('education_programme_id') => $studentEducationGrade->education_programme_id,
                 ])
                 ->toArray();
 
@@ -1176,21 +1174,21 @@ class StudentsTable extends ControllerActionTable
 
             $advancedGradeOptionsLeft = $InstitutionEducationGrades
                 ->find('list', [
-                        'keyField' => 'EducationGrades.id',
-                        'valueField' => 'EducationGrades.name'
-                    ])
+                    'keyField' => 'EducationGrades.id',
+                    'valueField' => 'EducationGrades.name',
+                ])
                 ->select([
-                        'EducationGrades.id', 'EducationGrades.name', 'EducationGrades.order'
-                    ])
+                    'EducationGrades.id', 'EducationGrades.name', 'EducationGrades.order',
+                ])
                 ->contain(['EducationGrades'])
                 ->where(['EducationGrades.order > ' => $studentEducationGradeOrder])
                 ->where(['institution_id' => $institutionId])
                 ->group('education_grade_id')
                 ->toArray()
-                ;
+            ;
 
             // if there are more advanced grades available to the student, the student cannot transfer
-            if (count(array_intersect_key($moreAdvancedEducationGrades, $advancedGradeOptionsLeft))>0) {
+            if (count(array_intersect_key($moreAdvancedEducationGrades, $advancedGradeOptionsLeft)) > 0) {
                 $checkIfCanTransfer = false;
             }
         }
@@ -1206,7 +1204,7 @@ class StudentsTable extends ControllerActionTable
             ->matching('Users.Genders')
             ->select([
                 'count' => $InstitutionRecords->func()->count('DISTINCT ' . $this->aliasField('student_id')),
-                'gender' => 'Genders.name'
+                'gender' => 'Genders.name',
             ])
             ->group(['gender'], true);
 
@@ -1230,9 +1228,9 @@ class StudentsTable extends ControllerActionTable
             ->select([
                 'age' => $InstitutionRecords->func()->dateDiff([
                     $InstitutionRecords->func()->now(),
-                    'Users.date_of_birth' => 'literal'
+                    'Users.date_of_birth' => 'literal',
                 ]),
-                'student' => $this->aliasField('student_id')
+                'student' => $this->aliasField('student_id'),
             ])
             ->distinct(['student'])
             ->order('age');
@@ -1244,7 +1242,7 @@ class StudentsTable extends ControllerActionTable
         // (Logic to be reviewed)
         // Calculate the age taking account to the average of leap years
         foreach ($InstitutionStudentCount as $val) {
-            $convertAge[] = floor($val['age']/365.25);
+            $convertAge[] = floor($val['age'] / 365.25);
         }
         // Count and sort the age
         $result = [];
@@ -1253,7 +1251,7 @@ class StudentsTable extends ControllerActionTable
             if ($prevValue['age'] != $val) {
                 unset($prevValue);
                 $prevValue = ['age' => $val, 'count' => 0];
-                $result[] =& $prevValue;
+                $result[] = &$prevValue;
             }
             $prevValue['count']++;
         }
@@ -1262,7 +1260,7 @@ class StudentsTable extends ControllerActionTable
         $dataSet = [];
         foreach ($result as $value) {
             //Compile the dataset
-            $dataSet[] = [__('Age').' '.$value['age'], $value['count']];
+            $dataSet[] = [__('Age') . ' ' . $value['age'], $value['count']];
         }
         $params['dataSet'] = $dataSet;
         unset($InstitutionRecords);
@@ -1277,10 +1275,10 @@ class StudentsTable extends ControllerActionTable
         $studentByGrades = $InstitutionRecords
             ->select([
                 'grade' => 'EducationGrades.name',
-                'count' => $query->func()->count('DISTINCT '.$this->aliasField('student_id'))
+                'count' => $query->func()->count('DISTINCT ' . $this->aliasField('student_id')),
             ])
             ->contain([
-                'EducationGrades'
+                'EducationGrades',
             ])
             ->group([$this->aliasField('education_grade_id')], true)
             ->toArray();
@@ -1300,7 +1298,7 @@ class StudentsTable extends ControllerActionTable
         $conditions = isset($params['conditions']) ? $params['conditions'] : [];
         $_conditions = [];
         foreach ($conditions as $key => $value) {
-            $_conditions[$this->alias().'.'.$key] = $value;
+            $_conditions[$this->alias() . '.' . $key] = $value;
         }
 
         $AcademicPeriod = $this->AcademicPeriods;
@@ -1340,23 +1338,23 @@ class StudentsTable extends ControllerActionTable
                 $queryCondition = array_merge(['Genders.id' => $genderId, 'AcademicPeriods.id' => $periodId], $_conditions);
 
                 $studentsByYear = $this
-                ->find('list', [
-                    'groupField' => 'gender_name',
-                    'keyField' => 'period_name',
-                    'valueField' => 'total'
-                ])
-                ->matching('Users.Genders')
-                ->matching('AcademicPeriods')
-                ->select([
-                    'gender_name' => 'Genders.name',
-                    'period_name' => 'AcademicPeriods.name',
-                    'total' => $this->find()->func()->count('DISTINCT '.$this->aliasField('student_id'))
-                ])
-                ->where($queryCondition)
-                ->group(['gender_name', $this->aliasField('academic_period_id')])
-                ->order('AcademicPeriods.order DESC')
-                ->hydrate(false)
-                ->toArray()
+                    ->find('list', [
+                        'groupField' => 'gender_name',
+                        'keyField' => 'period_name',
+                        'valueField' => 'total',
+                    ])
+                    ->matching('Users.Genders')
+                    ->matching('AcademicPeriods')
+                    ->select([
+                        'gender_name' => 'Genders.name',
+                        'period_name' => 'AcademicPeriods.name',
+                        'total' => $this->find()->func()->count('DISTINCT ' . $this->aliasField('student_id')),
+                    ])
+                    ->where($queryCondition)
+                    ->group(['gender_name', $this->aliasField('academic_period_id')])
+                    ->order('AcademicPeriods.order DESC')
+                    ->hydrate(false)
+                    ->toArray()
                 ;
 
                 if (!empty($studentsByYear)) {
@@ -1376,22 +1374,22 @@ class StudentsTable extends ControllerActionTable
         $conditions = isset($params['conditions']) ? $params['conditions'] : [];
         $_conditions = [];
         foreach ($conditions as $key => $value) {
-            $_conditions[$this->alias().'.'.$key] = $value;
+            $_conditions[$this->alias() . '.' . $key] = $value;
         }
 
         $AcademicPeriod = $this->AcademicPeriods;
         $currentYearId = $AcademicPeriod->getCurrent();
 
         if (!empty($currentYearId)) {
-            $currentYear = $AcademicPeriod->get($currentYearId, ['fields'=>'name'])->name;
+            $currentYear = $AcademicPeriod->get($currentYearId, ['fields' => 'name'])->name;
         } else {
             $currentYear = __('Not Defined');
         }
 
         $studentsByGradeConditions = [
             $this->aliasField('academic_period_id') => $currentYearId,
-            $this->aliasField('education_grade_id').' IS NOT NULL',
-            'Genders.name IS NOT NULL'
+            $this->aliasField('education_grade_id') . ' IS NOT NULL',
+            'Genders.name IS NOT NULL',
         ];
         $studentsByGradeConditions = array_merge($studentsByGradeConditions, $_conditions);
         $query = $this->find();
@@ -1405,24 +1403,23 @@ class StudentsTable extends ControllerActionTable
                 'EducationStages.order',
                 'Users.id',
                 'Genders.name',
-                'total' => $query->func()->count($this->aliasField('id'))
+                'total' => $query->func()->count($this->aliasField('id')),
             ])
             ->contain([
                 'EducationGrades.EducationStages',
                 'EducationGrades.EducationProgrammes.EducationCycles.EducationLevels',
-                'Users.Genders'
+                'Users.Genders',
             ])
             ->where($studentsByGradeConditions)
             ->group([
                 'EducationGrades.education_stage_id',
-                'Genders.name'
+                'Genders.name',
             ])
             ->order(
                 ['EducationLevels.order', 'EducationCycles.order', 'EducationProgrammes.order', 'EducationStages.order']
             )
             ->toArray()
-            ;
-
+        ;
 
         $grades = [];
 
@@ -1467,10 +1464,10 @@ class StudentsTable extends ControllerActionTable
             ->where([
                 $this->aliasField('education_grade_id') => $educationGradeId,
                 $this->aliasField('student_id') => $studentId,
-                $this->aliasField('student_status_id').' IN ' => [$statuses['GRADUATED'], $statuses['PROMOTED']]
+                $this->aliasField('student_status_id') . ' IN ' => [$statuses['GRADUATED'], $statuses['PROMOTED']],
             ])
             ->count()
-            ;
+        ;
 
         return !($completedGradeCount == 0);
     }
@@ -1493,7 +1490,7 @@ class StudentsTable extends ControllerActionTable
             case 'StatusRepeated':
                 $statusRepeatedResults = $this->find()
                     ->where([
-                        'student_id' => $studentId
+                        'student_id' => $studentId,
                     ])
                     ->all();
 
@@ -1515,7 +1512,7 @@ class StudentsTable extends ControllerActionTable
                     ->contain(['Users', 'EducationGrades'])
                     ->where([
                         'student_id' => $studentId,
-                        'student_status_id' => 1,  // student status current
+                        'student_status_id' => 1, // student status current
                     ])
                     ->first();
 
@@ -1538,7 +1535,7 @@ class StudentsTable extends ControllerActionTable
                     ->contain(['Users', 'EducationGrades'])
                     ->where([
                         'student_id' => $studentId,
-                        'student_status_id' => 1,  // student status current
+                        'student_status_id' => 1, // student status current
                     ])
                     ->first();
 
@@ -1556,7 +1553,7 @@ class StudentsTable extends ControllerActionTable
                     ->contain(['Users', 'EducationGrades'])
                     ->where([
                         'student_id' => $studentId,
-                        'student_status_id' => 1,  // student status current
+                        'student_status_id' => 1, // student status current
                     ])
                     ->first();
 
@@ -1586,7 +1583,7 @@ class StudentsTable extends ControllerActionTable
                     ->contain(['StudentStatuses', 'AcademicPeriods'])
                     ->where([
                         'student_id' => $studentId,
-                        'student_status_id' => $statusId
+                        'student_status_id' => $statusId,
                     ])
                     ->all();
 
@@ -1604,7 +1601,7 @@ class StudentsTable extends ControllerActionTable
                     ->contain(['Users', 'EducationGrades'])
                     ->where([
                         'student_id' => $studentId,
-                        'student_status_id' => 1 // status enrolled
+                        'student_status_id' => 1, // status enrolled
                     ])
                     ->all();
 
@@ -1624,7 +1621,7 @@ class StudentsTable extends ControllerActionTable
                     ->contain(['Users', 'EducationGrades'])
                     ->where([
                         'student_id' => $studentId,
-                        'student_status_id' => 1 // status enrolled
+                        'student_status_id' => 1, // status enrolled
                     ])
                     ->all();
 
@@ -1650,7 +1647,7 @@ class StudentsTable extends ControllerActionTable
                         $referenceDetails[$obj->guardian_id] = $guardianName . ' (' . __($guardianRelation) . ')';
                     }
                 } else {
-                    $referenceDetails[] =  __('No Guardian');
+                    $referenceDetails[] = __('No Guardian');
                 }
 
                 break;
@@ -1671,7 +1668,7 @@ class StudentsTable extends ControllerActionTable
         $record = $this->find()
             ->where([
                 $this->aliasField('student_id') => $studentId,
-                $this->aliasField('academic_period_id') => $academicPeriodId
+                $this->aliasField('academic_period_id') => $academicPeriodId,
             ])
             ->order([$this->aliasField('start_date') => 'DESC'])
             ->all();

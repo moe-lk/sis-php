@@ -1,20 +1,20 @@
 <?php
 namespace Institution\Model\Table;
 
+use App\Model\Table\ControllerActionTable;
 use ArrayObject;
-use Cake\ORM\TableRegistry;
-use Cake\ORM\Query;
-use Cake\ORM\Entity;
+use Cake\Controller\Component;
 use Cake\Datasource\ResultSetInterface;
 use Cake\Event\Event;
-use Cake\Validation\Validator;
-use Cake\Network\Request;
-use Cake\Controller\Component;
 use Cake\I18n\Time;
+use Cake\Log\Log;
+use Cake\Network\Request;
+use Cake\ORM\Entity;
+use Cake\ORM\Query;
+use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
-use App\Model\Table\ControllerActionTable;
-use Cake\Log\Log;
+use Cake\Validation\Validator;
 
 class StudentAdmissionTable extends ControllerActionTable
 {
@@ -29,15 +29,15 @@ class StudentAdmissionTable extends ControllerActionTable
             'text' => 'Approval of Student Admission',
             'description' => 'Performing this action will enroll the student into the institution.',
             'method' => 'OnApprove',
-            'unique' => true
+            'unique' => true,
         ],
         [
             'value' => 'Workflow.onCancel',
             'text' => 'Cancellation of Student Admission',
             'description' => 'Performing this action will remove the student from the institution.',
             'method' => 'onCancel',
-            'unique' => true
-        ]
+            'unique' => true,
+        ],
     ];
 
     public function initialize(array $config)
@@ -58,7 +58,7 @@ class StudentAdmissionTable extends ControllerActionTable
         $this->addBehavior('User.AdvancedNameSearch');
         $this->addBehavior('Restful.RestfulAccessControl', [
             'Dashboard' => ['index'],
-            'Students' => ['index', 'add']
+            'Students' => ['index', 'add'],
         ]);
 
         $this->toggle('add', false);
@@ -71,61 +71,73 @@ class StudentAdmissionTable extends ControllerActionTable
         $validator
             ->add('start_date', [
                 'ruleCompareDate' => [
-                    'rule' => ['compareDate', 'end_date', false]
+                    'rule' => ['compareDate', 'end_date', false],
                 ],
                 'ruleCheckProgrammeEndDateAgainstStudentStartDate' => [
-                    'rule' => ['checkProgrammeEndDateAgainstStudentStartDate', 'start_date']
-                ]
+                    'rule' => ['checkProgrammeEndDateAgainstStudentStartDate', 'start_date'],
+                ],
             ])
             ->add('student_id', [
                 'ruleCheckPendingAdmissionExist' => [
                     'rule' => ['checkPendingAdmissionExist'],
                     'on' => 'create',
-                    'last' => true
+                    'last' => true,
                 ],
                 'ruleStudentNotEnrolledInAnyInstitutionAndSameEducationSystem' => [
                     'rule' => ['studentNotEnrolledInAnyInstitutionAndSameEducationSystem', []],
                     'on' => 'create',
-                    'last' => true
+                    'last' => true,
                 ],
                 'ruleStudentNotCompletedGrade' => [
                     'rule' => ['studentNotCompletedGrade', []],
                     'on' => 'create',
-                    'last' => true
+                    'last' => true,
                 ],
                 'ruleCheckAdmissionAgeWithEducationCycleGrade' => [
                     'rule' => ['checkAdmissionAgeWithEducationCycleGrade'],
                     'on' => 'create',
-                    'last' => true
-                ]
+                    'last' => true,
+                ],
             ])
             ->add('date_of_birth', 'ruleCheckAdmissionAgeWithEducationCycleGrade', [
                 'rule' => ['checkAdmissionAgeWithEducationCycleGrade'],
-                'on' => 'create'
+                'on' => 'create',
             ])
 
             ->add('area_administrative_province', 'ruleNotBlank', [
                 'rule' => ['notBlank'],
-                'on' => 'create'
+                'on' => 'create',
             ])
             ->add('area_administrative_district', 'ruleNotBlank', [
                 'rule' => ['notBlank'],
-                'on' => 'create'
+                'on' => 'create',
             ])
             ->add('area_administrative_id', 'ruleNotBlank', [
                 'rule' => ['notBlank'],
-                'on' => 'create'
+                'on' => 'create',
             ])
+            ->add('admission_id', [
+              'minLength' => [
+                'rule' => ['minLength', 4],
+                'message' => 'Mobile number must be of 4 characters long',
+              ],
+              'maxLength' => [
+                'rule' => ['maxLength', 5],
+                'message' => 'Mobile number must be of 5 characters long',
+              ]
+            ])
+            ->numeric('admission_id')
+            ->notEmpty('admission_id')
             ->add('gender_id', 'ruleCompareStudentGenderWithInstitution', [
                 'rule' => ['compareStudentGenderWithInstitution'],
-                'on' => 'create'
+                'on' => 'create',
             ])
             ->add('education_grade_id', 'ruleCheckProgrammeEndDate', [
-                'rule' => ['checkProgrammeEndDate', 'education_grade_id']
+                'rule' => ['checkProgrammeEndDate', 'education_grade_id'],
             ])
             ->allowEmpty('institution_class_id')
             ->add('institution_class_id', 'ruleClassMaxLimit', [
-                'rule' => ['checkInstitutionClassMaxLimit']
+                'rule' => ['checkInstitutionClassMaxLimit'],
             ]);
 
         return $validator;
@@ -173,7 +185,7 @@ class StudentAdmissionTable extends ControllerActionTable
                 $Students->aliasField('student_id') => $entity->student_id,
                 $Students->aliasField('academic_period_id') => $entity->academic_period_id,
                 $Students->aliasField('education_grade_id') => $entity->education_grade_id,
-                $Students->aliasField('student_status_id') => $statuses['CURRENT']
+                $Students->aliasField('student_status_id') => $statuses['CURRENT'],
             ])
             ->first();
 
@@ -192,11 +204,12 @@ class StudentAdmissionTable extends ControllerActionTable
         $incomingStudent = [
             'student_status_id' => $statuses['CURRENT'],
             'student_id' => $entity->student_id,
+            'admission_id' => $entity->admission_id,
             'education_grade_id' => $entity->education_grade_id,
             'academic_period_id' => $entity->academic_period_id,
             'start_date' => $entity->start_date,
             'end_date' => $entity->end_date,
-            'institution_id' => $entity->institution_id
+            'institution_id' => $entity->institution_id,
         ];
         if (!empty($entity->institution_class_id)) {
             $incomingStudent['class'] = $entity->institution_class_id;
@@ -237,7 +250,7 @@ class StudentAdmissionTable extends ControllerActionTable
                         })
                         ->where([
                             $this->aliasField('student_id') => $student->student_id,
-                            $this->aliasField('education_grade_id IN') => $educationGradesToUpdate
+                            $this->aliasField('education_grade_id IN') => $educationGradesToUpdate,
                         ])
                         ->toArray();
 
@@ -261,7 +274,7 @@ class StudentAdmissionTable extends ControllerActionTable
                                 'workflow_model_id' => $workflowEntity->workflow_model_id,
                                 'model_reference' => $entity->id,
                                 'created_user_id' => 1,
-                                'created' => new Time('NOW')
+                                'created' => new Time('NOW'),
                             ];
                             $transitionEntity = $WorkflowTransitions->newEntity($transition);
                             $WorkflowTransitions->save($transitionEntity);
@@ -304,7 +317,7 @@ class StudentAdmissionTable extends ControllerActionTable
             })
             ->where([
                 $StudentTransfers->aliasField('student_id') => $studentId,
-                $StudentTransfers->aliasField('previous_institution_id') => $institutionId
+                $StudentTransfers->aliasField('previous_institution_id') => $institutionId,
             ])
             ->toArray();
 
@@ -353,14 +366,14 @@ class StudentAdmissionTable extends ControllerActionTable
                 'class' => 'btn btn-xs btn-default',
                 'data-toggle' => 'tooltip',
                 'data-placement' => 'bottom',
-                'escape' => false
+                'escape' => false,
             ];
             $toolbarButtons['back']['url'] = [
                 'plugin' => 'Institution',
                 'controller' => 'Institutions',
                 'institutionId' => $this->paramsEncode(['id' => $institutionId]),
                 'action' => 'Students',
-                0 => 'index'
+                0 => 'index',
             ];
 
         } elseif ($this->action == 'edit') {
@@ -378,7 +391,9 @@ class StudentAdmissionTable extends ControllerActionTable
         $this->field('comment', ['type' => 'hidden']);
         $this->field('start_date', ['type' => 'hidden']);
         $this->field('end_date', ['type' => 'hidden']);
-        $this->setFieldOrder(['status_id', 'assignee_id', 'student_id', 'academic_period_id', 'education_grade_id', 'institution_class_id']);
+        $this->field('admission_id', ['type' => 'string']);
+        $this->field('admission_id', ['after' => 'student_status_id']);
+        $this->setFieldOrder(['status_id', 'admission__id', 'assignee_id', 'student_id', 'academic_period_id', 'education_grade_id', 'institution_class_id']);
     }
 
     public function indexBeforeQuery(Event $event, Query $query, ArrayObject $extra)
@@ -397,10 +412,11 @@ class StudentAdmissionTable extends ControllerActionTable
         $this->field('institution_id', ['type' => 'readonly', 'attr' => ['value' => $this->Institutions->get($entity->institution_id)->code_name]]);
         $this->field('academic_period_id', ['type' => 'readonly', 'attr' => ['value' => $this->AcademicPeriods->get($entity->academic_period_id)->name]]);
         $this->field('education_grade_id', ['type' => 'readonly', 'attr' => ['value' => $this->EducationGrades->get($entity->education_grade_id)->programme_grade_name]]);
-        $this->field('is_attended_pre_school', ['type' => 'select', 'option' => ['No','Yes']]);
+        $this->field('is_attended_pre_school', ['type' => 'select', 'option' => ['No', 'Yes']]);
         $this->field('institution_class_id', ['entity' => $entity]);
         $this->field('start_date', ['entity' => $entity]);
         $this->field('end_date', ['entity' => $entity]);
+        $this->field('admission__id', ['type' => 'readonly']);
         $this->setFieldOrder(['student_id', 'academic_period_id', 'education_grade_id', 'institution_class_id', 'start_date', 'end_date', 'comment']);
     }
 
@@ -431,7 +447,7 @@ class StudentAdmissionTable extends ControllerActionTable
             $attr['date_options'] = [
                 'startDate' => $periodStartDate->format('d-m-Y'),
                 'endDate' => $periodEndDate->format('d-m-Y'),
-                'todayBtn' => false
+                'todayBtn' => false,
             ];
             return $attr;
         }
@@ -459,7 +475,7 @@ class StudentAdmissionTable extends ControllerActionTable
                 ->where([
                     $Classes->aliasField('institution_id') => $entity->institution_id,
                     $Classes->aliasField('academic_period_id') => $entity->academic_period_id,
-                    'ClassGrades.education_grade_id' => $entity->education_grade_id
+                    'ClassGrades.education_grade_id' => $entity->education_grade_id,
                 ])
                 ->toArray();
 
@@ -504,6 +520,7 @@ class StudentAdmissionTable extends ControllerActionTable
                     $prevStepEntity = $this->Statuses->get($entity->status_id);
 
                     // update status_id and assignee_id of admission record
+                    // $entity->admission_id =
                     $entity->status_id = $approvedStatusEntity->id;
                     $this->autoAssignAssignee($entity);
 
@@ -520,7 +537,7 @@ class StudentAdmissionTable extends ControllerActionTable
                             'workflow_model_id' => $workflowEntity->workflow_model_id,
                             'model_reference' => $entity->id,
                             'created_user_id' => 1,
-                            'created' => new Time('NOW')
+                            'created' => new Time('NOW'),
                         ];
 
                         $WorkflowTransitions = TableRegistry::get('Workflow.WorkflowTransitions');
@@ -561,7 +578,7 @@ class StudentAdmissionTable extends ControllerActionTable
                 $this->CreatedUser->aliasField('middle_name'),
                 $this->CreatedUser->aliasField('third_name'),
                 $this->CreatedUser->aliasField('last_name'),
-                $this->CreatedUser->aliasField('preferred_name')
+                $this->CreatedUser->aliasField('preferred_name'),
             ])
             ->contain([$this->Users->alias(), $this->Institutions->alias(), $this->CreatedUser->alias()])
             ->matching($this->Statuses->alias(), function ($q) use ($Statuses, $doneStatus) {
@@ -577,7 +594,7 @@ class StudentAdmissionTable extends ControllerActionTable
                         'action' => 'StudentAdmission',
                         'view',
                         $this->paramsEncode(['id' => $row->id]),
-                        'institution_id' => $row->institution_id
+                        'institution_id' => $row->institution_id,
                     ];
 
                     if (is_null($row->modified)) {

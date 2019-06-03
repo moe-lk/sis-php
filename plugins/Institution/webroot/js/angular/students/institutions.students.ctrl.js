@@ -696,7 +696,7 @@ function InstitutionStudentController($location, $q, $scope, $window, $filter, U
         return studentRecords;
     }
 
-    function insertStudentData(studentId, academicPeriodId, educationGradeId, classId, startDate, endDate, userRecord, isAttendedPreSchool) {
+    function insertStudentData(studentId, academicPeriodId, educationGradeId, classId, startDate, endDate, userRecord, isAttendedPreSchool,admission_id) {
         UtilsSvc.isAppendLoader(true);
         AlertSvc.reset($scope);
         var data = {
@@ -706,8 +706,10 @@ function InstitutionStudentController($location, $q, $scope, $window, $filter, U
             education_grade_id: educationGradeId,
             start_date: startDate,
             end_date: endDate,
-            institution_class_id: classId
+            institution_class_id: classId,
+            admission_id: admission_id
         };
+
 
 
         InstitutionsStudentsSvc.postEnrolledStudent(data)
@@ -745,6 +747,7 @@ function InstitutionStudentController($location, $q, $scope, $window, $filter, U
         StudentController.existingStudent = false;
         StudentController.selectedStudentData = {};
         StudentController.selectedStudentData.first_name = '';
+        StudentController.selectedStudentData.admission_id = '';
         StudentController.selectedStudentData.last_name = '';
         StudentController.selectedStudentData.date_of_birth = '';
         StudentController.initNationality();
@@ -994,6 +997,7 @@ function InstitutionStudentController($location, $q, $scope, $window, $filter, U
         var isAttendedPreSchool = (StudentController.isAttendedPreSchoolOptions.hasOwnProperty('selectedOption')) ? StudentController.isAttendedPreSchoolOptions.selectedOption.id : '';
         var academicPeriodId = (StudentController.academicPeriodOptions.hasOwnProperty('selectedOption')) ? StudentController.academicPeriodOptions.selectedOption.id : '';
         var educationGradeId = (StudentController.educationGradeOptions.hasOwnProperty('selectedOption')) ? StudentController.educationGradeOptions.selectedOption.education_grade_id : '';
+        var admissionNo = StudentController.selectedStudentData.admission_id;
         if (educationGradeId == undefined) {
             educationGradeId = '';
         }
@@ -1016,10 +1020,10 @@ function InstitutionStudentController($location, $q, $scope, $window, $filter, U
                 var studentData = StudentController.selectedStudentData;
                 var amendedStudentData = Object.assign({}, studentData);
                 amendedStudentData.date_of_birth = InstitutionsStudentsSvc.formatDate(amendedStudentData.date_of_birth);
-                StudentController.addStudentUser(amendedStudentData, academicPeriodId, educationGradeId, classId, startDate, endDate, isAttendedPreSchool);
+                StudentController.addStudentUser(amendedStudentData, academicPeriodId, educationGradeId, classId, startDate, endDate, isAttendedPreSchool, StudentController.selectedStudentData.admission_id);
             } else {
                 var studentId = StudentController.selectedStudent;
-                StudentController.insertStudentData(studentId, academicPeriodId, educationGradeId, classId, startDate, endDate, {}, isAttendedPreSchool);
+                StudentController.insertStudentData(studentId, academicPeriodId, educationGradeId, classId, startDate, endDate, {}, isAttendedPreSchool, StudentController.selectedStudentData.admission_id);
             }
         } else {
             if (StudentController.selectedStudentData != null) {
@@ -1145,6 +1149,7 @@ function InstitutionStudentController($location, $q, $scope, $window, $filter, U
         newStudentData['academic_period_id'] = academicPeriodId;
         newStudentData['education_grade_id'] = educationGradeId;
         newStudentData['start_date'] = startDate;
+        newStudentData['admission_id'] = studentData['admission_id'];
         newStudentData['institution_id'] = StudentController.institutionId;
         if(newStudentData['having_bc'] == 2){
 	newStudentData['identity_number'] = studentData['area_administrative_id'] + '' + studentData.identity_number + '' + formatMonthYear(new Date(studentData.date_of_birth));
@@ -1159,7 +1164,7 @@ function InstitutionStudentController($location, $q, $scope, $window, $filter, U
             .then(function (user) {
                 if (user[0].error.length === 0) {
                     var studentId = user[0].data.id;
-                    StudentController.insertStudentData(studentId, academicPeriodId, educationGradeId, classId, startDate, endDate, user[1], 1);
+                    StudentController.insertStudentData(studentId, academicPeriodId, educationGradeId, classId, startDate, endDate, user[1], 1, user[0].data.admission_id);
                 } else {
                     StudentController.postResponse = user[0];
                     console.log(user[0]);
@@ -1219,6 +1224,7 @@ function InstitutionStudentController($location, $q, $scope, $window, $filter, U
             StudentController.postResponse.error.gender_id = empty;
             remain = true;
         }
+
 	if (StudentController.selectedStudentData.having_bc == '' || StudentController.selectedStudentData.having_bc == null) {
             StudentController.postResponse.error.having_bc = empty;
             remain = true;
@@ -1243,12 +1249,6 @@ function InstitutionStudentController($location, $q, $scope, $window, $filter, U
         }
 
         var arrNumber = [{}];
-
-        // if (StudentController.StudentIdentities == 1 && (StudentController.Student.identity_type_id == '' || StudentController.Student.identity_type_id == undefined)) {
-        //     arrNumber[0]['identity_type_id'] = empty;
-        //     StudentController.postResponse.error.identities = arrNumber;
-        //     remain = true;
-        // }
         if (StudentController.selectedStudentData.having_bc_yn.id == 2 && StudentController.StudentIdentities == 1 && (StudentController.selectedStudentData.identity_number == '' || StudentController.selectedStudentData.identity_number == undefined)) {
             arrNumber[0]['number'] = empty;
             StudentController.postResponse.error.identities = arrNumber;

@@ -198,7 +198,7 @@ $this->Html->script('ControllerAction.../plugins/datepicker/js/bootstrap-datepic
                         <p ng-repeat="error in InstitutionStudentController.postResponse.error.first_name">{{ error }}</p>
                     </div>
                 </div>
-                
+
                 <div class="input string required">
                     <label><?=__('Name with initials')?></label>
                     <input ng-model="InstitutionStudentController.selectedStudentData.last_name" ng-change="InstitutionStudentController.setStudentName()" type="string" ng-init="InstitutionStudentController.selectedStudentData.last_name='';">
@@ -222,7 +222,7 @@ $this->Html->script('ControllerAction.../plugins/datepicker/js/bootstrap-datepic
                         <p ng-repeat="error in InstitutionStudentController.postResponse.error.gender_id">{{ error }}</p>
                     </div>
                 </div>
-               
+
                 <!-- <div class="input select required error">
                     <label><?=__('Birth Registrar Office ')?></label>
                     <div class="input-select-wrapper">
@@ -384,6 +384,13 @@ $this->Html->script('ControllerAction.../plugins/datepicker/js/bootstrap-datepic
                         <p ng-repeat="error in InstitutionStudentController.postResponse.error.openemis_no">{{ error }}</p>
                     </div>
                 </div>
+                <div class="input string">
+                    <label><?=__('Admission Number')?></label>
+                    <input type="string" ng-model="InstitutionStudentController['selectedStudentData']['admission_id']" type="number" id="" maxlength="10" >
+                    <div ng-if="InstitutionStudentController.postResponse.error.admission_id" class="error-message">
+                        <p ng-repeat="error in InstitutionStudentController.postResponse.error.admission_id">{{ error }}</p>
+                    </div>
+                </div>
                 <div class="input string" ng-model="InstitutionStudentController.postResponse">
                     <label><?=__('Student')?></label>
                     <input ng-model="InstitutionStudentController.selectedStudentData.name" type="string" disabled="disabled">
@@ -444,8 +451,8 @@ $this->Html->script('ControllerAction.../plugins/datepicker/js/bootstrap-datepic
                 <!-- <div class="input select " ng-model="InstitutionStudentController.postResponse" ng-show="!InstitutionStudentController.existingStudent">
                     <label>('Has Attended  Pre School')</label>
                     <div class="input-select-wrapper">
-                        <select name="Students[is_attended_pre_school]"  
-                         ng-model="InstitutionStudentController.isAttendedPreSchoolOptions.selectedOption"  
+                        <select name="Students[is_attended_pre_school]"
+                         ng-model="InstitutionStudentController.isAttendedPreSchoolOptions.selectedOption"
                          ng-options="option.name for option in InstitutionStudentController.isAttendedPreSchoolOptions.availableOptions track by option.id"
                          ng-init="InstitutionStudentController.isAttendedPreSchoolOptions.selectedOption.id=''"
                          id="students-is-attended-pre-school"
@@ -470,7 +477,7 @@ $this->Html->script('ControllerAction.../plugins/datepicker/js/bootstrap-datepic
                         <p ng-repeat="error in InstitutionStudentController.postResponse.error.academic_period_id">{{ error }}</p>
                     </div>
                 </div>
-               
+
                 <div class="input select required error" ng-model="InstitutionStudentController.postResponse" ng-show="!InstitutionStudentController.existingStudent">
                     <label><?=__('Education Grade')?></label>
                     <div class="input-select-wrapper">
@@ -559,6 +566,10 @@ $this->Html->script('ControllerAction.../plugins/datepicker/js/bootstrap-datepic
                 <div class="input string">
                     <label><?=__('Student ID')?></label>
                     <input type="string" ng-model="InstitutionStudentController['selectedStudentData']['openemis_no']" disabled="disabled">
+                </div>
+                <div class="input string">
+                    <label><?=__('Admission number')?></label>
+                    <input type="string" ng-model="InstitutionStudentController['selectedStudentData']['admission_no']" >
                 </div>
                 <div class="input string">
                     <label><?=__('Student')?></label>

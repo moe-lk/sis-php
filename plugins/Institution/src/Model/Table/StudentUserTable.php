@@ -172,6 +172,18 @@ class StudentUserTable extends ControllerActionTable
                 'rule' => ['checkInstitutionClassMaxLimit'],
                 'on' => 'create'
             ])
+            ->add('admission_id', [
+              'minLength' => [
+                'rule' => ['minLength', 4],
+                'message' => 'Mobile number must be of 4 characters long',
+              ],
+              'maxLength' => [
+                'rule' => ['maxLength', 5],
+                'message' => 'Mobile number must be of 5 characters long',
+              ]
+            ])
+            ->numeric('admission_id')
+            ->notEmpty('admission_id')
             ->add('date_of_birth', 'ruleCheckAdmissionAgeWithEducationCycleGrade', [
                 'rule' => ['checkAdmissionAgeWithEducationCycleGrade'],
                 'on' => 'create'
