@@ -9,6 +9,7 @@ if (isset($ControllerAction) && array_key_exists('selectedLink', $ControllerActi
     $selectedLink = implode('-', $ControllerAction['selectedLink']);
 }
 $institutionId = $this->Session->read('Institution.Institutions.id');
+$institutionName = $this->Session->read('Institution.Institutions.name');
 $userId = $this->request->cookies['csrfToken'];
 
 ?>
@@ -19,7 +20,7 @@ $userId = $this->request->cookies['csrfToken'];
 	</div>
 		<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
 				<ul id="nav-menu-1" class="nav nav-level-1 collapse in" role="tabpanel" data-level="1">
-			<li><a  href="https://dashboard.sis.moe.gov.lk/dashboard/script/principal_dashboard.js?token=<?php echo $userId; ?>&id=<?php echo dechex($institutionId); ?>" id="Institutions-dashboard" target="_blank"><span><i class="fa kd-reports"></i></span><b>Dashboard</b></a></li>
+			<li><a  href="https://dashboard.sis.moe.gov.lk/dashboard/script/principal_dashboard_1.js?token=<?php echo $userId; ?>&id=<?php echo dechex($institutionId); ?>&school=<?php echo $institutionName?>" id="Institutions-dashboard" target="_blank"><span><i class="fa kd-reports"></i></span><b>Dashboard</b></a></li>
 			</ul>
 	</div>
 </div>
