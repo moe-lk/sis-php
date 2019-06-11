@@ -439,7 +439,6 @@ class AccessControlComponent extends Component
             ->order(['SecurityRoles.order'])
             ->where([
                 $GroupRoles->aliasField('security_user_id') => $userId,
-    		    $GroupRoles->aliasField('institution_id') => $institutionId,
 		'SecurityRoles.code' => 'PRINCIPAL',
             ])
             ->first();
