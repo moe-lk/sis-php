@@ -11,7 +11,9 @@ if (isset($ControllerAction) && array_key_exists('selectedLink', $ControllerActi
 $institutionId = $this->Session->read('Institution.Institutions.id');
 $institutionName = $this->Session->read('Institution.Institutions.name');
 $userId = $this->request->cookies['csrfToken'];
-// $isAd = $this->AccessControl->isAdmin();
+$isPrincipal = $this->Session->read('System.User.isPrincipal');
+
+
 
 ?>
 
@@ -20,14 +22,15 @@ $userId = $this->request->cookies['csrfToken'];
 	 
 		<?php echo $this->Navigation->render($navigations) ?>
 	</div>
-
+    <?php  echo 'Adsin' . $isAdmin;?>
+	<?php   if($isPrincipal){;?>
 	
 	<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-	   <hr>
-				<ul id="nav-menu-1" class="nav nav-level-1 collapse in" role="tabpanel" data-level="1">
+			<ul id="nav-menu-1" class="nav nav-level-1 collapse in" role="tabpanel" data-level="2">
 			<li><a  href="https://dashboard.sis.moe.gov.lk/dashboard/script/principal_dashboard_1.js?token=<?php echo $userId; ?>&id=<?php echo dechex($institutionId); ?>&school=<?php echo $institutionName?>" id="Institutions-dashboard" target="_blank"><span><i class="fa kd-reports"></i></span><b>School Dashboard</b></a></li>
 			</ul>
 	</div>
+	<?php }?>
 </div>
 
 <script type="text/javascript">

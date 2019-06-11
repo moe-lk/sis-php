@@ -96,8 +96,9 @@ class AccessControlComponent extends Component
         }
 
         if ($this->Session->check('System.User.isPrincipal')) {
-            $sessionUserRole = $this->Session->read('System.User.isPrincipal');
-            if ($userRole !== $sessionUserRole) {
+            $isPrincipal = $this->isPrincipal();
+            $sessionPrinc = $this->Session->read('System.User.isPrincipal');
+            if ($isPrincipal !== $sessionPrinc) {
                 $isChanged = true;
             }
         }
