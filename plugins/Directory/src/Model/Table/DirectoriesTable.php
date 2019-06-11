@@ -63,7 +63,8 @@ class DirectoriesTable extends ControllerActionTable
         ];
         $this->addBehavior('AdvanceSearch', [
             'include' =>[
-                'openemis_no'
+                'openemis_no',
+                'identity_number'
             ],
             'order' => $advancedSearchFieldOrder,
             'showOnLoad' => 1,
@@ -258,7 +259,8 @@ class DirectoriesTable extends ControllerActionTable
         $modifiedUser = [
             $this->aliasField('modified_user_id') => $userId
         ];
-        $conditions = array_merge($conditions, $notSuperAdminCondition ,$modifiedUser);
+
+        
 
         // POCOR-2547 sort list of staff and student by name
         $orders = [];
@@ -271,6 +273,7 @@ class DirectoriesTable extends ControllerActionTable
         }
 
         $query->where($conditions)
+            ->orWhere($modifiedUser)
             ->order($orders);
 
         $options['auto_search'] = true;

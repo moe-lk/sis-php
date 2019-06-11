@@ -12,7 +12,7 @@ return [
             'className' => 'Cake\Database\Connection',
             'driver' => 'Cake\Database\Driver\Mysql',
             'persistent' => false,
-             'host' => env('DB_HOST','localhost'),
+            'host' => env('DB_HOST','localhost'),
             'port' => '3306',
             'username' => env('DB_USER','oe_school_user_1'),
             'password' => env('DB_PASS','03f2e9e5'),
