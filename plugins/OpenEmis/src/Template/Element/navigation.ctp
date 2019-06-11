@@ -22,7 +22,6 @@ $isPrincipal = $this->Session->read('System.User.isPrincipal');
 	 
 		<?php echo $this->Navigation->render($navigations) ?>
 	</div>
-    <?php  echo 'Adsin' . $isAdmin;?>
 	<?php   if($isPrincipal){;?>
 	
 	<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
