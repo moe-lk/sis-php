@@ -53,6 +53,24 @@ class EducationProgrammesTable extends ControllerActionTable
             ->add('code', 'ruleUnique', [
                 'rule' => 'validateUnique',
                 'provider' => 'table'
+			])
+			 ->add('admission_id', [
+                'minLength' => [
+                    'rule' => ['minLength', 4],
+                    'message' => 'Mobile number must be of 4 characters long',
+                ],
+                'maxLength' => [
+                    'rule' => ['maxLength', 12],
+                    'message' => 'Mobile number must be of 5 characters long',
+                ],
+                'ruleNumeric' => [
+                    'rule' => ['numeric'],
+                    'message' => 'Admission number can only contain numbers',
+                ],
+                'ruleNotEmpty' => [
+                    'rule' => ['notEmpty'],
+                    'message' => "Admission number can't  left empty",
+                ],
             ])
             ;
     }

@@ -386,7 +386,7 @@ $this->Html->script('ControllerAction.../plugins/datepicker/js/bootstrap-datepic
                 </div>
                 <div class="input string required">
                     <label><?=__('Admission Number')?></label>
-                    <input type="string" ng-model="InstitutionStudentController['selectedStudentData']['admission_id']" type="number" id="" maxlength="10" >
+                    <input type="string" ng-model="InstitutionStudentController['selectedStudentData']['admission_id']" type="number" id="" maxlength="12" >
                     <div ng-if="InstitutionStudentController.postResponse.error.admission_id" class="error-message">
                         <p ng-repeat="error in InstitutionStudentController.postResponse.error.admission_id">{{ error }}</p>
                     </div>
