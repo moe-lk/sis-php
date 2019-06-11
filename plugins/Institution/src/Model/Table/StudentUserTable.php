@@ -175,7 +175,7 @@ class StudentUserTable extends ControllerActionTable
                     'message' => 'Mobile number must be of 4 characters long',
                 ],
                 'maxLength' => [
-                    'rule' => ['maxLength', 5],
+                    'rule' => ['maxLength', 12],
                     'message' => 'Mobile number must be of 5 characters long',
                 ],
                 'ruleNumeric' => [
