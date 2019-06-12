@@ -22,7 +22,7 @@ $isPrincipal = $this->Session->read('System.User.isPrincipal');
 	 
 		<?php echo $this->Navigation->render($navigations) ?>
 	</div>
-	<?php   if($isPrincipal){;?>
+	<?php   if($isPrincipal && $institutionId ){;?>
 	
 	<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
 			<ul id="nav-menu-1" class="nav nav-level-1 collapse in" role="tabpanel" data-level="2">
