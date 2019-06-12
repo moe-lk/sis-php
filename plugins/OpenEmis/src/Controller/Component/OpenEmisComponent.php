@@ -2,9 +2,9 @@
 namespace OpenEmis\Controller\Component;
 
 use Cake\Controller\Component;
+use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\Utility\Inflector;
-use Cake\Core\Configure;
 
 class OpenEmisComponent extends Component
 {
@@ -19,26 +19,26 @@ class OpenEmisComponent extends Component
             'About' => [
                 'url' => ['plugin' => false, 'controller' => 'About', 'action' => 'index'],
                 'icon' => 'fa-info-circle',
-                'escapeTitle' => false
+                'escapeTitle' => false,
             ],
             'Preferences' => [
                 'url' => ['plugin' => false, 'controller' => 'Preferences', 'action' => 'index'],
                 'icon' => 'fa-cog',
-                'escapeTitle' => false
+                'escapeTitle' => false,
             ],
             'Help' => [
-                'url' => 'https://docs.google.com/document/d/1tL8Kjgg3VTBVi20YktiRk6UzbeVOcGmqjLHqdmyipps/edit?usp=sharing',
+                'url' => 'https://support.openemis.org/',
                 'icon' => 'fa-question-circle',
                 'target' => '_blank',
-                'escapeTitle' => false
+                'escapeTitle' => false,
             ],
             '0' => '_divider',
             'Logout' => [
                 'url' => ['plugin' => 'User', 'controller' => 'Users', 'action' => 'logout'],
                 'icon' => 'fa-power-off',
-                'escapeTitle' => false
-            ]
-        ]
+                'escapeTitle' => false,
+            ],
+        ],
     ];
 
     // Is called before the controller's beforeFilter method.
@@ -66,14 +66,14 @@ class OpenEmisComponent extends Component
         $controller->set('_productName', $this->productName);
         $controller->set('productLogo', $this->productLogo);
         $controller->set('lastModified', $this->lastModified);
-        $brand = 'NEMIS - Data Management Branch , Ministry of Education , Sri Lanka';
+        $brand = 'OpenEMIS';
         $controller->set('footerBrand', $brand);
 
         //Retriving the panel width size from session
         if ($session->check('System.layout')) {
             $layout = $session->read('System.layout');
-            $controller->set('SystemLayout_leftPanel', 'width:'.$layout['panelLeft'].'px');
-            $controller->set('SystemLayout_rightPanel', 'width:'.$layout['panelRight'].'px');
+            $controller->set('SystemLayout_leftPanel', 'width:' . $layout['panelLeft'] . 'px');
+            $controller->set('SystemLayout_rightPanel', 'width:' . $layout['panelRight'] . 'px');
         } else {
             $controller->set('SystemLayout_leftPanel', 'width: 10%');
             $controller->set('SystemLayout_rightPanel', 'width: 90%');

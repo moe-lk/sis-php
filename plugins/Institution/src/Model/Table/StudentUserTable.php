@@ -187,7 +187,6 @@ class StudentUserTable extends ControllerActionTable
                     'message' => "Admission number can't  left empty",
                 ],
             ])
-            ->notEmpty('admission_id')
             ->add('date_of_birth', 'ruleCheckAdmissionAgeWithEducationCycleGrade', [
                 'rule' => ['checkAdmissionAgeWithEducationCycleGrade'],
                 'on' => 'create',
@@ -195,11 +194,11 @@ class StudentUserTable extends ControllerActionTable
             ->add('gender_id', 'ruleCompareStudentGenderWithInstitution', [
                 'rule' => ['compareStudentGenderWithInstitution'],
             ])
-            ->requirePresence('start_date', 'create')
-            ->add('start_date', 'ruleCheckProgrammeEndDateAgainstStudentStartDate', [
-                'rule' => ['checkProgrammeEndDateAgainstStudentStartDate', 'start_date'],
-                'on' => 'create',
-            ])
+            // ->requirePresence('start_date', 'create')
+            // ->add('start_date', 'ruleCheckProgrammeEndDateAgainstStudentStartDate', [
+            //     'rule' => ['checkProgrammeEndDateAgainstStudentStartDate', 'start_date'],
+            //     'on' => 'create',
+            // ])
             ->requirePresence('education_grade_id', 'create')
             ->add('education_grade_id', 'ruleCheckProgrammeEndDate', [
                 'rule' => ['checkProgrammeEndDate', 'education_grade_id'],

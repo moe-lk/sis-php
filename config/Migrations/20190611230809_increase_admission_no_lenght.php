@@ -29,7 +29,7 @@ class IncreaseAdmissionNoLenght extends AbstractMigration
     {
         $table1 = $this->table('institution_student_admission');
         $table1
-            ->changeColumn('admission_id', 'integer', [
+            ->changeColumn('admission_id', 'string', [
                 'limit' => 12,
                 'default' => 0,
                 'null' => true,
@@ -37,7 +37,7 @@ class IncreaseAdmissionNoLenght extends AbstractMigration
             ->save();
         $table2 = $this->table('institution_students');
         $table2
-              ->changeColumn('admission_id', 'integer', [
+              ->changeColumn('admission_id', 'string', [
                 'limit' => 12,
                 'default' => 0,
                 'null' => true,

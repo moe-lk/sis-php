@@ -69,14 +69,14 @@ class StudentAdmissionTable extends ControllerActionTable
         $validator = parent::validationDefault($validator);
 
         $validator
-            ->add('start_date', [
-                'ruleCompareDate' => [
-                    'rule' => ['compareDate', 'end_date', false],
-                ],
-                'ruleCheckProgrammeEndDateAgainstStudentStartDate' => [
-                    'rule' => ['checkProgrammeEndDateAgainstStudentStartDate', 'start_date'],
-                ],
-            ])
+            // ->add('start_date', [
+            //     'ruleCompareDate' => [
+            //         'rule' => ['compareDate', 'end_date', false],
+            //     ],
+            //     'ruleCheckProgrammeEndDateAgainstStudentStartDate' => [
+            //         'rule' => ['checkProgrammeEndDateAgainstStudentStartDate', 'start_date'],
+            //     ],
+            // ])
             ->add('student_id', [
                 'ruleCheckPendingAdmissionExist' => [
                     'rule' => ['checkPendingAdmissionExist'],
@@ -123,7 +123,7 @@ class StudentAdmissionTable extends ControllerActionTable
                 ],
                 'maxLength' => [
                     'rule' => ['maxLength', 12],
-                    'message' => 'Mobile number must be of 5 characters long',
+                    'message' => 'Mobile number must be of 12 characters long',
                 ],
                 'ruleNumeric' => [
                     'rule' => ['numeric'],

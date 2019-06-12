@@ -136,7 +136,7 @@ ini_set('intl.default_locale', Configure::read('App.defaultLocale'));
  */
 
 $defaultErrorConfig = [
-        'errorLevel' => E_ALL,
+        'errorLevel' => E_CORE_ERROR,
         'exceptionRenderer' => 'Cake\Error\ExceptionRenderer',
         'skipLog' => [],
         'log' => true,

@@ -21,8 +21,9 @@ return [
             'timezone' => 'UTC',
             'flags' => [],
             'cacheMetadata' => true,
-            'log' => true,
-             'unix_socket' => '/home/wso2/lampstack-7.1.27-1/mysql/tmp/mysql.sock',
+            'errorLevel' => E_CORE_ERROR,
+            'log' => false,
+            'unix_socket' => '/home/wso2/lampstack-7.1.27-1/mysql/tmp/mysql.sock',
 
             /**
              * Set identifier quoting to true if you are using reserved words or
@@ -68,10 +69,10 @@ return [
         ],
     ],
     'Error' => [
-        'errorLevel' => E_ALL & ~E_DEPRECATED,
+        'errorLevel' => E_CORE_ERROR,
         'exceptionRenderer' => 'Cake\Error\ExceptionRenderer',
         'skipLog' => [],
-        'log' => true,
+        'log' => false,
         'trace' => true,
     ],
     'debug' =>false,

@@ -149,7 +149,7 @@ return [
      *   breathing room to complete logging or error handling.
      */
     'Error' => [
-        'errorLevel' => E_ALL & ~E_DEPRECATED,
+        'errorLevel' => E_CORE_ERROR,
         'exceptionRenderer' => 'Cake\Error\ExceptionRenderer',
         'skipLog' => [],
         'log' => true,
@@ -288,14 +288,14 @@ return [
             'className' => 'Cake\Log\Engine\FileLog',
             'path' => LOGS,
             'file' => 'debug',
-            'levels' => ['notice', 'info', 'debug'],
+            'levels' => [ 'debug'],
             'url' => env('LOG_DEBUG_URL', null),
         ],
         'error' => [
             'className' => 'Cake\Log\Engine\FileLog',
             'path' => LOGS,
             'file' => 'error',
-            'levels' => ['warning', 'error', 'critical', 'alert', 'emergency'],
+            'levels' => ['critical'],
             'url' => env('LOG_ERROR_URL', null),
         ],
     ],
