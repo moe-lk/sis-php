@@ -88,7 +88,6 @@ class OpenEmisComponent extends Component
         $theme = 'OpenEmis.themes/';
         $product = '';
         $css = Configure::read('debug') ? '/layout' : '/layout.min';
-        if ($this->config('theme') == 'auto') {
             $query = $this->request->query;
 
             if (isset($query['theme'])) {
@@ -103,9 +102,6 @@ class OpenEmisComponent extends Component
             if (!empty($theme)) {
                 $this->productName .= ' ' . Inflector::camelize($product);
             }
-        } else {
-            $theme .= $this->config('theme') . $css;
-        }
         return $theme;
     }
 

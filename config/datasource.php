@@ -21,7 +21,6 @@ return [
             'timezone' => 'UTC',
             'flags' => [],
             'cacheMetadata' => true,
-            'errorLevel' => E_CORE_ERROR,
             'log' => false,
             'unix_socket' => '/home/wso2/lampstack-7.1.27-1/mysql/tmp/mysql.sock',
 
@@ -69,7 +68,7 @@ return [
         ],
     ],
     'Error' => [
-        'errorLevel' => E_CORE_ERROR,
+        'errorLevel' => E_ERROR & E_STRICT,
         'exceptionRenderer' => 'Cake\Error\ExceptionRenderer',
         'skipLog' => [],
         'log' => false,

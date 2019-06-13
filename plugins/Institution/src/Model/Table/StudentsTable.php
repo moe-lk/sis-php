@@ -586,7 +586,6 @@ class StudentsTable extends ControllerActionTable
         $this->field('academic_period_id', ['visible' => false]);
         $this->field('class', ['after' => 'education_grade_id']);
         $this->field('student_status_id', ['after' => 'class']);
-        $this->field('staff_id', ['type' => 'string','attr' => ['label' => __('Admission Number')]]);
         $this->field('admission_id', ['after' => 'student_status_id']);
         $this->field('area_administrative_id', ['visible' => false]);
         $this->fields['start_date']['visible'] = false;
