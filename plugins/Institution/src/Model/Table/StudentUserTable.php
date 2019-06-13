@@ -172,11 +172,11 @@ class StudentUserTable extends ControllerActionTable
             ->add('admission_id', [
                 'minLength' => [
                     'rule' => ['minLength', 4],
-                    'message' => 'Mobile number must be of 4 characters long',
+                    'message' => 'Admission number must be of 4 characters long',
                 ],
                 'maxLength' => [
                     'rule' => ['maxLength', 12],
-                    'message' => 'Mobile number must be of 5 characters long',
+                    'message' => 'Admission number must be of 5 characters long',
                 ],
                 'ruleNumeric' => [
                     'rule' => ['numeric'],
