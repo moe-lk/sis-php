@@ -12,17 +12,16 @@ return [
             'className' => 'Cake\Database\Connection',
             'driver' => 'Cake\Database\Driver\Mysql',
             'persistent' => false,
-            'host' => env('DB_HOST','localhost'),
-            'port' => '3306',
-            'username' => env('DB_USER','oe_school_user_1'),
-            'password' => env('DB_PASS','03f2e9e5'),
-            'database' => env('DB_NAME','oe_school'),
+            'host' => env('DB_HOST','mariadb'),
+            'username' => env('DB_USER','root'),
+            'password' => env('DB_PASS','secret'),
+            'database' => env('DB_NAME','openemis'),
             'quoteIdentifiers' => true,
             'timezone' => 'UTC',
             'flags' => [],
             'cacheMetadata' => true,
             'log' => false,
-            'unix_socket' => '/home/wso2/lampstack-7.1.27-1/mysql/tmp/mysql.sock',
+            // 'unix_socket' => '/home/wso2/lampstack-7.1.27-1/mysql/tmp/mysql.sock',
 
             /**
              * Set identifier quoting to true if you are using reserved words or
@@ -74,5 +73,5 @@ return [
         'log' => false,
         'trace' => true,
     ],
-    'debug' =>false,
+    'debug' =>true,
 ];
