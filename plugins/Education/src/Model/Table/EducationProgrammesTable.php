@@ -53,8 +53,7 @@ class EducationProgrammesTable extends ControllerActionTable
             ->add('code', 'ruleUnique', [
                 'rule' => 'validateUnique',
                 'provider' => 'table'
-            ])
-            ;
+			]);
     }
 
 	public function beforeAction(Event $event, ArrayObject $extra)

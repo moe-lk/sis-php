@@ -88,6 +88,8 @@ $icon = strpos($_productName, 'School') != -1 ? '_school' : '';
 			<div class="form-group">
 				<?php if ($enableLocalLogin) : ?>
 				<?= $this->Form->button(__('Login'), ['type' => 'submit', 'name' => 'submit', 'value' => 'login', 'class' => 'btn btn-primary btn-login']) ?>
+				<?= '<hr>' ?>
+				<?= $this->Html->link('Bulk Upload', '/bulk-upload/login', array('class' => 'btn btn-lg btn-success btn-block  '));?>
 				<?php endif; ?>
 				<button class="hidden" value="reload" name="submit" type="submit" id="reload">reload</button>
 			<?= $this->Form->end() ?>

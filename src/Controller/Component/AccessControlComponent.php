@@ -95,6 +95,15 @@ class AccessControlComponent extends Component
             }
         }
 
+        if ($this->Session->check('System.User.isPrincipal')) {
+            $isPrincipal = $this->isPrincipal();
+            $sessionPrinc = $this->Session->read('System.User.isPrincipal');
+            if ($isPrincipal !== $sessionPrinc) {
+                $isChanged = true;
+            }
+        }
+
+
         $SecurityRoleFunctions = TableRegistry::get('Security.SecurityRoleFunctions');
         $SecurityGroupUsers = TableRegistry::get('Security.SecurityGroupUsers');
 
@@ -158,7 +167,7 @@ class AccessControlComponent extends Component
 					THEN ' . $SecurityRoleFunctions->aliasField('modified') . '
 					ELSE ' . $SecurityRoleFunctions->aliasField('created') . '
 					END
-				)',
+				)', 
         ];
 
         if ($roles->all()->count() > 0) {
@@ -210,11 +219,15 @@ class AccessControlComponent extends Component
             }
 
             $userRole = $this->getUserGroupRole();
+            $isPrincipal = $this->isPrincipal();
             $this->Session->write('System.User.roles', $userRole);
+            $this->Session->write('System.User.isPrincipal', $isPrincipal);
             $this->Session->write('Permissions.lastModified', $lastModified);
         } else {
             $this->Session->write('System.User.roles', '');
             $this->Session->write('Permissions.lastModified', '');
+            $this->Session->write('System.User.isPrincipal', '');
+
         }
     }
 
@@ -427,7 +440,6 @@ class AccessControlComponent extends Component
             ->order(['SecurityRoles.order'])
             ->where([
                 $GroupRoles->aliasField('security_user_id') => $userId,
-    //		 $GroupRoles->aliasField('institution_id') => $institutionId,
 		'SecurityRoles.code' => 'PRINCIPAL',
             ])
             ->first();

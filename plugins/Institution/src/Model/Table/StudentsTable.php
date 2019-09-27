@@ -157,6 +157,24 @@ class StudentsTable extends ControllerActionTable
                 'rule' => ['checkAdmissionAgeWithEducationCycleGrade'],
                 'on' => 'create',
             ])
+            ->add('admission_id', [
+                'minLength' => [
+                    'rule' => ['minLength', 4],
+                    'message' => 'Admission number must be of 4 characters long',
+                ],
+                'maxLength' => [
+                    'rule' => ['maxLength', 12],
+                    'message' => 'Admission number must be of 12 characters long',
+                ],
+                'ruleNumeric' => [
+                    'rule' => ['numeric'],
+                    'message' => 'Admission number can only contain numbers',
+                ],
+                'ruleNotEmpty' => [
+                    'rule' => ['notEmpty'],
+                    'message' => "Admission number can't  left empty",
+                ],
+            ])
             ->allowEmpty('class')
             ->add('class', 'ruleClassMaxLimit', [
                 'rule' => ['checkInstitutionClassMaxLimit'],
@@ -538,10 +556,16 @@ class StudentsTable extends ControllerActionTable
         return $query;
     }
 
+    public function onGetAdmissionId(Event $event, Entity $entity)
+    {
+        return $entity->admission_id > 0 ? $entity->admission_id : 'Not Provided';
+    }
+
     public function beforeAction(Event $event, ArrayObject $extra)
     {
         $this->field('previous_institution_student_id', ['type' => 'hidden']);
-        $this->field('admission_id', ['type' => 'string', 'attr' => ['label' => 'Admission No']]);
+        // $this->field('admission_id', ['type' => 'string', 'attr' => ['label' => 'Admission No']]);
+        $this->field('admission_id', ['attr' => ['label' => 'Admission Number']]);
     }
 
     public function beforeDelete(Event $event, Entity $entity)
@@ -562,8 +586,8 @@ class StudentsTable extends ControllerActionTable
         $this->field('academic_period_id', ['visible' => false]);
         $this->field('class', ['after' => 'education_grade_id']);
         $this->field('student_status_id', ['after' => 'class']);
-        $this->field('admission_id', ['type' => 'string', 'attr' => ['label' => 'Admission Number']]);
         $this->field('admission_id', ['after' => 'student_status_id']);
+        $this->field('area_administrative_id', ['visible' => false]);
         $this->fields['start_date']['visible'] = false;
         $this->fields['end_date']['visible'] = false;
         $this->fields['class']['sort'] = ['field' => 'InstitutionClasses.name'];

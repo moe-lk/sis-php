@@ -172,22 +172,21 @@ class StudentUserTable extends ControllerActionTable
             ->add('admission_id', [
                 'minLength' => [
                     'rule' => ['minLength', 4],
-                    'message' => 'Mobile number must be of 4 characters long',
+                    'message' => 'Admission number must be of 4 characters long',
                 ],
                 'maxLength' => [
-                    'rule' => ['maxLength', 5],
-                    'message' => 'Mobile number must be of 5 characters long',
+                    'rule' => ['maxLength', 12],
+                    'message' => 'Admission number must be of 5 characters long',
                 ],
                 'ruleNumeric' => [
                     'rule' => ['numeric'],
                     'message' => 'Admission number can only contain numbers',
                 ],
-                 'ruleNotEmpty' => [
+                'ruleNotEmpty' => [
                     'rule' => ['notEmpty'],
-                    'message' => "Admission number can't  left empty" ,
+                    'message' => "Admission number can't  left empty",
                 ],
             ])
-            ->notEmpty('admission_id')
             ->add('date_of_birth', 'ruleCheckAdmissionAgeWithEducationCycleGrade', [
                 'rule' => ['checkAdmissionAgeWithEducationCycleGrade'],
                 'on' => 'create',
@@ -195,11 +194,11 @@ class StudentUserTable extends ControllerActionTable
             ->add('gender_id', 'ruleCompareStudentGenderWithInstitution', [
                 'rule' => ['compareStudentGenderWithInstitution'],
             ])
-            ->requirePresence('start_date', 'create')
-            ->add('start_date', 'ruleCheckProgrammeEndDateAgainstStudentStartDate', [
-                'rule' => ['checkProgrammeEndDateAgainstStudentStartDate', 'start_date'],
-                'on' => 'create',
-            ])
+            // ->requirePresence('start_date', 'create')
+            // ->add('start_date', 'ruleCheckProgrammeEndDateAgainstStudentStartDate', [
+            //     'rule' => ['checkProgrammeEndDateAgainstStudentStartDate', 'start_date'],
+            //     'on' => 'create',
+            // ])
             ->requirePresence('education_grade_id', 'create')
             ->add('education_grade_id', 'ruleCheckProgrammeEndDate', [
                 'rule' => ['checkProgrammeEndDate', 'education_grade_id'],
@@ -215,6 +214,11 @@ class StudentUserTable extends ControllerActionTable
         ;
         return $validator;
     }
+    
+    public function onGetAdmissionId(Event $event, Entity $entity)
+    {
+        return $entity->admission_id > 0 ? $entity->admission_id : 'Not Provided';
+    }
 
     public function beforeAction(Event $event, ArrayObject $extra)
     {
@@ -222,7 +226,9 @@ class StudentUserTable extends ControllerActionTable
         $this->field('first_name', ['attr' => ['label' => 'Full Name']]);
         $this->field('last_name', ['attr' => ['label' => 'Name with initials']]);
         $this->field('last_name', ['attr' => ['label' => 'Name with initials']]);
-        $this->field('openemis_no', ['attr' => ['label' => 'Student ID']]);
+        $this->field('openemis_no', ['attr' => ['label' => 'Student ID']]); 
+        $this->field('area_administrative_id', ['visible' => false]);
+        $this->field('staff_id', ['type' => 'string', 'attr' => ['label' => __('Admission Number')]]);
         $this->field('username', ['visible' => false]);
         $this->field('middle_name', ['visible' => false]);
         $this->field('third_name', ['visible' => false]);
@@ -510,7 +516,8 @@ class StudentUserTable extends ControllerActionTable
     public function studentsAfterSave(Event $event, $student)
     {
         if ($student->isNew()) {
-            $this->updateAll(['is_student' => 1], ['id' => $student->student_id]);
+            $birthplace_area_id = substr($student->identity_number, 0, -8);
+            $this->updateAll(['birthplace_area_id' => $birthplace_area_id, 'is_student' => 1], ['id' => $student->student_id]);
         }
     }
 

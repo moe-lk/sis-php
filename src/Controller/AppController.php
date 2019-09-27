@@ -73,10 +73,10 @@ class AppController extends Controller
 
         parent::initialize();
         $theme = $this->getTheme();
-        // if (Configure::read('schoolMode')) {
-        //     $theme = 'core';
-        //     $this->productName = 'NEMIS - SIS';
-        // }
+        if (Configure::read('schoolMode')) {
+            $theme = 'auto';
+            $this->productName = 'NEMIS - SIS';
+        }
 
         // don't load ControllerAction component if it is not a PageController
         if ($this instanceof \Page\Controller\PageController == false) {
@@ -116,7 +116,6 @@ class AppController extends Controller
         // Custom Components
         $this->loadComponent('Navigation');
         $this->productName = $this->getTheme()['application_name'];
-        Log::error($this->getTheme());
         $this->loadComponent('Localization.Localization', [
             'productName' => $this->productName
         ]);
@@ -202,8 +201,6 @@ class AppController extends Controller
     {
         Cache::clear();
         $themes = null;
-        Log::error( $themes);
-        Log::error('themes');
         if (!$themes || $theme == null) {
             $folder = new Folder();
             $folder->delete(WWW_ROOT . 'img' . DS . 'themes');

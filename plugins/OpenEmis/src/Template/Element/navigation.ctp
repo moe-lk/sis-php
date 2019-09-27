@@ -9,29 +9,28 @@ if (isset($ControllerAction) && array_key_exists('selectedLink', $ControllerActi
     $selectedLink = implode('-', $ControllerAction['selectedLink']);
 }
 $institutionId = $this->Session->read('Institution.Institutions.id');
+$institutionName = $this->Session->read('Institution.Institutions.name');
 $userId = $this->request->cookies['csrfToken'];
+$isPrincipal = $this->Session->read('System.User.isPrincipal');
+
+
 
 ?>
 
 <div class="left-menu">
-	<!-- <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-				<ul id="nav-menu-1" class="nav nav-level-1 collapse in" role="tabpanel" data-level="1">
-			<li><a  href="https://dashboard.sis.moe.gov.lk/dashboard/script/principal_dashboard.js?token=<?php echo $userId; ?>&id=<?php echo dechex($institutionId); ?>" id="Institutions-dashboard" target="_blank"><span><i class="fa kd-reports"></i></span><b>Dashboard</b></a></li>
-			</ul>
-	</div> -->
 	<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+	 
 		<?php echo $this->Navigation->render($navigations) ?>
 	</div>
-</div>
-<!-- <div class="left-menu">
+	<?php   if($isPrincipal && $institutionId ){;?>
+	
 	<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-				<ul id="nav-menu-1" class="nav nav-level-1 collapse in" role="tabpanel" data-level="1">
-			<li><a  href="https://dashboard.sis.moe.gov.lk/dashboard/script/principal_dashboard.js?token=<?php echo $userId; ?>&id=<?php echo dechex($institutionId); ?>" id="Institutions-dashboard" target="_blank"><span><i class="fa kd-reports"></i></span><b>Dashboard</b></a></li>
+			<ul id="nav-menu-1" class="nav nav-level-1 collapse in" role="tabpanel" data-level="2">
+			<li><a  href="https://dashboard.sis.moe.gov.lk/dashboard/script/principal_dashboard_1.js?token=<?php echo $userId; ?>&id=<?php echo dechex($institutionId); ?>&school=<?php echo $institutionName?>" id="Institutions-dashboard" target="_blank"><span><i class="fa kd-reports"></i></span><b>School Dashboard</b></a></li>
 			</ul>
 	</div>
-</div> -->
-
-
+	<?php }?>
+</div>
 
 <script type="text/javascript">
 $(document).ready(function() {

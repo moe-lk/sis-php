@@ -195,14 +195,9 @@ class WorkflowBehavior extends Behavior
     public function onAssignPrincipal(Event $event, $id, Entity $workflowTransitionEntity)
     {
         $model = $this->_table;
-
         try {
-            if (!$model->AccessControl->isPrincipal()) {
                 $entity = $model->get($id);
-                $this->setAssigneeAsCreator($entity);
                 $model->save($entity);
-
-            }
         } catch (RecordNotFoundException $e) {
             // Do nothing
         }
@@ -1728,6 +1723,34 @@ class WorkflowBehavior extends Behavior
             $entity->assignee_id = $entity->created_user_id;
         }
     }
+
+    public function setAssigneeAsPrincipal()
+    {
+
+        try{
+            $GroupRoles = TableRegistry::get('Security.SecurityGroupUsers');
+            // $session = $request->session();
+            $institutionId = $this->Session->read('Institution.Institutions.id');
+            $user = $GroupRoles
+                ->find()
+                ->contain('SecurityRoles')
+                ->order(['SecurityRoles.order'])
+                ->where([
+                    $GroupRoles->aliasField('institution_id') => $institutionId,
+                    'SecurityRoles.code' => 'PRINCIPAL',
+                ])
+                ->first();
+
+            if ($user->has('security_user_id')) {
+                $entity->assignee_id = $user->security_user_id;
+            }
+
+        }catch (RecordNotFoundException $e) {
+            // Do nothing
+        }
+       
+    }
+
 
     public function setStatusAsOpen(Entity $entity)
     {

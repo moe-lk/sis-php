@@ -69,14 +69,14 @@ class StudentAdmissionTable extends ControllerActionTable
         $validator = parent::validationDefault($validator);
 
         $validator
-            ->add('start_date', [
-                'ruleCompareDate' => [
-                    'rule' => ['compareDate', 'end_date', false],
-                ],
-                'ruleCheckProgrammeEndDateAgainstStudentStartDate' => [
-                    'rule' => ['checkProgrammeEndDateAgainstStudentStartDate', 'start_date'],
-                ],
-            ])
+            // ->add('start_date', [
+            //     'ruleCompareDate' => [
+            //         'rule' => ['compareDate', 'end_date', false],
+            //     ],
+            //     'ruleCheckProgrammeEndDateAgainstStudentStartDate' => [
+            //         'rule' => ['checkProgrammeEndDateAgainstStudentStartDate', 'start_date'],
+            //     ],
+            // ])
             ->add('student_id', [
                 'ruleCheckPendingAdmissionExist' => [
                     'rule' => ['checkPendingAdmissionExist'],
@@ -117,21 +117,21 @@ class StudentAdmissionTable extends ControllerActionTable
                 'on' => 'create',
             ])
             ->add('admission_id', [
-                 'minLength' => [
+                'minLength' => [
                     'rule' => ['minLength', 4],
-                    'message' => 'Mobile number must be of 4 characters long',
+                    'message' => 'Admission number must be of 4 characters long',
                 ],
                 'maxLength' => [
-                    'rule' => ['maxLength', 5],
-                    'message' => 'Mobile number must be of 5 characters long',
+                    'rule' => ['maxLength', 12],
+                    'message' => 'Admission number must be of 12 characters long',
                 ],
                 'ruleNumeric' => [
                     'rule' => ['numeric'],
                     'message' => 'Admission number can only contain numbers',
                 ],
-                 'ruleNotEmpty' => [
+                'ruleNotEmpty' => [
                     'rule' => ['notEmpty'],
-                    'message' => "Admission number can't  left empty" ,
+                    'message' => "Admission number can't  left empty",
                 ],
             ])
             ->add('gender_id', 'ruleCompareStudentGenderWithInstitution', [
@@ -397,8 +397,9 @@ class StudentAdmissionTable extends ControllerActionTable
         $this->field('comment', ['type' => 'hidden']);
         $this->field('start_date', ['type' => 'hidden']);
         $this->field('end_date', ['type' => 'hidden']);
-        $this->field('admission_id', ['type' => 'string' ,'attr' => ['label' => 'Admission Number']]);
+        $this->field('staff_id', ['type' => 'string', 'attr' => ['label' => __('Admission Number')]]);
         $this->field('admission_id', ['after' => 'student_status_id']);
+        $this->field('area_administrative_id', ['visible' => false]);
         $this->setFieldOrder(['status_id', 'admission__id', 'assignee_id', 'student_id', 'academic_period_id', 'education_grade_id', 'institution_class_id']);
     }
 
@@ -489,6 +490,11 @@ class StudentAdmissionTable extends ControllerActionTable
             $attr['options'] = $options;
             return $attr;
         }
+    }
+
+    public function onGetAdmissionId(Event $event, Entity $entity)
+    {
+        return $entity->admission_id > 0 ? $entity->admission_id : 'Not Provided';
     }
 
     public function beforeMarshal(Event $event, ArrayObject $data, ArrayObject $options)
