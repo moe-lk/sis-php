@@ -12,6 +12,8 @@ use Cake\ORM\Query;
 use Cake\ORM\ResultSet;
 use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
+use function Psy\debug;
+
 
 class StudentsTable extends ControllerActionTable
 {
@@ -128,8 +130,10 @@ class StudentsTable extends ControllerActionTable
         $searchableFields[] = 'openemis_no';
     }
 
+
     public function validationDefault(Validator $validator)
     {
+//        dd($validator);
         $validator = parent::validationDefault($validator);
 
         $validator
@@ -174,11 +178,6 @@ class StudentsTable extends ControllerActionTable
                     'rule' => ['notEmpty'],
                     'message' => "Admission number can't  left empty",
                 ],
-            ])
-            ->allowEmpty('class')
-            ->add('class', 'ruleClassMaxLimit', [
-                'rule' => ['checkInstitutionClassMaxLimit'],
-                'on' => 'create',
             ])
             ->add('gender_id', 'rulecompareStudentGenderWithInstitution', [
                 'rule' => ['compareStudentGenderWithInstitution'],

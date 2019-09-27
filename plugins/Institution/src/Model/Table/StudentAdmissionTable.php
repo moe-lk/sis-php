@@ -138,12 +138,13 @@ class StudentAdmissionTable extends ControllerActionTable
                 'rule' => ['compareStudentGenderWithInstitution'],
                 'on' => 'create',
             ])
+
             ->add('education_grade_id', 'ruleCheckProgrammeEndDate', [
                 'rule' => ['checkProgrammeEndDate', 'education_grade_id'],
             ])
             ->allowEmpty('institution_class_id')
-            ->add('institution_class_id', 'ruleClassMaxLimit', [
-                'rule' => ['checkInstitutionClassMaxLimit'],
+            ->add('institution_class_id', 'ruleCheckMaxStudentsPerClass', [
+                'rule' => ['checkMaxStudentsPerClass']
             ]);
 
         return $validator;
