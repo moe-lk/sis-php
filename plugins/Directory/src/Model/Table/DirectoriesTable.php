@@ -210,7 +210,7 @@ class DirectoriesTable extends ControllerActionTable
             ->where(function ($exp, $q) use ($subqueryTwo) {
                 return $exp->notExists($subqueryTwo);
             });
-        
+
 
         foreach ($query as $row) {
             $this->updateAll(
@@ -218,7 +218,7 @@ class DirectoriesTable extends ControllerActionTable
                 ['id' => $row->id]
             );
         }
-  
+
     }
 
     public function getCustomFilter(Event $event)
@@ -260,7 +260,7 @@ class DirectoriesTable extends ControllerActionTable
             $this->aliasField('modified_user_id') => $userId
         ];
 
-        
+
 
         // POCOR-2547 sort list of staff and student by name
         $orders = [];
@@ -273,7 +273,7 @@ class DirectoriesTable extends ControllerActionTable
         }
 
         $query->where($conditions)
-            ->orWhere($modifiedUser)
+//            ->orWhere($modifiedUser)
             ->order($orders);
 
         $options['auto_search'] = true;
