@@ -39,8 +39,8 @@ return [
              * mysql configuration directive 'innodb_stats_on_metadata = 0'
              * which is the recommended value in production environments
              */
-            // 'init' => ['SET GLOBAL sql_mode="NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION";
-            // SET SESSION sql_mode="NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION";'],
+            'init' => ['SET GLOBAL sql_mode="NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION";
+            SET SESSION sql_mode="NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION";'],
 
             'url' => env('DATABASE_URL', null),
         ],
@@ -73,5 +73,5 @@ return [
         'log' => false,
         'trace' => true,
     ],
-    'debug' =>true,
+    'debug' => false
 ];
