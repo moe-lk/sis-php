@@ -22,8 +22,6 @@ return [
             'cacheMetadata' => true,
             'log' => false,
             // 'unix_socket' => '/home/wso2/lampstack-7.1.27-1/mysql/tmp/mysql.sock',
-
-
             /**
              * Set identifier quoting to true if you are using reserved words or
              * special characters in your table or column names. Enabling this

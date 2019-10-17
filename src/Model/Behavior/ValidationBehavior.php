@@ -13,6 +13,7 @@ use Cake\Validation\Validation;
 use Cake\Validation\Validator;
 use DateTime;
 use Cake\Routing\Router;
+//use Cack\lo
 
 class ValidationBehavior extends Behavior
 {
@@ -216,28 +217,15 @@ class ValidationBehavior extends Behavior
     }
 
     public static function checkMaxStudentsPerClass($check, array $globalData)
-    {   
-        $ConfigItems = TableRegistry::get('Configuration.ConfigItems');
-        $model = $globalData['providers']['table'];
-        $validationErrorMsg = '';
-        
-        $InstitutionClassSubjectTable = TableRegistry::get('Institution.InstitutionClasses');
-        $MaxStudentSysConfig = $ConfigItems->value('max_students_per_class');
-  
-        $query = $InstitutionClassSubjectTable->find();
-        $query->select([
-            'total_number_of_students' => $query->func()->sum('total_male_students + total_female_students'),
-            'id','name', 'total_male_students', 'total_female_students'
-        ])
-        ->group('id','name', 'total_male_students', 'total_female_students')
-        ->having(['total_number_of_students >' => $check]);
-        
-        $count = $query->count();
+    {
+        $InstitutionClassTable = TableRegistry::get('Institution.InstitutionClasses');
 
-        if($count){
-            $max = $query->max('total_number_of_students');
-            $validationErrorMsg = $model->getMessage('Configuration.ConfigStudentSettings.max_students_per_class.maxStudentLimit', ['sprintf' => [$max['total_number_of_students'], $MaxStudentSysConfig]]);
-        }
+        $query = $InstitutionClassTable->findById($check)->first();
+        $count =  $query->total_male_students +   $query->total_female_students ;
+
+
+        if($count >= $query->no_of_students){
+            $validationErrorMsg =  'Class students limit exceeded the current limit of '. $query->no_of_students;         }
         if (!empty($validationErrorMsg)) {
             return $validationErrorMsg;
         } else {
@@ -246,14 +234,14 @@ class ValidationBehavior extends Behavior
     }
 
     public static function checkMaxStudentsPerSubject($check, array $globalData)
-    {   
+    {
         $ConfigItems = TableRegistry::get('Configuration.ConfigItems');
         $model = $globalData['providers']['table'];
         $validationErrorMsg = '';
-        
+
         $InstitutionClassSubjectTable = TableRegistry::get('Institution.InstitutionSubjects');
         $MaxStudentSysConfig = $ConfigItems->value('max_students_per_subject');
-     
+
         $query = $InstitutionClassSubjectTable->find();
         $query->select([
             'total_number_of_students' => $query->func()->sum('total_male_students + total_female_students'),
@@ -261,7 +249,7 @@ class ValidationBehavior extends Behavior
         ])
         ->group('id','name', 'total_male_students', 'total_female_students')
         ->having(['total_number_of_students >' => $check]);
-        
+
         $count = $query->count();
 
         if($count){
@@ -705,18 +693,46 @@ class ValidationBehavior extends Behavior
     // Return false if not enrolled in other education system
     public static function checkInstitutionClassMaxLimit($class_id, array $globalData)
     {
-        $ClassStudents = TableRegistry::get("Institution.InstitutionClassStudents");
-        $currentNumberOfStudents = $ClassStudents->find()->where([
-                $ClassStudents->aliasField('institution_class_id') => $class_id,
-                $ClassStudents->aliasField('education_grade_id') => $globalData['data']['education_grade_id']
-            ])->count();
-        /**
-         * @todo  add this max limit to config
-         * This limit value is being used in InstitutionClasses->editAfterAction()
-         */
+//        $ClassStudents = TableRegistry::get("Institution.InstitutionClassStudents");
+//        $currentNumberOfStudents = $ClassStudents->find()->where([
+//                $ClassStudents->aliasField('institution_class_id') => $class_id,
+//                $ClassStudents->aliasField('education_grade_id') => $globalData['data']['education_grade_id']
+//            ])->count();
+//        /**
+//         * @todo  add this max limit to config
+//         * This limit value is being used in InstitutionClasses->editAfterAction()
+//         */
         $ConfigItems = TableRegistry::get('Configuration.ConfigItems');
+//        $MaxStudentSysConfig = $ConfigItems->value('max_students_per_class');
+//        return ($currentNumberOfStudents < $MaxStudentSysConfig);
+        $model = $globalData['providers']['table'];
+
+
+        $InstitutionClassSubjectTable = TableRegistry::get('Institution.InstitutionClasses');
         $MaxStudentSysConfig = $ConfigItems->value('max_students_per_class');
-        return ($currentNumberOfStudents < $MaxStudentSysConfig);
+
+        $query = $InstitutionClassSubjectTable->find();
+        $query->select([
+            'total_number_of_students' => $query->func()->sum('total_male_students + total_female_students'),
+            'id','name', 'total_male_students', 'total_female_students' , 'no_of_students'
+        ])
+//        ->group('id','name', 'total_male_students', 'total_female_students')
+            ->where(['id >' => $class_id])
+            ->first();
+
+//        $count = $query->count();
+
+
+        if($query->total_number_of_students >= $query->no_of_students){
+            $max = $query->max('total_number_of_students');
+            $validationErrorMsg = $model->getMessage('Configuration.ConfigStudentSettings.max_students_per_class.maxStudentLimit', ['sprintf' => [$max['total_number_of_students'], $MaxStudentSysConfig]]);
+//            return false;
+        }
+        if (!empty($validationErrorMsg)) {
+            return $validationErrorMsg;
+        } else {
+            return true;
+        }
     }
 
     public static function studentNotEnrolledInAnyInstitutionAndSameEducationSystem($field, $options = [], array $globalData)
@@ -2489,7 +2505,7 @@ class ValidationBehavior extends Behavior
     public static function checkGuardianGender($field, array $globalData)
     {
         $model = $globalData['providers']['table'];
-    
+
         $StudentGuardians = TableRegistry::get('Student.Guardians');
         $genderId = $globalData['data']['gender_id'];
 
@@ -2584,7 +2600,7 @@ class ValidationBehavior extends Behavior
                     ->toArray();
 
                 $errorMsg = $model->getMessage('FieldOption.StaffPositionTitles.position_grades.ruleCheckPositionGrades', ['sprintf' => [implode(", ", $results)]]);
-                
+
                 return $errorMsg;
             }
         }
@@ -2602,8 +2618,8 @@ class ValidationBehavior extends Behavior
         if($requestAmount > $maxAwardAmount) {
             return $model->getMessage('Scholarship.Applications.requested_amount.ruleCheckRequestedAmount');
         }
-        
-        return true; 
+
+        return true;
     }
 
     public static function checkApprovedAmount($field, array $globalData)
@@ -2647,8 +2663,8 @@ class ValidationBehavior extends Behavior
         } else if ($approvedAmount < $collectedAmount->total) {
             return $model->getMessage('Scholarship.ScholarshipRecipients.approved_amount.ruleCheckApprovedWithCollected');
         }
-        
-        return true; 
+
+        return true;
     }
 
     public static function checkChoiceStatus($field, array $globalData)
@@ -2656,7 +2672,7 @@ class ValidationBehavior extends Behavior
         $model = $globalData['providers']['table'];
         $statusId = $globalData['data']['scholarship_institution_choice_status_id'];
         $InstitutionChoiceStatuses = TableRegistry::get('Scholarship.InstitutionChoiceStatuses');
-        
+
         $institutionChoiceStatusesOptions = $InstitutionChoiceStatuses
             ->find('list', [
                 'keyField' => 'id',
@@ -2668,8 +2684,8 @@ class ValidationBehavior extends Behavior
         if($institutionChoiceStatusesOptions[$statusId] != 'ACCEPTED') {
             return false;
         }
-        
-        return true; 
+
+        return true;
     }
 
     //check whether position assigned to class(es)
