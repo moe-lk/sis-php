@@ -12,7 +12,7 @@ return [
             'className' => 'Cake\Database\Connection',
             'driver' => 'Cake\Database\Driver\Mysql',
             'persistent' => false,
-            'host' => env('DB_HOST','mariadb'),
+            'host' => env('DB_HOST','sis-mysql'),
             'username' => env('DB_USER','root'),
             'password' => env('DB_PASS','secret'),
             'database' => env('DB_NAME','openemis'),
@@ -72,5 +72,5 @@ return [
         'log' => false,
         'trace' => true,
     ],
-    'debug' => false
+    'debug' => true
 ];
