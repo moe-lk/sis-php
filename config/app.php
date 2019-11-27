@@ -84,38 +84,43 @@ return [
      */
     'Cache' => [
         'default' => [
-            'className' => 'File',
+            'className' => 'Redis',
             'path' => CACHE,
-            'url' => env('CACHE_DEFAULT_URL', null),
+            'password' => false,
+            'host' => 'redis',
+            'url' => 'redis://cache',
+            'port' => 6379,
         ],
-
         /**
          * Configure the cache used for general framework caching.
          * Translation cache files are stored with this configuration.
-         * Duration will be set to '+1 year' in bootstrap.php when debug = false
          */
         '_cake_core_' => [
-            'className' => 'File',
+            'className' => 'Redis',
             'prefix' => 'myapp_cake_core_',
             'path' => CACHE . 'persistent/',
             'serialize' => true,
             'duration' => '+2 minutes',
-            'url' => env('CACHE_CAKECORE_URL', null),
+            'host' => 'redis',
+            'url' => 'redis://cache',
+            'port' => 6379,
+            'password' => false,
         ],
-
         /**
          * Configure the cache for model and datasource caches. This cache
          * configuration is used to store schema descriptions, and table listings
          * in connections.
-         * Duration will be set to '+1 year' in bootstrap.php when debug = false
          */
         '_cake_model_' => [
-            'className' => 'File',
+            'className' => 'Redis',
             'prefix' => 'myapp_cake_model_',
             'path' => CACHE . 'models/',
             'serialize' => true,
             'duration' => '+2 minutes',
-            'url' => env('CACHE_CAKEMODEL_URL', null),
+            'host' => 'redis',
+            'url' => 'redis://cache',
+            'port' => 6379,
+            'password' => false,
         ],
     ],
 
@@ -340,5 +345,8 @@ return [
      */
     'Session' => [
         'defaults' => 'php',
-    ]
+//         'defaults' => 'cache',
+    ],
+    'debug' => true
+
 ];
