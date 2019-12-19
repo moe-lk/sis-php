@@ -84,43 +84,35 @@ return [
      */
     'Cache' => [
         'default' => [
-            'className' => 'Redis',
+            'className' => 'File',
             'path' => CACHE,
-            'password' => false,
-            'host' => 'redis',
-            'url' => 'redis://cache',
-            'port' => 6379,
+            'url' => env('CACHE_DEFAULT_URL', null),
         ],
         /**
          * Configure the cache used for general framework caching.
          * Translation cache files are stored with this configuration.
          */
         '_cake_core_' => [
-            'className' => 'Redis',
+            'className' => 'File',
             'prefix' => 'myapp_cake_core_',
             'path' => CACHE . 'persistent/',
             'serialize' => true,
             'duration' => '+2 minutes',
-            'host' => 'redis',
-            'url' => 'redis://cache',
-            'port' => 6379,
-            'password' => false,
+            'url' => env('CACHE_CAKECORE_URL', null),
         ],
+
         /**
          * Configure the cache for model and datasource caches. This cache
          * configuration is used to store schema descriptions, and table listings
          * in connections.
          */
         '_cake_model_' => [
-            'className' => 'Redis',
+            'className' => 'File',
             'prefix' => 'myapp_cake_model_',
             'path' => CACHE . 'models/',
             'serialize' => true,
             'duration' => '+2 minutes',
-            'host' => 'redis',
-            'url' => 'redis://cache',
-            'port' => 6379,
-            'password' => false,
+            'url' => env('CACHE_CAKEMODEL_URL', null),
         ],
     ],
 

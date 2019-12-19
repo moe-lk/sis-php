@@ -232,7 +232,7 @@ class SingleGradeBehavior extends Behavior
 
     private function numberOfClassesOptions()
     {
-        $total = 10;
+        $total = 20;
         $options = [];
         for ($i=1; $i<=$total; $i++) {
             $options[$i] = $i;

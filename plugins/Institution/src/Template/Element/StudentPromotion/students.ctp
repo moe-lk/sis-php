@@ -46,6 +46,11 @@
 												echo $this->Form->checkbox("$fieldPrefix.selected", ['class' => 'no-selection-label', 'kd-checkbox-radio' => '']);
 												echo $this->Form->hidden("$fieldPrefix.student_id", ['value' => $obj->student_id]);
 											}
+//                                        $inputOptions = [
+//                                            'type' => 'select',
+//                                            'label' => false,
+//                                            'options' => $attr['classOptions']
+//                                        ];
 										?>
 									</td>
 									<?php } ?>
@@ -53,6 +58,7 @@
 									<td><?= $obj->_matchingData['Users']->name ?></td>
 									<td><?= $obj->_matchingData['EducationGrades']->programme_grade_name ?></td>
 									<td><?= isset($attr['classOptions'][$obj->institution_class_id]) ? $attr['classOptions'][$obj->institution_class_id] : '' ?></td>
+<!--                                    <td>--><?php //echo $this->Form->input("$alias.class", $inputOptions);?><!--</td>-->
 								</tr>
 							<?php $studentCount++;
 							endforeach ?>
