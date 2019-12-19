@@ -12,7 +12,7 @@ return [
             'className' => 'Cake\Database\Connection',
             'driver' => 'Cake\Database\Driver\Mysql',
             'persistent' => false,
-            'host' => env('DB_HOST','mariadb'),
+            'host' => env('DB_HOST','sis-mysql'),
             'username' => env('DB_USER','root'),
             'password' => env('DB_PASS','secret'),
             'database' => env('DB_NAME','openemis'),
@@ -22,7 +22,6 @@ return [
             'cacheMetadata' => true,
             'log' => false,
             // 'unix_socket' => '/home/wso2/lampstack-7.1.27-1/mysql/tmp/mysql.sock',
-
             /**
              * Set identifier quoting to true if you are using reserved words or
              * special characters in your table or column names. Enabling this
@@ -39,8 +38,8 @@ return [
              * mysql configuration directive 'innodb_stats_on_metadata = 0'
              * which is the recommended value in production environments
              */
-            // 'init' => ['SET GLOBAL sql_mode="NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION";
-            // SET SESSION sql_mode="NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION";'],
+            'init' => ['SET GLOBAL sql_mode="NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION";
+            SET SESSION sql_mode="NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION";'],
 
             'url' => env('DATABASE_URL', null),
         ],
@@ -73,5 +72,5 @@ return [
         'log' => false,
         'trace' => true,
     ],
-    'debug' =>true,
+    'debug' => true
 ];
