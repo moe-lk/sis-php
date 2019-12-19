@@ -670,7 +670,6 @@ class StudentPromotionTable extends AppTable
         $attr['element'] = 'Institution.StudentPromotion/students';
         $attr['data'] = $students;
         $attr['classOptions'] = $this->institutionClasses;
-
         return $attr;
     }
 
@@ -771,6 +770,7 @@ class StudentPromotionTable extends AppTable
         if (array_key_exists('education_grade_id', $data[$this->alias()])) {
             $nextEducationGradeId = $data[$this->alias()]['education_grade_id'];
         }
+        //TODO: implement class update
         if (array_key_exists('student_status_id', $data[$this->alias()])) {
             $statusToUpdate = $data[$this->alias()]['student_status_id'];
         }
