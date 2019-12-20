@@ -161,24 +161,24 @@ class StudentsTable extends ControllerActionTable
                 'rule' => ['checkAdmissionAgeWithEducationCycleGrade'],
                 'on' => 'create',
             ])
-            ->add('admission_id', [
-                'minLength' => [
-                    'rule' => ['minLength', 4],
-                    'message' => 'Admission number must be of 4 characters long',
-                ],
-                'maxLength' => [
-                    'rule' => ['maxLength', 12],
-                    'message' => 'Admission number must be of 12 characters long',
-                ],
-                'ruleNumeric' => [
-                    'rule' => ['numeric'],
-                    'message' => 'Admission number can only contain numbers',
-                ],
-                'ruleNotEmpty' => [
-                    'rule' => ['notEmpty'],
-                    'message' => "Admission number can't  left empty",
-                ],
-            ])
+//            ->add('admission_id', [
+//                'minLength' => [
+//                    'rule' => ['minLength', 4],
+//                    'message' => 'Admission number must be of 4 characters long',
+//                ],
+//                'maxLength' => [
+//                    'rule' => ['maxLength', 12],
+//                    'message' => 'Admission number must be of 12 characters long',
+//                ],
+//                'ruleNumeric' => [
+//                    'rule' => ['numeric'],
+//                    'message' => 'Admission number can only contain numbers',
+//                ],
+//                'ruleNotEmpty' => [
+//                    'rule' => ['notEmpty'],
+//                    'message' => "Admission number can't  left empty",
+//                ],
+//            ])
             ->add('gender_id', 'rulecompareStudentGenderWithInstitution', [
                 'rule' => ['compareStudentGenderWithInstitution'],
             ])
