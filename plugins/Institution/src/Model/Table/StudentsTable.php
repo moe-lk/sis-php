@@ -170,9 +170,9 @@ class StudentsTable extends ControllerActionTable
                     'rule' => ['maxLength', 12],
                     'message' => 'Admission number must be of 12 characters long',
                 ],
-                'ruleNumeric' => [
-                    'rule' => ['numeric'],
-                    'message' => 'Admission number can only contain numbers',
+                'validNumber' => [
+                    'rule' => array('custom', '/^[a-z\d]+(?:\/[a-z\d]+)+$/i'),
+                    'message' => 'Must contain letters , numbers and "/" only '
                 ],
                 'ruleNotEmpty' => [
                     'rule' => ['notEmpty'],
