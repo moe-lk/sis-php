@@ -105,12 +105,12 @@ class StudentPromotionTable extends AppTable
     public function addAfterAction()
     {
         $this->fields = [];
-        $this->ControllerAction->field('from_academic_period_id', ['attr' => ['label' => $this->getMessage($this->aliasField('fromAcademicPeriod'))]]);
-        $this->ControllerAction->field('next_academic_period_id', ['attr' => ['label' => $this->getMessage($this->aliasField('toAcademicPeriod'))]]);
-        $this->ControllerAction->field('grade_to_promote', ['attr' => ['label' => $this->getMessage($this->aliasField('fromGrade'))]]);
+        $this->ControllerAction->field('from_academic_period_id', ['attr' => ['label' => 'From Academic Period' ]]); //$this->getMessage($this->aliasField('fromAcademicPeriod'))
+        $this->ControllerAction->field('next_academic_period_id', ['attr' => ['label' => 'To Academic Period']]); //$this->getMessage($this->aliasField('toAcademicPeriod'))
+        $this->ControllerAction->field('grade_to_promote', ['attr' => ['label' => 'To Grade']]); //$this->getMessage($this->aliasField('fromGrade'))
         $this->ControllerAction->field('class');
-        $this->ControllerAction->field('student_status_id', ['attr' => ['label' => $this->getMessage($this->aliasField('status'))]]);
-        $this->ControllerAction->field('education_grade_id', ['attr' => ['label' => $this->getMessage($this->aliasField('toGrade'))]]);
+        $this->ControllerAction->field('student_status_id', ['attr' => ['label' => 'Status']]);//$this->getMessage($this->aliasField('status'))
+        $this->ControllerAction->field('education_grade_id', ['attr' => ['label' => 'To Grade']]);// $this->getMessage($this->aliasField('toGrade'))
         $this->ControllerAction->field('students');
 
         $this->ControllerAction->setFieldOrder(['from_academic_period_id', 'next_academic_period_id', 'grade_to_promote', 'class', 'student_status_id', 'education_grade_id','students']);

@@ -136,12 +136,12 @@ class UsersTable extends AppTable
         $this->fields['birthplace_area_id']['visible'] = false;
         $this->fields['nationality_id']['type'] = 'readonly';
         $this->fields['identity_type_id']['type'] = 'readonly';
-        $this->field('first_name', ['attr' => ['label' => 'Full Name']]);
-        $this->field('last_name', ['attr' => ['label' => 'Name with initials']]);
-        $this->field('username', ['visible' => false]);
-        $this->field('middle_name', ['visible' => false]);
-        $this->field('third_name', ['visible' => false]);
-        $this->field('preferred_name', ['visible' => false]);
+        $this->fields['first_name']['attr'] ['label']  = 'Full Name';
+        $this->fields['last_name']['attr'] ['label'] = 'Name with initials';
+        $this->fields['username']['visible'] = false;
+        $this->fields['middle_name'] ['visible'] = false;
+        $this->fields['third_name']['visible'] = false;
+        $this->fields['preferred_name']['visible'] = false;
 
         if ($this->action == 'edit') {
             $this->fields['last_login']['visible'] = false;
