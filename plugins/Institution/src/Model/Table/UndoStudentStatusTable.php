@@ -652,6 +652,8 @@ class UndoStudentStatusTable extends AppTable
         $this->ControllerAction->field('class', ['select' => false]);
         $this->ControllerAction->field('student_status_id', ['type' => 'select']);
         $this->ControllerAction->field('students');
+        $this->ControllerAction->field('admission_id', ['visible' => false]);
+        $this->ControllerAction->field('area_administrative_id', ['visible' => false]);
 
         $this->ControllerAction->setFieldOrder(['student_status_id', 'academic_period_id', 'education_grade_id', 'class', 'students']);
     }
