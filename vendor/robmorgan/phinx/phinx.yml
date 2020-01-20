@@ -16,10 +16,10 @@ environments:
 
     development:
         adapter: mysql
-        host: myapp-mysql
-        name: students
-        user: myapp
-        pass: 'myapp'
+        host: sis-mysql
+        name: openemis
+        user: root
+        pass: 'secret'
         port: 3306
         charset: utf8
 
