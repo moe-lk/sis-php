@@ -47,6 +47,7 @@ RUN docker-php-ext-enable imagick
 RUN pecl install -o -f redis
 RUN docker-php-ext-enable redis
 RUN a2enmod rewrite
+RUN service apache2 restart
 
 RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
 
