@@ -48,7 +48,7 @@ class StudentPromotionTable extends AppTable
             ->requirePresence('from_academic_period_id')
             ->requirePresence('next_academic_period_id')
             ->requirePresence('grade_to_promote')
-            ->requirePresence('class')
+//            ->requirePresence('class')
             ->allowEmpty('education_grade_id', function ($context) {
                 $studentStatusId = (!empty($context['data']['student_status_id']))? $context['data']['student_status_id']: '';
                 return ($studentStatusId != $this->statuses['PROMOTED']);
@@ -61,8 +61,8 @@ class StudentPromotionTable extends AppTable
         return $validator
             ->requirePresence('from_academic_period_id', false)
             ->requirePresence('next_academic_period_id', false)
-            ->requirePresence('grade_to_promote', false)
-            ->requirePresence('class', false);
+            ->requirePresence('grade_to_promote', false);
+//            ->requirePresence('class', false);
     }
 
     public function implementedEvents()
@@ -100,6 +100,7 @@ class StudentPromotionTable extends AppTable
         $selectedPeriod = $this->AcademicPeriods->getCurrent();
         $this->currentPeriod = $this->AcademicPeriods->get($selectedPeriod);
         $this->statuses = $this->StudentStatuses->findCodeList();
+        $this->methods = [1,2];
     }
 
     public function addAfterAction()
@@ -107,13 +108,14 @@ class StudentPromotionTable extends AppTable
         $this->fields = [];
         $this->ControllerAction->field('from_academic_period_id', ['attr' => ['label' => 'From Academic Period' ]]); //$this->getMessage($this->aliasField('fromAcademicPeriod'))
         $this->ControllerAction->field('next_academic_period_id', ['attr' => ['label' => 'To Academic Period']]); //$this->getMessage($this->aliasField('toAcademicPeriod'))
+        $this->ControllerAction->field('method', [ 'attr' => ['label' => 'Pool / Parallel' ,'type' => 'select','options' => ['Pool','Parallel']]]);
         $this->ControllerAction->field('grade_to_promote', ['attr' => ['label' => 'From Grade']]); //$this->getMessage($this->aliasField('fromGrade'))
-        $this->ControllerAction->field('class');
+//
         $this->ControllerAction->field('student_status_id', ['attr' => ['label' => 'Status']]);//$this->getMessage($this->aliasField('status'))
         $this->ControllerAction->field('education_grade_id', ['attr' => ['label' => 'To Grade']]);// $this->getMessage($this->aliasField('toGrade'))
         $this->ControllerAction->field('students');
 
-        $this->ControllerAction->setFieldOrder(['from_academic_period_id', 'next_academic_period_id', 'grade_to_promote', 'class', 'student_status_id', 'education_grade_id','students']);
+        $this->ControllerAction->setFieldOrder(['method','from_academic_period_id', 'next_academic_period_id', 'grade_to_promote', 'student_status_id', 'education_grade_id','students']);
     }
 
     public function addOnChangeFromPeriod(Event $event, Entity $entity, ArrayObject $data, ArrayObject $options)
@@ -193,6 +195,10 @@ class StudentPromotionTable extends AppTable
             }
         }
     }
+//
+//    public function addOnChangeMethods(Event $event, Entity $entity, ArrayObject $data, ArrayObject $options){
+//
+//    }
 
     public function onUpdateFieldFromAcademicPeriodId(Event $event, array $attr, $action, Request $request)
     {
@@ -215,6 +221,13 @@ class StudentPromotionTable extends AppTable
                 $attr['onChangeReload'] = 'changeFromPeriod';
                 break;
         }
+        return $attr;
+    }
+
+    public function onUpdateFieldMethod(Event $event, array $attr, $action, Request $request){
+        $attr['type'] = 'select';
+        $attr['options'] = ['Pool',"Parallel"];
+//        $attr['onChangeReload'] = 'changeMethod';
         return $attr;
     }
 
@@ -400,7 +413,7 @@ class StudentPromotionTable extends AppTable
                     $selectedClass = $request->query('class');
                     if (empty($selectedClass)) {
                         if (!empty($classes)) {
-                            $selectedClass = key($classes);
+                            $selectedClass = key($this->institutionClasses);
                         }
                     }
                     $studentStatuses = $this->statuses;
@@ -426,7 +439,7 @@ class StudentPromotionTable extends AppTable
                                         $this->aliasField('academic_period_id') => $selectedPeriod,
                                         $this->aliasField('student_status_id') => $studentStatuses['CURRENT'],
                                         $this->aliasField('education_grade_id') => $educationGradeId,
-                                        'InstitutionClassStudents.institution_class_id' => $id
+//                                        'InstitutionClassStudents.institution_class_id' => $id
                                     ])
                                     ->count();
                             }
@@ -587,7 +600,18 @@ class StudentPromotionTable extends AppTable
             $selectedGrade = $request->query('grade_to_promote');
             if (!is_null($selectedGrade)) {
                 $studentStatuses = $this->statuses;
-                $selectedClass = $request->query('class');
+                $institutionClassTable = TableRegistry::get('Institution.InstitutionClasses');
+                $institutionClassGradesTable = TableRegistry::get('Institution.InstitutionClassGrade');
+                $classes = $institutionClassTable
+                    ->find('list')
+                    ->leftJoinWith('ClassGrades')
+                    ->where([
+                        $institutionClassTable->aliasField('academic_period_id') => $selectedPeriod,
+                        $institutionClassTable->aliasField('institution_id') => $institutionId,
+                        'ClassGrades.education_grade_id' => $selectedGrade
+                    ])
+                    ->toArray();
+                $selectedClass = array_keys($classes);
 
                 $students = $this->find()
                     ->matching('Users')
@@ -598,7 +622,7 @@ class StudentPromotionTable extends AppTable
                         $this->aliasField('student_status_id') => $studentStatuses['CURRENT'],
                         $this->aliasField('education_grade_id') => $selectedGrade
                     ])
-                    ->find('studentClasses', ['institution_class_id' => $selectedClass])
+                    ->find('studentClasses', ['institution_class_id IN' => $selectedClass])
                     ->select(['institution_class_id' => 'InstitutionClassStudents.institution_class_id'])
                     ->order(['Users.first_name'])
                     ->autoFields(true);
@@ -874,7 +898,7 @@ class StudentPromotionTable extends AppTable
 
         $this->ControllerAction->field('from_academic_period_id', ['type' => 'readonly', 'attr' => ['label' => $this->getMessage($this->aliasField('fromAcademicPeriod'))]]);
         $this->ControllerAction->field('grade_to_promote', ['type' => 'readonly', 'attr' => ['label' => $this->getMessage($this->aliasField('fromGrade'))]]);
-        $this->ControllerAction->field('class');
+//        $this->ControllerAction->field('class');
         $this->ControllerAction->field('next_academic_period_id', ['type' => 'readonly', 'attr' => ['label' => $this->getMessage($this->aliasField('toAcademicPeriod'))]]);
         $this->ControllerAction->field('student_status', ['type' => 'readonly', 'attr' => ['label' => $this->getMessage($this->aliasField('status'))]]);
         $statuses = $this->statuses;
