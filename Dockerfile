@@ -53,6 +53,6 @@ RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
 
 ADD ./ /var/www/html
 
-ENTRYPOINT ['sh','build.sh']
+ENTRYPOINT ["/var/www/html/build.sh"]
 
 EXPOSE 9000
