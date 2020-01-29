@@ -53,6 +53,8 @@ RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
 
 ADD ./ /var/www/html
 
+
+RUN ["chmod", "+x", "/var/www/html/build.sh"]
 ENTRYPOINT ['sh','build.sh']
 
 EXPOSE 9000
