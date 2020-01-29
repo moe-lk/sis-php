@@ -224,6 +224,10 @@ class StudentPromotionTable extends AppTable
         return $attr;
     }
 
+    public function addOnChangeMethod(Event $event, Entity $entity, ArrayObject $data, ArrayObject $options){
+
+    }
+
     public function onUpdateFieldMethod(Event $event, array $attr, $action, Request $request){
         $attr['type'] = 'select';
         $attr['options'] = ['Pool',"Parallel"];
@@ -574,6 +578,7 @@ class StudentPromotionTable extends AppTable
 
         return $attr;
     }
+
 
     public function onUpdateFieldStudents(Event $event, array $attr, $action, Request $request)
     {
