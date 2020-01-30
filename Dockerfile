@@ -51,7 +51,12 @@ RUN service apache2 restart
 
 RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
 
+
 ADD ./ /var/www/html
+
+RUN mkdir tmp logs
+RUN chgrp -R www-data logs tmp
+RUN chmod -R g+rw logs tmp
 
 RUN ["chmod", "+x", "/var/www/html/build.sh"]
 
