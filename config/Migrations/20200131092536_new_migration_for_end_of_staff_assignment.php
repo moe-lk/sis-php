@@ -28,10 +28,14 @@ class NewMigrationForEndOfStaffAssignment extends AbstractMigration
     public function up()
     {
 //        $this->execute("UPDATE `openemis`.`institution_staff` SET `end_date` = null WHERE 1");
-        $staff = \Cake\ORM\TableRegistry::get('institution_staff');
-        $rows = $staff->find();
-        foreach ($rows as $row) {
-            $staff->updateAll(['end_date' => null , 'end_year' => null , 'staff_status_id' => 1],['id'=>$row->id]);
+        try{
+            $staff = \Cake\ORM\TableRegistry::get('institution_staff');
+            $rows = $staff->find();
+            foreach ($rows as $row) {
+                $staff->updateAll(['end_date' => null , 'end_year' => null , 'staff_status_id' => 1],['id'=>$row->id]);
+            }
+        }catch (\Exception $e){
+            dd($e);
         }
 
 
