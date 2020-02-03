@@ -48,7 +48,7 @@ class StudentPromotionTable extends AppTable
             ->requirePresence('from_academic_period_id')
             ->requirePresence('next_academic_period_id')
             ->requirePresence('grade_to_promote')
-//            ->requirePresence('class')
+//            ->requirePresence('class_to_promote')
             ->allowEmpty('education_grade_id', function ($context) {
                 $studentStatusId = (!empty($context['data']['student_status_id']))? $context['data']['student_status_id']: '';
                 return ($studentStatusId != $this->statuses['PROMOTED']);
@@ -91,16 +91,49 @@ class StudentPromotionTable extends AppTable
 
     public function beforeAction(Event $event)
     {
+        $query = $this->request->query;
+
         $this->InstitutionGrades = TableRegistry::get('Institution.InstitutionGrades');
         $this->institutionId = $this->Session->read('Institution.Institutions.id');
         $institutionClassTable = TableRegistry::get('Institution.InstitutionClasses');
         $this->institutionClasses = $institutionClassTable->find('list')
             ->where([$institutionClassTable->aliasField('institution_id') => $this->institutionId])
             ->toArray();
+        $selectedGrade = $this->request->query['grade_to_promote'];
+        $nextGrades = $this->EducationGrades->getNextAvailableEducationGrades($selectedGrade);
+        $this->institutionNextClasses = [];
+        $this->nextGrade = null;
+        $this->isPerallal = false;
+        if(!empty($nextGrades)){
+            $this->nextGrade = $this->EducationGrades->get(key($nextGrades));
+            $this->institutionNextClasses = $institutionClassTable->find('list')
+                ->leftJoinWith('ClassGrades')
+                ->where([$institutionClassTable->aliasField('institution_id') => $this->institutionId,
+                    'ClassGrades.education_grade_id' => key($nextGrades)])
+                ->toArray();
+        }
         $selectedPeriod = $this->AcademicPeriods->getCurrent();
         $this->currentPeriod = $this->AcademicPeriods->get($selectedPeriod);
         $this->statuses = $this->StudentStatuses->findCodeList();
         $this->methods = [1,2];
+
+        // Promotion method , pool / peralell
+//        dd($query);
+        $selectedMethod = 0;
+        if (array_key_exists('method', $query)) {
+            $selectedMethod = $query['method'];
+        }
+        $gradeBehaviors = ['Institution.PoolPromotion', 'Institution.ParallelPromotion'];
+        foreach ($gradeBehaviors as $behavior) {
+            if ($this->hasBehavior($behavior)) {
+                $this->removeBehavior($behavior);
+            }
+        }
+        if ($selectedMethod == 0) {
+            $this->addBehavior('Institution.PoolPromotion');
+        } else {
+            $this->addBehavior('Institution.ParallelPromotion');
+        }
     }
 
     public function addAfterAction()
@@ -225,13 +258,17 @@ class StudentPromotionTable extends AppTable
     }
 
     public function addOnChangeMethod(Event $event, Entity $entity, ArrayObject $data, ArrayObject $options){
-
+        if ($data['StudentPromotion']['method'] == 0) {
+            $this->isParallel = false;
+        } else {
+            $this->isParallel = true;
+        }
     }
 
     public function onUpdateFieldMethod(Event $event, array $attr, $action, Request $request){
         $attr['type'] = 'select';
         $attr['options'] = ['Pool',"Parallel"];
-//        $attr['onChangeReload'] = 'changeMethod';
+        $attr['onChangeReload'] = 'changeMethod';
         return $attr;
     }
 
@@ -412,6 +449,7 @@ class StudentPromotionTable extends AppTable
                             $institutionClass->aliasField('institution_id') => $institutionId,
                             'ClassGrades.education_grade_id' => $educationGradeId
                         ])
+                        ->limit(320)
                         ->toArray();
                     $options = $options + $classes;
                     $selectedClass = $request->query('class');
@@ -603,10 +641,11 @@ class StudentPromotionTable extends AppTable
         $students = [];
         if (!empty($selectedPeriod) && $selectedPeriod != -1) {
             $selectedGrade = $request->query('grade_to_promote');
+            $nextGrades = $this->EducationGrades->getNextAvailableEducationGrades($selectedGrade);
+            $toPeriod = $request->query('next_academic_period_id');
             if (!is_null($selectedGrade)) {
                 $studentStatuses = $this->statuses;
                 $institutionClassTable = TableRegistry::get('Institution.InstitutionClasses');
-                $institutionClassGradesTable = TableRegistry::get('Institution.InstitutionClassGrade');
                 $classes = $institutionClassTable
                     ->find('list')
                     ->leftJoinWith('ClassGrades')
@@ -615,6 +654,7 @@ class StudentPromotionTable extends AppTable
                         $institutionClassTable->aliasField('institution_id') => $institutionId,
                         'ClassGrades.education_grade_id' => $selectedGrade
                     ])
+                    ->limit(320)
                     ->toArray();
                 $selectedClass = array_keys($classes);
 
@@ -630,6 +670,7 @@ class StudentPromotionTable extends AppTable
                     ->find('studentClasses', ['institution_class_id IN' => $selectedClass])
                     ->select(['institution_class_id' => 'InstitutionClassStudents.institution_class_id'])
                     ->order(['Users.first_name'])
+                    ->limit(320)
                     ->autoFields(true);
 
                 if ($students->count() > 0) {
@@ -637,7 +678,7 @@ class StudentPromotionTable extends AppTable
                     $StudentAdmissionTable = TableRegistry::get('Institution.StudentAdmission');
                     $StudentTransfersTable = TableRegistry::get('Institution.InstitutionStudentTransfers');
                     $StudentWithdrawTable = TableRegistry::get('Institution.StudentWithdraw');
-                    $students = $students->toArray();
+                    $students = $students->limit(320)->toArray();
 
                     $pendingAdmissionStatus = $WorkflowModelsTable->getWorkflowStatusSteps('Institution.StudentAdmission', 'PENDING');
                     $pendingWithdrawStatus = $WorkflowModelsTable->getWorkflowStatusSteps('Institution.StudentWithdraw', 'PENDING');
@@ -699,6 +740,9 @@ class StudentPromotionTable extends AppTable
         $attr['element'] = 'Institution.StudentPromotion/students';
         $attr['data'] = $students;
         $attr['classOptions'] = $this->institutionClasses;
+        $attr['nextGrade'] =  $this->nextGrade;
+        $attr['isParallel'] =  $this->isParallel;
+        $attr['nextClassOptions'] =  $this->institutionNextClasses;//$classesToPromote;
         return $attr;
     }
 
@@ -800,6 +844,9 @@ class StudentPromotionTable extends AppTable
             $nextEducationGradeId = $data[$this->alias()]['education_grade_id'];
         }
         //TODO: implement class update
+        if (array_key_exists('class_to_promote', $data[$this->alias()])) {
+            $nextClass = $data[$this->alias()]['class_to_promote'];
+        }
         if (array_key_exists('student_status_id', $data[$this->alias()])) {
             $statusToUpdate = $data[$this->alias()]['student_status_id'];
         }
@@ -946,6 +993,11 @@ class StudentPromotionTable extends AppTable
                 # code...
                 break;
         }
+    }
+
+
+    public function getListONextClasses($educationGrade){
+
     }
 
     public function getListOfInstitutionGrades($institutionId)
