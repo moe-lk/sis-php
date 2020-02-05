@@ -47,6 +47,7 @@
 												$fieldPrefix = "$alias.students.$i";
 												echo $this->Form->checkbox("$fieldPrefix.selected", ['class' => 'no-selection-label', 'kd-checkbox-radio' => '']);
 												echo $this->Form->hidden("$fieldPrefix.student_id", ['value' => $obj->student_id]);
+
 											}
 //                                        $inputOptions = [
 //                                            'type' => 'select',
@@ -63,7 +64,7 @@
                                     <td>
                                         <?php
                                         if(!empty($attr['nextClassOptions']) && $attr['isParallel']){
-                                            echo $this->Form->select('class_to_promote', $attr['nextClassOptions'], array(
+                                            echo $this->Form->select("$fieldPrefix.institution_class_id", $attr['nextClassOptions'], array(
                                                     'empty' => false,
                                                     'value' => array_search(str_replace($obj->_matchingData['EducationGrades']->name , $attr['nextGrade']->name,$attr['classOptions'][$obj->institution_class_id]),$attr['nextClassOptions']))
                                             );
