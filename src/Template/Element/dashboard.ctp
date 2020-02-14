@@ -22,15 +22,17 @@ use Cake\Routing\Router; ?>
 <script type="text/javascript"
         src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
 
-<?php if ($unprocessedStudentQuery == 1): ?>
-    <div class="alert alert-danger text-center text-uppercase" role="alert">
-        You have <strong><?= ($notYetProcessed) ?> </strong> Not yet Processed <?= ($model) ?>
-    </div>
-<?php else: ?>
-    <div class="alert alert-warning text-center text-uppercase" role="alert">
-        You have <strong><?= ($notYetProcessed) ?> </strong> Not yet Processed <?= ($model) ?> and we are currently
-        processing them
-    </div>
+<?php if ($model == 'students'): ?>
+    <?php if ($unprocessedStudentQuery == 1): ?>
+        <div class="alert alert-danger text-center text-uppercase" role="alert">
+            You have <strong><?= ($notYetProcessed) ?> </strong> Not yet Processed <?= ($model) ?>
+        </div>
+    <?php else: ?>
+        <div class="alert alert-warning text-center text-uppercase" role="alert">
+            You have <strong><?= ($notYetProcessed) ?> </strong> Not yet Processed <?= ($model) ?> and we are currently
+            processing them
+        </div>
+    <?php endif; ?>
 <?php endif; ?>
 
 <div class="overview-box alert" ng-class="disableElement">
