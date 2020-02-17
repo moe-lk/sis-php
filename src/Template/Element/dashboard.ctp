@@ -62,7 +62,7 @@ use Cake\Routing\Router; ?>
         <div class="data-field">
             <h4><?= __('Total Processed ' . ucfirst($model)) ?>:</h4>
             <h1 class="data-header">
-                lkllklkl
+                <?= number_format($modelCount) ?>
             </h1>
         </div>
     </div>
