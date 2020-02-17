@@ -904,10 +904,11 @@ class StudentsTable extends ControllerActionTable
                 ->where([$studentAdmissionCountTable->aliasField('status_id') => 124,
                     $studentAdmissionCountTable->aliasField('institution_id') => $institutionId])->count();
             $unprocessedStudents = TableRegistry::get('UnprocessedStudents', array('table' => 'unprocessed_students'));
-            $isProcessed = $unprocessedStudents -> find('is_processed')
+            $isProcessed = $unprocessedStudents -> select('is_processed')
                 -> where([$unprocessedStudents->aliasField('institution_id')=>$institutionId]);
             $academicPeriodId = $studentAdmissionCountTable->aliasField('academic_period_id');
 
+            dd($isProcessed);
 
             if (!$this->isAdvancedSearchEnabled()) { //function to determine whether dashboard should be shown or not
                 $indexElements[] = [
@@ -954,7 +955,7 @@ class StudentsTable extends ControllerActionTable
             -> find()
             -> where([$unprocessedStudents->aliasField('institution_id') => $institutionId,])
             ->count();
-        $academicPeriodId =  $isProcessed = $unprocessedStudents -> find('academic_period_id')
+        $academicPeriodId = $unprocessedStudents -> select('academic_period_id')
             -> where([$unprocessedStudents->aliasField('institution_id')=>$institutionId]);
 
         if($academicPeriodId) {
