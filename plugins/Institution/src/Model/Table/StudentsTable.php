@@ -904,8 +904,10 @@ class StudentsTable extends ControllerActionTable
                 ->where([$studentAdmissionCountTable->aliasField('status_id') => 124,
                     $studentAdmissionCountTable->aliasField('institution_id') => $institutionId])->count();
             $unprocessedStudents = TableRegistry::get('UnprocessedStudents', array('table' => 'unprocessed_students'));
-            $unprocessedStudentQuery = $unprocessedStudents -> find()
-                -> where([$unprocessedStudents->aliasField('is_processed')=>1])->count();
+            $isProcessed = $unprocessedStudents -> find('is_processed')
+                -> where([$unprocessedStudents->aliasField('institution_id')=>$institutionId]);
+            $academicPeriodId = $studentAdmissionCountTable->aliasField('academic_period_id');
+
 
             if (!$this->isAdvancedSearchEnabled()) { //function to determine whether dashboard should be shown or not
                 $indexElements[] = [
@@ -915,7 +917,8 @@ class StudentsTable extends ControllerActionTable
                         'modelCount' => $studentCount,
                         'notYetProcessed' => ($studentAdmissionCount - $studentCount),
                         'modelArray' => $InstitutionArray,
-                        'isProcessed' => $unprocessedStudentQuery
+                        'isProcessed' => $isProcessed,
+                        'academicPeriodId' => $academicPeriodId
                     ],
                     'options' => [],
                     'order' => 2,
@@ -944,22 +947,27 @@ class StudentsTable extends ControllerActionTable
         $studentAdmissionCountTable = TableRegistry::get('Institution.InstitutionStudentAdmission');
         $studentAdmissionCount = $studentAdmissionCountTable->find()
             ->where([$studentAdmissionCountTable->aliasField('status_id') => 124,
-                $studentAdmissionCountTable->aliasField('institution_id') => $institutionId])->count();
+                $studentAdmissionCountTable->aliasField('institution_id') => $institutionId,
+                $studentAdmissionCountTable->aliasField('academic_period_id')=>2])->count();
         $unprocessedStudents = TableRegistry::get('UnprocessedStudents', array('table' => 'unprocessed_students'));
         $unprocessedStudentQuery = $unprocessedStudents
             -> find()
             -> where([$unprocessedStudents->aliasField('institution_id') => $institutionId,])
             ->count();
 
-        if($unprocessedStudentQuery == 0) {
-            $log = $unprocessedStudents->newEntity();
-            $log->current_unprocessed_students_count = ($studentAdmissionCount - $studentCount);
-            $log->is_processed = 0;
-            $log->notification = 0;
-            $log->institution_id = $institutionId;
+        if($studentAdmissionCountTable->aliasField('academic_period_id') == 1) {
+            if (!($studentAdmissionCount < $studentCount || $studentAdmissionCount == $studentCount)) {
+                if ($unprocessedStudentQuery == 0) {
+                    $log = $unprocessedStudents->newEntity();
+                    $log->current_unprocessed_students_count = ($studentAdmissionCount - $studentCount);
+                    $log->is_processed = 0;
+                    $log->notification = 0;
+                    $log->institution_id = $institutionId;
 
-            if ($unprocessedStudents->save($log)) {
-                return true;
+                    if ($unprocessedStudents->save($log)) {
+                        return true;
+                    }
+                }
             }
         }
     }
