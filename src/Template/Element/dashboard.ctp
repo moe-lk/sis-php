@@ -24,7 +24,7 @@ use Cake\Routing\Router; ?>
 
 <?php if ($model == 'students'): ?>
     <?php if ($notYetProcessed > 0): ?>
-        <?php if ($isProcessed = 0): ?>
+        <?php if ($notYetProcessed == 1): ?>
             <div class="alert alert-danger text-center text-uppercase" role="alert">
                 <a data-dismiss="alert" href="#" aria-hidden="true" class="close">×</a>
                 You have <strong><?= ($notYetProcessed) ?> </strong> Not yet Processed <?= ($model) ?>
@@ -36,7 +36,7 @@ use Cake\Routing\Router; ?>
             </div>
         <?php endif ?>
 
-        <?php if ($isProcessed == 1): ?>
+        <?php if ($notYetProcessed >= 1): ?>
             <div class="alert alert-warning text-center text-uppercase" role="alert">
                 <a data-dismiss="alert" href="#" aria-hidden="true" class="close">×</a>
                 You have <strong><?= ($notYetProcessed) ?> </strong> Not yet Processed <?= ($model) ?>
