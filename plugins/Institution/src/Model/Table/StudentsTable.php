@@ -6,6 +6,7 @@ use ArrayObject;
 use Cake\Core\Configure;
 use Cake\Datasource\ResultSetInterface;
 use Cake\Event\Event;
+use Cake\I18n\Time;
 use Cake\Network\Request;
 use Cake\ORM\Entity;
 use Cake\ORM\Query;
@@ -897,13 +898,43 @@ class StudentsTable extends ControllerActionTable
 
             $indexElements[] = ['name' => 'Institution.Students/controls', 'data' => [], 'options' => [], 'order' => 0];
 
+            $session = $this->Session;
+            $institutionId = $session->read('Institution.Institutions.id');
+
+            $studentCountTable = TableRegistry::get('Institution.InstitutionStudents');
+            $studentCoutnNew = $studentCountTable->find()
+                ->where([$studentCountTable->aliasField('student_status_id') => 1,
+                    $studentCountTable->aliasField('institution_id') => $institutionId,
+                    $studentCountTable->aliasField('academic_period_id')=>2])->count();
+
+            $studentAdmissionCountTable = TableRegistry::get('Institution.InstitutionStudentAdmission');
+            $studentAdmissionCount = $studentAdmissionCountTable->find()
+                ->where([$studentAdmissionCountTable->aliasField('status_id') => 124,
+                    $studentAdmissionCountTable->aliasField('institution_id') => $institutionId,
+                    $studentAdmissionCountTable->aliasField('academic_period_id')=>2])->count();
+
+            $studentCountDiff = $studentAdmissionCount - $studentCoutnNew;
+
+            $unprocessedStudents = TableRegistry::get('UnprocessedStudents', array('table' => 'unprocessed_students'));
+            $isProcessed = $unprocessedStudents
+                -> find()
+                -> select('is_processed')
+                -> where([$unprocessedStudents->aliasField('institution_id')=>$institutionId])->first()->is_processed;
+            $academicPeriodId = $studentAdmissionCountTable
+                -> find()
+                -> select('academic_period_id')
+                -> where([$studentAdmissionCountTable->aliasField('institution_id')=>$institutionId])->first()->academic_period_id;
+
             if (!$this->isAdvancedSearchEnabled()) { //function to determine whether dashboard should be shown or not
                 $indexElements[] = [
                     'name' => $indexDashboard,
                     'data' => [
                         'model' => 'students',
                         'modelCount' => $studentCount,
+                        'notYetProcessed' => $studentCountDiff,
                         'modelArray' => $InstitutionArray,
+                        'isProcessed' => $isProcessed,
+                        'academicPeriodId' => $academicPeriodId
                     ],
                     'options' => [],
                     'order' => 2,
@@ -919,6 +950,56 @@ class StudentsTable extends ControllerActionTable
             }
 
             $extra['elements'] = array_merge($extra['elements'], $indexElements);
+        }
+        $this->addEntryToUnprocessedStudentList();
+    }
+
+    public function addEntryToUnprocessedStudentList()
+    {
+        $institutionStudentQuery = clone $this->dashboardQuery;
+        $studentCount = $institutionStudentQuery->group([$this->aliasField('student_id')])->count();
+        $session = $this->Session;
+        $institutionId = $session->read('Institution.Institutions.id');
+
+        $studentCountTable = TableRegistry::get('Institution.InstitutionStudents');
+        $studentCoutnNew = $studentCountTable->find()
+            ->where([$studentCountTable->aliasField('student_status_id') => 1,
+                $studentCountTable->aliasField('institution_id') => $institutionId,
+                $studentCountTable->aliasField('academic_period_id')=>2])->count();
+
+        $studentAdmissionCountTable = TableRegistry::get('Institution.InstitutionStudentAdmission');
+        $studentAdmissionCount = $studentAdmissionCountTable->find()
+            ->where([$studentAdmissionCountTable->aliasField('status_id') => 124,
+                $studentAdmissionCountTable->aliasField('institution_id') => $institutionId,
+                $studentAdmissionCountTable->aliasField('academic_period_id')=>2])->count();
+
+        $studentCountDiff = $studentAdmissionCount - $studentCoutnNew;
+
+        $unprocessedStudents = TableRegistry::get('UnprocessedStudents', array('table' => 'unprocessed_students'));
+        $unprocessedStudentQuery = $unprocessedStudents
+            -> find()
+            -> where([$unprocessedStudents->aliasField('institution_id') => $institutionId,])
+            ->count();
+        $academicPeriodId = $studentAdmissionCountTable
+            -> find()
+            -> select('academic_period_id')
+            -> where([$studentAdmissionCountTable->aliasField('institution_id')=>$institutionId])->first()->academic_period_id;
+
+        if($academicPeriodId == 2) {
+            if (!($studentAdmissionCount < $studentCount || $studentAdmissionCount == $studentCount)) {
+                if ($unprocessedStudentQuery == 0) {
+                    $log = $unprocessedStudents->newEntity();
+                    $log->current_unprocessed_students_count = $studentCountDiff;
+                    $log->is_processed = 0;
+                    $log->notification = 0;
+                    $log->institution_id = $institutionId;
+                    $log->created_at = Time::now();
+
+                    if ($unprocessedStudents->save($log)) {
+                        return true;
+                    }
+                }
+            }
         }
     }
 
