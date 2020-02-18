@@ -22,33 +22,28 @@ use Cake\Routing\Router; ?>
 <script type="text/javascript"
         src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
 
-<?php //if ($model == 'students'): ?>
-<!--    --><?php //if ($notYetProcessed > 0): ?>
-<!--        --><?php //if ($notYetProcessed == 1): ?>
-<!--            <div class="alert alert-danger text-center text-uppercase" role="alert">-->
-<!--                <a data-dismiss="alert" href="#" aria-hidden="true" class="close">×</a>-->
-<!--                You have <strong>--><?//= ($notYetProcessed) ?><!-- </strong> Not yet Processed --><?//= ($model) ?>
-<!--            </div>-->
-<!--        --><?php //else:?>
-<!--         <div class="alert alert-success text-center text-uppercase" role="alert">-->
-<!--                <a data-dismiss="alert" href="#" aria-hidden="true" class="close">×</a>-->
-<!--                You have processed all the --><?//= ($model) ?>
-<!--            </div>-->
-<!--        --><?php //endif ?>
-<!---->
-<!--        --><?php //if ($notYetProcessed >= 1): ?>
-<!--            <div class="alert alert-warning text-center text-uppercase" role="alert">-->
-<!--                <a data-dismiss="alert" href="#" aria-hidden="true" class="close">×</a>-->
-<!--                You have <strong>--><?//= ($notYetProcessed) ?><!-- </strong> Not yet Processed --><?//= ($model) ?>
-<!--            </div>-->
-<!--        --><?php //else:?>
-<!--            <div class="alert alert-success text-center text-uppercase" role="alert">-->
-<!--                <a data-dismiss="alert" href="#" aria-hidden="true" class="close">×</a>-->
-<!--                You have processed all the --><?//= ($model) ?>
-<!--            </div>-->
-<!--        --><?php //endif ?>
-<!--    --><?php //endif; ?>
-<?php //endif; ?>
+<?php if ($model == 'students'): ?>
+    <?php if ($modelCount > 0): ?>
+        <?php if ($isProcessed == 0): ?>
+            <div class="alert alert-danger text-center text-uppercase" role="alert">
+                <a data-dismiss="alert" href="#" aria-hidden="true" class="close">×</a>
+                You have <strong><?= ($notYetProcessed) ?> </strong> Not yet Processed <?= ($model) ?>
+            </div>
+        <?php endif ?>
+        <?php if ($isProcessed >= 1): ?>
+            <div class="alert alert-warning text-center text-uppercase" role="alert">
+                <a data-dismiss="alert" href="#" aria-hidden="true" class="close">×</a>
+                You have <strong><?= ($notYetProcessed) ?> </strong> Not yet Processed <?= ($model) ?> and we are
+                currently processing them
+            </div>
+        <?php endif ?>
+    <?php else: ?>
+        <div class="alert alert-success text-center text-uppercase" role="alert">
+            <a data-dismiss="alert" href="#" aria-hidden="true" class="close">×</a>
+            You have processed all the <?= ($model) ?>
+        </div>
+    <?php endif; ?>
+<?php endif; ?>
 
 <div class="overview-box alert" ng-class="disableElement">
     <a data-dismiss="alert" href="#" aria-hidden="true" class="close">×</a>
