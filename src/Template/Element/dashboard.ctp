@@ -23,7 +23,7 @@ use Cake\Routing\Router; ?>
         src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
 
 <?php if ($model == 'students'): ?>
-    <?php if ($modelCount > 0): ?>
+    <?php if ($modelCount > 0 || $notYetProcessed > 0): ?>
         <?php if ($isProcessed == 0): ?>
             <div class="alert alert-danger text-center text-uppercase" role="alert">
                 <a data-dismiss="alert" href="#" aria-hidden="true" class="close">×</a>
