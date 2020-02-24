@@ -985,7 +985,7 @@ class StudentsTable extends ControllerActionTable
             -> select('academic_period_id')
             -> where([$studentAdmissionCountTable->aliasField('institution_id')=>$institutionId])->first()->academic_period_id;
 
-        if($academicPeriodId == 2 || $studentCountDiff > 0) {
+        if($academicPeriodId == 2 && $studentCountDiff > 0) {
             if (!($studentAdmissionCount < $studentCount || $studentAdmissionCount == $studentCount)) {
                 if ($unprocessedStudentQuery == 0) {
                     $log = $unprocessedStudents->newEntity();
