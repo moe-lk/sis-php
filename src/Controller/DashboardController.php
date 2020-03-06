@@ -9,6 +9,7 @@ use Cake\ORM\Table;
 use App\Controller\AppController;
 use Cake\Core\Configure;
 use DateTime;
+use function Complex\sec;
 
 class DashboardController extends AppController
 {
@@ -45,22 +46,18 @@ class DashboardController extends AppController
     {
         parent::beforeFilter($event);
         $user = $this->Auth->user();
-        $userData = TableRegistry::get('Configuration.config_items')->get(1890);
-
+        $userData = TableRegistry::get("security_users")->get($user['id']);
         try {
-            $start_date = $userData->modified;
+            date_default_timezone_set('Asia/Colombo');
+            $start_date = new DateTime($userData->security_timeout->format('Y-m-d h:i:s a'));
             $since_start = $start_date->diff(new DateTime(date('Y-m-d h:i:s a', time())));
-            $totMonths = $since_start->y *12;           //implement by day for testing purposes
-            $totMonths += $since_start->m * 30;
-            $totMonths += $since_start->d * 24;
-            $totMonths += $since_start->h;
+            $totMonths = $since_start->y *12;
+            $totMonths += $since_start->m;
         } catch (\Exception $e) {
             error_log($e);
         }
 
-//        dd($totMonths);
-
-        if ((is_array($user) && array_key_exists('last_login', $user) && is_null($user['last_login'])) || ($totMonths == 1)) {
+        if ((is_array($user) && array_key_exists('last_login', $user) && is_null($user['last_login'])) || ($totMonths >= 3)) {
             $userInfo = TableRegistry::get('User.Users')->get($user['id']);
             if ($userInfo->password) {
                 $this->Alert->warning('security.login.changePassword');
