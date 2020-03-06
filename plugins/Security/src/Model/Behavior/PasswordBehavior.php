@@ -11,6 +11,8 @@ use Cake\ORM\TableRegistry;
 use Cake\Event\Event;
 use Cake\Network\Request;
 use Cake\Validation\Validator;
+use DateTime;
+use Illuminate\Support\Facades\DB;
 
 class PasswordBehavior extends Behavior {
 	private $targetField = null;
@@ -151,7 +153,18 @@ class PasswordBehavior extends Behavior {
 		if ($this->checkOwnPassword) {
 			$entity->password = $entity->{$this->targetField};
 		}
-	}
+        $Users = TableRegistry::get("security_users");
+        date_default_timezone_set('Asia/Colombo');
+        $query = $Users->query();
+        try {
+            $query->update()
+                ->set(['security_timeout' => new DateTime(date('Y-m-d h:i:s a', time()))])
+                ->where(['id' => $entity->id])
+                ->execute();
+        } catch (\Exception $e) {
+            error_log($e);
+        }
+    }
 
 	public function editAfterAction(Event $event, Entity $entity)  {
 		if ($this->checkOwnPassword) {
