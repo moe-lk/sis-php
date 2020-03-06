@@ -8,6 +8,7 @@ use Cake\Utility\Inflector;
 use Cake\ORM\Table;
 use App\Controller\AppController;
 use Cake\Core\Configure;
+use DateTime;
 
 class DashboardController extends AppController
 {
@@ -44,7 +45,22 @@ class DashboardController extends AppController
     {
         parent::beforeFilter($event);
         $user = $this->Auth->user();
-        if (is_array($user) && array_key_exists('last_login', $user) && is_null($user['last_login'])) {
+        $userData = TableRegistry::get('Configuration.config_items')->get(1890);
+
+        try {
+            $start_date = $userData->modified;
+            $since_start = $start_date->diff(new DateTime(date('Y-m-d h:i:s a', time())));
+            $totMonths = $since_start->y *12;           //implement by day for testing purposes
+            $totMonths += $since_start->m * 30;
+            $totMonths += $since_start->d * 24;
+            $totMonths += $since_start->h;
+        } catch (\Exception $e) {
+            error_log($e);
+        }
+
+//        dd($totMonths);
+
+        if ((is_array($user) && array_key_exists('last_login', $user) && is_null($user['last_login'])) || ($totMonths == 1)) {
             $userInfo = TableRegistry::get('User.Users')->get($user['id']);
             if ($userInfo->password) {
                 $this->Alert->warning('security.login.changePassword');
