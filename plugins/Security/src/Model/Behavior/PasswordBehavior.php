@@ -139,7 +139,6 @@ class PasswordBehavior extends Behavior {
 			]);
 		}
 
-//		dd($this->checkOwnPassword);
 		if ($this->checkOwnPassword) {
 			$validator = $validator
 				->add('password', [
@@ -153,7 +152,6 @@ class PasswordBehavior extends Behavior {
 	}
 
 	public static function checkUserPassword($field, $model, array $globalData) {
-//	    dd($model->get($model->Auth->user('id'))->password);
 		$Users = TableRegistry::get('User.Users');
 		return ((new DefaultPasswordHasher)->check($field, $model->get($model->Auth->user('id'))->password));
 	}
