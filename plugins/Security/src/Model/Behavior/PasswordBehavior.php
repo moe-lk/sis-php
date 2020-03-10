@@ -95,6 +95,13 @@ class PasswordBehavior extends Behavior {
 			],
 		]);
 
+        $validator->add($this->targetField,[
+            'ruleCheckUserPasswordCross' => [
+                'rule' => 'checkUserPasswordCross',
+                'message' => 'You may be trying to use an older password'
+            ]
+        ]);
+
 		if ($passwordHasUppercase) {
 			$validator->add($this->targetField, [
 				'ruleCheckUppercaseExists' => [
@@ -132,6 +139,7 @@ class PasswordBehavior extends Behavior {
 			]);
 		}
 
+//		dd($this->checkOwnPassword);
 		if ($this->checkOwnPassword) {
 			$validator = $validator
 				->add('password', [
@@ -145,6 +153,7 @@ class PasswordBehavior extends Behavior {
 	}
 
 	public static function checkUserPassword($field, $model, array $globalData) {
+//	    dd($model->get($model->Auth->user('id'))->password);
 		$Users = TableRegistry::get('User.Users');
 		return ((new DefaultPasswordHasher)->check($field, $model->get($model->Auth->user('id'))->password));
 	}
