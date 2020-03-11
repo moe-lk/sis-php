@@ -23,6 +23,9 @@ class AppTable extends Table
     use LogTrait;
     use OptionListTrait;
 
+
+//    public $recursive = -1;
+
     public function initialize(array $config)
     {
         Time::$defaultLocale = 'en_US';

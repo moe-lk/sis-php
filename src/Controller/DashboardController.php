@@ -44,7 +44,7 @@ class DashboardController extends AppController
     {
         parent::beforeFilter($event);
         $user = $this->Auth->user();
-        if (is_array($user) && array_key_exists('last_login', $user) && is_null($user['last_login'])) {
+        if (is_array($user) && array_key_exists('last_login', $user) && is_null($user['last_login']) || (is_null($user['password_reset_date']) )) {
             $userInfo = TableRegistry::get('User.Users')->get($user['id']);
             if ($userInfo->password) {
                 $this->Alert->warning('security.login.changePassword');
