@@ -80,6 +80,15 @@ class DirectoriesTable extends ControllerActionTable
         $this->addBehavior('Import.ImportLink', ['import_model'=>'ImportUsers']);
         $this->addBehavior('ControllerAction.Image');
 
+        $this->belongsToMany('SecurityGroups', [
+            'className' => 'Security.SystemGroups',
+            'joinTable' => 'security_group_institutions',
+            'foreignKey' => 'institution_id',
+            'targetForeignKey' => 'security_group_id',
+            'through' => 'Security.SecurityGroupInstitutions',
+            'dependent' => true
+        ]);
+
         $this->addBehavior('TrackActivity', ['target' => 'User.UserActivities', 'key' => 'security_user_id', 'session' => 'Directory.Directories.id']);
         $this->toggle('search', false);
     }
@@ -250,11 +259,19 @@ class DirectoriesTable extends ControllerActionTable
 
         $userId = $this->Session->read('Auth.User.id');
 
-        $conditions = [$this->aliasField('created_user_id') => $userId];
+
+
+        $conditions = [
+            $this->aliasField('created_user_id') => $userId
+        ];
 
         $notSuperAdminCondition = [
             $this->aliasField('super_admin') => 0
         ];
+
+        $institutionId =  $this->Session->read('Institution.Institutions.id');
+
+        $this->AccessControl->getPrincipalInstituionIds($userId);
 
         $modifiedUser = [
             $this->aliasField('modified_user_id') => $userId
@@ -265,6 +282,8 @@ class DirectoriesTable extends ControllerActionTable
         // POCOR-2547 sort list of staff and student by name
         $orders = [];
 
+        $institutionIds = $this->AccessControl->getPrincipalInstituionIds();
+
         if (!isset($this->request->query['sort'])) {
             $orders = [
                 $this->aliasField('first_name'),
@@ -272,9 +291,26 @@ class DirectoriesTable extends ControllerActionTable
             ];
         }
 
-        $query->where($conditions)
-//            ->orWhere($modifiedUser)
-            ->order($orders);
+        if(!empty($institutionIds) && $this->AccessControl->isPrincipal()){
+            $query
+                ->join([
+                    [
+                        'type' => 'INNER',
+                        'table' => 'institution_students',
+                        'alias' => 'InstitutionStudents',
+                        'conditions' => [
+                            'InstitutionStudents.institution_id'.' IN ('.implode(",",$institutionIds).')',
+                            'InstitutionStudents.student_id = '. $this->aliasField('id')
+                        ]
+                    ]
+                ])
+                ->group($this->aliasField('id'))
+                ->order($orders);
+
+        }else{
+            $query->where($conditions)
+                ->order($orders);
+        }
 
         $options['auto_search'] = true;
 

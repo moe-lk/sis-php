@@ -996,7 +996,7 @@ class StudentPromotionTable extends AppTable
             $this->fields[$key]['visible'] = false;
         }
 
-        $this->ControllerAction->field('from_academic_period_id', ['type' => 'readonly', 'attr' => ['label' => 'From Academic Period']]);
+        $this->ControllerAction->field('from_academic_period_id', ['type' => 'readonly', 'attr' => ['label' => 'From Academic Period' , 'tooltip' => 'test']]);
         $this->ControllerAction->field('grade_to_promote', ['type' => 'readonly', 'attr' => ['label' => 'From Grade']]);
 //        $this->ControllerAction->field('class');
         $this->ControllerAction->field('next_academic_period_id', ['type' => 'readonly', 'attr' => ['label' => 'To Academic Period']]);

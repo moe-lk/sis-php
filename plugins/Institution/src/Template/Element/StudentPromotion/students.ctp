@@ -7,7 +7,7 @@
 			<div class="table-in-view">
 				<table class="table table-checkable">
 					<thead>
-						<tr>
+						<tr class="checked">
 							<?php if ($action != 'reconfirm') { ?>
 							<th class="checkbox-column"><input type="checkbox" class="no-selection-label" kd-checkbox-radio/></th>
 							<?php } ?>
@@ -45,7 +45,7 @@
 											} else {
 												$alias = $ControllerAction['table']->alias();
 												$fieldPrefix = "$alias.students.$i";
-												echo $this->Form->checkbox("$fieldPrefix.selected", ['class' => 'no-selection-label', 'kd-checkbox-radio' => '']);
+												echo $this->Form->checkbox("$fieldPrefix.selected", ['class' => 'no-selection-label', 'kd-checkbox-radio' => 1]);
 												echo $this->Form->hidden("$fieldPrefix.student_id", ['value' => $obj->student_id]);
 
 											}

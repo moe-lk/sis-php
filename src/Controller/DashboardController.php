@@ -46,6 +46,7 @@ class DashboardController extends AppController
     {
         parent::beforeFilter($event);
         $user = $this->Auth->user();
+
         $userData = TableRegistry::get("security_users")->get($user['id']);
         try {
             date_default_timezone_set('Asia/Colombo');
@@ -58,6 +59,7 @@ class DashboardController extends AppController
         }
 
         if ((is_array($user) && array_key_exists('last_login', $user) && is_null($user['last_login'])) || ($totMonths >= 3)) {
+
             $userInfo = TableRegistry::get('User.Users')->get($user['id']);
             if ($userInfo->password) {
                 $this->Alert->warning('security.login.changePassword');
