@@ -27,7 +27,7 @@ class OpenEmisComponent extends Component
                 'escapeTitle' => false,
             ],
             'Help' => [
-                'url' => 'https: //docs.google.com/document/d/1tL8Kjgg3VTBVi20YktiRk6UzbeVOcGmqjLHqdmyipps',
+                'url' => 'https://docs.google.com/document/d/1tL8Kjgg3VTBVi20YktiRk6UzbeVOcGmqjLHqdmyipps',
                 'icon' => 'fa-question-circle',
                 'target' => '_blank',
                 'escapeTitle' => false,
