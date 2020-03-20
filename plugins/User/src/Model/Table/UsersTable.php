@@ -525,6 +525,7 @@ class UsersTable extends AppTable
 
     public function getUniqueOpenemisId($options = [])
     {
+//        return Text::uuid();
         $prefix = '';
 
         $prefix = TableRegistry::get('Configuration.ConfigItems')->value('openemis_id_prefix');
