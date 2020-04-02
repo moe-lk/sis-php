@@ -28,7 +28,6 @@ use ReflectionMethod;
  */
 class CommandTask extends Shell
 {
-
     /**
      * Gets the shell command listing.
      *
@@ -68,7 +67,7 @@ class CommandTask extends Shell
      * @param array $shellList The shell listing array.
      * @param string $path The path to look in.
      * @param string $key The key to add shells to
-     * @param array $skip A list of commands to exclude.
+     * @param string[] $skip A list of commands to exclude.
      * @return array The updated list of shells.
      */
     protected function _findShells($shellList, $path, $key, $skip)
@@ -145,7 +144,8 @@ class CommandTask extends Shell
         foreach ($shellList as $type => $commands) {
             foreach ($commands as $shell) {
                 $prefix = '';
-                if (!in_array(strtolower($type), ['app', 'core']) &&
+                if (
+                    !in_array(strtolower($type), ['app', 'core']) &&
                     isset($duplicates[$type]) &&
                     in_array($shell, $duplicates[$type])
                 ) {
@@ -202,7 +202,7 @@ class CommandTask extends Shell
      * Get Shell instance for the given command
      *
      * @param string $commandName The command you want.
-     * @return \Cake\Console\Shell|bool Shell instance if the command can be found, false otherwise.
+     * @return \Cake\Console\Shell|false Shell instance if the command can be found, false otherwise.
      */
     public function getShell($commandName)
     {
@@ -238,7 +238,7 @@ class CommandTask extends Shell
             return false;
         }
 
-        /* @var \Cake\Console\Shell $Shell */
+        /** @var \Cake\Console\Shell $Shell */
         $Shell = new $class();
         $Shell->plugin = trim($pluginDot, '.');
         $Shell->initialize();
@@ -275,7 +275,7 @@ class CommandTask extends Shell
 
         $options = [];
         $array = $parser->options();
-        /* @var \Cake\Console\ConsoleInputOption $obj */
+        /** @var \Cake\Console\ConsoleInputOption $obj */
         foreach ($array as $name => $obj) {
             $options[] = "--$name";
             $short = $obj->short();

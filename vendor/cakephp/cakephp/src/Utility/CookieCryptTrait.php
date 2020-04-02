@@ -21,15 +21,14 @@ use RuntimeException;
  *
  * Provides the encrypt/decrypt logic for the CookieComponent.
  *
- * @link https://book.cakephp.org/3.0/en/controllers/components/cookie.html
+ * @link https://book.cakephp.org/3/en/controllers/components/cookie.html
  */
 trait CookieCryptTrait
 {
-
     /**
      * Valid cipher names for encrypted cookies.
      *
-     * @var array
+     * @var string[]
      */
     protected $_validCiphers = ['aes', 'rijndael'];
 
@@ -94,7 +93,7 @@ trait CookieCryptTrait
     /**
      * Decrypts $value using public $type method in Security class
      *
-     * @param array $values Values to decrypt
+     * @param string[]|string $values Values to decrypt
      * @param string|bool $mode Encryption mode
      * @param string|null $key Used as the security salt if specified.
      * @return string|array Decrypted values

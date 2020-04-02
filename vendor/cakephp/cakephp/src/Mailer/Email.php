@@ -49,7 +49,6 @@ use SimpleXMLElement;
  */
 class Email implements JsonSerializable, Serializable
 {
-
     use StaticConfigTrait;
     use ViewVarsTrait;
 
@@ -258,7 +257,7 @@ class Email implements JsonSerializable, Serializable
         '8bit',
         'base64',
         'binary',
-        'quoted-printable'
+        'quoted-printable',
     ];
 
     /**
@@ -295,7 +294,7 @@ class Email implements JsonSerializable, Serializable
      * An array mapping url schemes to fully qualified Transport class names.
      * Unused.
      *
-     * @var array
+     * @var string[]
      * @deprecated 3.7.0 This property is unused and will be removed in 4.0.0.
      */
     protected static $_dsnClassMap = [];
@@ -321,7 +320,7 @@ class Email implements JsonSerializable, Serializable
      * @var array
      */
     protected $_contentTypeCharset = [
-        'ISO-2022-JP-MS' => 'ISO-2022-JP'
+        'ISO-2022-JP-MS' => 'ISO-2022-JP',
     ];
 
     /**
@@ -833,7 +832,7 @@ class Email implements JsonSerializable, Serializable
      */
     public function getHeaderCharset()
     {
-        return $this->headerCharset;
+        return $this->headerCharset ? $this->headerCharset : $this->charset;
     }
 
     /**
@@ -916,7 +915,7 @@ class Email implements JsonSerializable, Serializable
      * EmailPattern setter/getter
      *
      * @deprecated 3.4.0 Use setEmailPattern()/getEmailPattern() instead.
-     * @param string|bool|null $regex The pattern to use for email address validation,
+     * @param string|false|null $regex The pattern to use for email address validation,
      *   null to unset the pattern and make use of filter_var() instead, false or
      *   nothing to return the current value
      * @return string|$this
@@ -1126,7 +1125,7 @@ class Email implements JsonSerializable, Serializable
      */
     public function addHeaders(array $headers)
     {
-        $this->_headers = array_merge($this->_headers, $headers);
+        $this->_headers = Hash::merge($this->_headers, $headers);
 
         return $this;
     }
@@ -1166,7 +1165,7 @@ class Email implements JsonSerializable, Serializable
             'from' => 'From',
             'replyTo' => 'Reply-To',
             'readReceipt' => 'Disposition-Notification-To',
-            'returnPath' => 'Return-Path'
+            'returnPath' => 'Return-Path',
         ];
         foreach ($relation as $var => $header) {
             if ($include[$var]) {
@@ -1257,6 +1256,7 @@ class Email implements JsonSerializable, Serializable
      *
      * @param string|null $template Template name or null to not use.
      * @return $this
+     * @deprecated 3.7.0 Use $email->viewBuilder()->setTemplate() instead.
      */
     public function setTemplate($template)
     {
@@ -1273,6 +1273,7 @@ class Email implements JsonSerializable, Serializable
      * Gets template.
      *
      * @return string
+     * @deprecated 3.7.0 Use $email->viewBuilder()->getTemplate() instead.
      */
     public function getTemplate()
     {
@@ -1334,13 +1335,13 @@ class Email implements JsonSerializable, Serializable
 
         if ($template === false) {
             return [
-                'template' => $this->getTemplate(),
-                'layout' => $this->getLayout()
+                'template' => $this->viewBuilder()->getTemplate(),
+                'layout' => $this->viewBuilder()->getLayout(),
             ];
         }
-        $this->setTemplate($template);
+        $this->viewBuilder()->setTemplate($template);
         if ($layout !== false) {
-            $this->setLayout($layout);
+            $this->viewBuilder()->setLayout($layout);
         }
 
         return $this;
@@ -1476,10 +1477,12 @@ class Email implements JsonSerializable, Serializable
         );
 
         if ($theme === null) {
-            return $this->getTheme();
+            return $this->viewBuilder()->getTheme();
         }
 
-        return $this->setTheme($theme);
+        $this->viewBuilder()->setTheme($theme);
+
+        return $this;
     }
 
     /**
@@ -1529,10 +1532,12 @@ class Email implements JsonSerializable, Serializable
         );
 
         if ($helpers === null) {
-            return $this->getHelpers();
+            return $this->viewBuilder()->getHelpers();
         }
 
-        return $this->setHelpers((array)$helpers);
+        $this->viewBuilder()->setHelpers((array)$helpers);
+
+        return $this;
     }
 
     /**
@@ -2094,7 +2099,7 @@ class Email implements JsonSerializable, Serializable
      * Get/Set the configuration profile to use for this instance.
      *
      * @deprecated 3.4.0 Use setProfile()/getProfile() instead.
-     * @param null|string|array $config String with configuration name, or
+     * @param array|string|null $config String with configuration name, or
      *    an array with config or null to return current config.
      * @return string|array|$this
      */
@@ -2156,7 +2161,7 @@ class Email implements JsonSerializable, Serializable
         }
         $config = [
             'level' => 'debug',
-            'scope' => 'email'
+            'scope' => 'email',
         ];
         if ($this->_profile['log'] !== true) {
             if (!is_array($this->_profile['log'])) {
@@ -2200,7 +2205,7 @@ class Email implements JsonSerializable, Serializable
         if (is_array($config) && !isset($config['transport'])) {
             $config['transport'] = 'default';
         }
-        /* @var \Cake\Mailer\Email $instance */
+        /** @var \Cake\Mailer\Email $instance */
         $instance = new $class($config);
         if ($to !== null) {
             $instance->setTo($to);
@@ -2245,7 +2250,7 @@ class Email implements JsonSerializable, Serializable
         $simpleMethods = [
             'from', 'sender', 'to', 'replyTo', 'readReceipt', 'returnPath',
             'cc', 'bcc', 'messageId', 'domain', 'subject', 'attachments',
-            'transport', 'emailFormat', 'emailPattern', 'charset', 'headerCharset'
+            'transport', 'emailFormat', 'emailPattern', 'charset', 'headerCharset',
         ];
         foreach ($simpleMethods as $method) {
             if (isset($config[$method])) {
@@ -2261,7 +2266,7 @@ class Email implements JsonSerializable, Serializable
         }
 
         $viewBuilderMethods = [
-            'template', 'layout', 'theme'
+            'template', 'layout', 'theme',
         ];
         foreach ($viewBuilderMethods as $method) {
             if (array_key_exists($method, $config)) {
@@ -2516,7 +2521,7 @@ class Email implements JsonSerializable, Serializable
                 !isset($fileInfo['contentDisposition']) ||
                 $fileInfo['contentDisposition']
             );
-            $part = new FormDataPart(false, $data, false);
+            $part = new FormDataPart('', $data, '', $this->getHeaderCharset());
 
             if ($hasDisposition) {
                 $part->disposition('attachment');
@@ -2566,7 +2571,7 @@ class Email implements JsonSerializable, Serializable
             $data = isset($fileInfo['data']) ? $fileInfo['data'] : $this->_readFile($fileInfo['file']);
 
             $msg[] = '--' . $boundary;
-            $part = new FormDataPart(false, $data, 'inline');
+            $part = new FormDataPart('', $data, 'inline', $this->getHeaderCharset());
             $part->type($fileInfo['mimetype']);
             $part->transferEncoding('base64');
             $part->contentId($fileInfo['contentId']);
@@ -2794,7 +2799,7 @@ class Email implements JsonSerializable, Serializable
         $properties = [
             '_to', '_from', '_sender', '_replyTo', '_cc', '_bcc', '_subject',
             '_returnPath', '_readReceipt', '_emailFormat', '_emailPattern', '_domain',
-            '_attachments', '_messageId', '_headers', '_appCharset', 'viewVars', 'charset', 'headerCharset'
+            '_attachments', '_messageId', '_headers', '_appCharset', 'viewVars', 'charset', 'headerCharset',
         ];
 
         $array = ['viewConfig' => $this->viewBuilder()->jsonSerialize()];
@@ -2830,7 +2835,8 @@ class Email implements JsonSerializable, Serializable
             $item = (string)$item;
         }
 
-        if (is_resource($item) ||
+        if (
+            is_resource($item) ||
             $item instanceof Closure ||
             $item instanceof PDO
         ) {

@@ -22,11 +22,10 @@ use DirectoryIterator;
  *
  * It also can retrieve plugin paths and load their bootstrap and routes files.
  *
- * @link https://book.cakephp.org/3.0/en/plugins.html
+ * @link https://book.cakephp.org/3/en/plugins.html
  */
 class Plugin
 {
-
     /**
      * Holds a list of all loaded plugins and their configuration
      *
@@ -134,7 +133,7 @@ class Plugin
             'console' => true,
             'classBase' => 'src',
             'ignoreMissing' => false,
-            'name' => $plugin
+            'name' => $plugin,
         ];
 
         if (!isset($config['path'])) {
@@ -315,7 +314,7 @@ class Plugin
     {
         deprecationWarning(
             'You no longer need to call `Plugin::routes()` after upgrading to use Http\Server. ' .
-            'See https://book.cakephp.org/3.0/en/development/application.html#adding-the-new-http-stack-to-an-existing-application ' .
+            'See https://book.cakephp.org/3/en/development/application.html#adding-the-new-http-stack-to-an-existing-application ' .
             'for upgrade information.'
         );
         if ($name === null) {

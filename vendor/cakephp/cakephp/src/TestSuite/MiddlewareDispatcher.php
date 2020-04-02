@@ -57,7 +57,7 @@ class MiddlewareDispatcher
     /**
      * The application that is being dispatched.
      *
-     * @var \Cake\Core\HttpApplicationInterface
+     * @var \Cake\Core\HttpApplicationInterface|\Cake\Core\ConsoleApplicationInterface
      */
     protected $app;
 
@@ -85,7 +85,7 @@ class MiddlewareDispatcher
             $app = $reflect->newInstanceArgs($this->_constructorArgs);
             $this->app = $app;
         } catch (ReflectionException $e) {
-            throw new LogicException(sprintf('Cannot load "%s" for use in integration testing.', $this->_class));
+            throw new LogicException(sprintf('Cannot load `%s` for use in integration testing.', $this->_class));
         }
     }
 

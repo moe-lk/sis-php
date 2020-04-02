@@ -90,7 +90,7 @@ class MysqlSchema extends BaseSchema
 
         $col = strtolower($matches[1]);
         $length = $precision = null;
-        if (isset($matches[2])) {
+        if (isset($matches[2]) && strlen($matches[2])) {
             $length = $matches[2];
             if (strpos($matches[2], ',') !== false) {
                 list($length, $precision) = explode(',', $length);
@@ -123,7 +123,7 @@ class MysqlSchema extends BaseSchema
             return ['type' => TableSchema::TYPE_UUID, 'length' => null];
         }
         if ($col === 'char') {
-            return ['type' => TableSchema::TYPE_STRING, 'fixed' => true, 'length' => $length];
+            return ['type' => TableSchema::TYPE_STRING, 'length' => $length, 'fixed' => true];
         }
         if (strpos($col, 'char') !== false) {
             return ['type' => TableSchema::TYPE_STRING, 'length' => $length];
@@ -148,7 +148,7 @@ class MysqlSchema extends BaseSchema
                 'type' => TableSchema::TYPE_FLOAT,
                 'length' => $length,
                 'precision' => $precision,
-                'unsigned' => $unsigned
+                'unsigned' => $unsigned,
             ];
         }
         if (strpos($col, 'decimal') !== false) {
@@ -156,7 +156,7 @@ class MysqlSchema extends BaseSchema
                 'type' => TableSchema::TYPE_DECIMAL,
                 'length' => $length,
                 'precision' => $precision,
-                'unsigned' => $unsigned
+                'unsigned' => $unsigned,
             ];
         }
 
@@ -230,13 +230,13 @@ class MysqlSchema extends BaseSchema
             $schema->addIndex($name, [
                 'type' => $type,
                 'columns' => $columns,
-                'length' => $length
+                'length' => $length,
             ]);
         } else {
             $schema->addConstraint($name, [
                 'type' => $type,
                 'columns' => $columns,
-                'length' => $length
+                'length' => $length,
             ]);
         }
     }
@@ -326,7 +326,7 @@ class MysqlSchema extends BaseSchema
             TableSchema::TYPE_DATETIME => ' DATETIME',
             TableSchema::TYPE_TIMESTAMP => ' TIMESTAMP',
             TableSchema::TYPE_UUID => ' CHAR(36)',
-            TableSchema::TYPE_JSON => $nativeJson ? ' JSON' : ' LONGTEXT'
+            TableSchema::TYPE_JSON => $nativeJson ? ' JSON' : ' LONGTEXT',
         ];
         $specialMap = [
             'string' => true,
@@ -382,17 +382,19 @@ class MysqlSchema extends BaseSchema
             TableSchema::TYPE_INTEGER,
             TableSchema::TYPE_SMALLINTEGER,
             TableSchema::TYPE_TINYINTEGER,
-            TableSchema::TYPE_STRING
+            TableSchema::TYPE_STRING,
         ];
         if (in_array($data['type'], $hasLength, true) && isset($data['length'])) {
             $out .= '(' . (int)$data['length'] . ')';
         }
 
         $hasPrecision = [TableSchema::TYPE_FLOAT, TableSchema::TYPE_DECIMAL];
-        if (in_array($data['type'], $hasPrecision, true) &&
-            (isset($data['length']) || isset($data['precision']))
-        ) {
-            $out .= '(' . (int)$data['length'] . ',' . (int)$data['precision'] . ')';
+        if (in_array($data['type'], $hasPrecision, true) && isset($data['length'])) {
+            if (isset($data['precision'])) {
+                $out .= '(' . (int)$data['length'] . ',' . (int)$data['precision'] . ')';
+            } else {
+                $out .= '(' . (int)$data['length'] . ')';
+            }
         }
 
         $hasUnsigned = [
@@ -401,9 +403,10 @@ class MysqlSchema extends BaseSchema
             TableSchema::TYPE_INTEGER,
             TableSchema::TYPE_BIGINTEGER,
             TableSchema::TYPE_FLOAT,
-            TableSchema::TYPE_DECIMAL
+            TableSchema::TYPE_DECIMAL,
         ];
-        if (in_array($data['type'], $hasUnsigned, true) &&
+        if (
+            in_array($data['type'], $hasUnsigned, true) &&
             isset($data['unsigned']) && $data['unsigned'] === true
         ) {
             $out .= ' UNSIGNED';
@@ -425,7 +428,8 @@ class MysqlSchema extends BaseSchema
             !$schema->hasAutoincrement() &&
             !isset($data['autoIncrement'])
         );
-        if (in_array($data['type'], [TableSchema::TYPE_INTEGER, TableSchema::TYPE_BIGINTEGER]) &&
+        if (
+            in_array($data['type'], [TableSchema::TYPE_INTEGER, TableSchema::TYPE_BIGINTEGER]) &&
             ($data['autoIncrement'] === true || $addAutoIncrement)
         ) {
             $out .= ' AUTO_INCREMENT';
@@ -434,7 +438,8 @@ class MysqlSchema extends BaseSchema
             $out .= ' NULL';
             unset($data['default']);
         }
-        if (isset($data['default']) &&
+        if (
+            isset($data['default']) &&
             in_array($data['type'], [TableSchema::TYPE_TIMESTAMP, TableSchema::TYPE_DATETIME]) &&
             in_array(strtolower($data['default']), ['current_timestamp', 'current_timestamp()'])
         ) {

@@ -30,7 +30,6 @@ use RuntimeException;
  */
 class Validation
 {
-
     /**
      * Default locale
      */
@@ -75,6 +74,11 @@ class Validation
      * Less than or equal to comparison operator.
      */
     const COMPARE_LESS_OR_EQUAL = '<=';
+
+    /**
+     * Datetime ISO8601 format
+     */
+    const DATETIME_ISO8601 = 'iso8601';
 
     /**
      * Some complex patterns needed in multiple places
@@ -188,7 +192,7 @@ class Validation
      * Backwards compatibility wrapper for Validation::creditCard().
      *
      * @param string $check credit card number to validate
-     * @param string|array $type 'all' may be passed as a string, defaults to fast which checks format of most major credit cards
+     * @param string|string[] $type 'all' may be passed as a string, defaults to fast which checks format of most major credit cards
      *    if an array is used only the values of the array are checked.
      *    Example: ['amex', 'bankcard', 'maestro']
      * @param bool $deep set to true this will check the Luhn algorithm of the credit card.
@@ -248,9 +252,9 @@ class Validation
                 'solo' => '/^(6334[5-9][0-9]|6767[0-9]{2})\\d{10}(\\d{2,3})?$/',
                 'switch' => '/^(?:49(03(0[2-9]|3[5-9])|11(0[1-2]|7[4-9]|8[1-2])|36[0-9]{2})\\d{10}(\\d{2,3})?)|(?:564182\\d{10}(\\d{2,3})?)|(6(3(33[0-4][0-9])|759[0-9]{2})\\d{10}(\\d{2,3})?)$/',
                 'visa' => '/^4\\d{12}(\\d{3})?$/',
-                'voyager' => '/^8699[0-9]{11}$/'
+                'voyager' => '/^8699[0-9]{11}$/',
             ],
-            'fast' => '/^(?:4[0-9]{12}(?:[0-9]{3})?|5[1-5][0-9]{14}|6011[0-9]{12}|3(?:0[0-5]|[68][0-9])[0-9]{11}|3[47][0-9]{13})$/'
+            'fast' => '/^(?:4[0-9]{12}(?:[0-9]{3})?|5[1-5][0-9]{14}|6011[0-9]{12}|3(?:0[0-5]|[68][0-9])[0-9]{11}|3[47][0-9]{13})$/',
         ];
 
         if (is_array($type)) {
@@ -431,7 +435,7 @@ class Validation
      */
     public static function compareFields($check, $field, $operator, $context)
     {
-        if (!isset($context['data'][$field])) {
+        if (!isset($context['data']) || !array_key_exists($field, $context['data'])) {
             return false;
         }
 
@@ -480,7 +484,7 @@ class Validation
      * Date validation, determines if the string passed is a valid date.
      * keys that expect full month, day and year will validate leap years.
      *
-     * Years are valid from 1800 to 2999.
+     * Years are valid from 0001 to 2999.
      *
      * ### Formats:
      *
@@ -518,29 +522,35 @@ class Validation
         }
         $month = '(0[123456789]|10|11|12)';
         $separator = '([- /.])';
-        $fourDigitYear = '(([1][8-9][0-9][0-9])|([2][0-9][0-9][0-9]))';
-        $twoDigitYear = '([0-9]{2})';
+        // Don't allow 0000, but 0001-2999 are ok.
+        $fourDigitYear = '(?:(?!0000)[012]\d{3})';
+        $twoDigitYear = '(?:\d{2})';
         $year = '(?:' . $fourDigitYear . '|' . $twoDigitYear . ')';
 
+        // 2 or 4 digit leap year sub-pattern
+        $leapYear = '(?:(?:(?:(?!0000)[012]\\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00)))';
+        // 4 digit leap year sub-pattern
+        $fourDigitLeapYear = '(?:(?:(?:(?!0000)[012]\\d)(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00)))';
+
         $regex['dmy'] = '%^(?:(?:31(\\/|-|\\.|\\x20)(?:0?[13578]|1[02]))\\1|(?:(?:29|30)' .
-            $separator . '(?:0?[1,3-9]|1[0-2])\\2))(?:(?:1[6-9]|[2-9]\\d)?\\d{2})$|^(?:29' .
-            $separator . '0?2\\3(?:(?:(?:1[6-9]|[2-9]\\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\\d|2[0-8])' .
-            $separator . '(?:(?:0?[1-9])|(?:1[0-2]))\\4(?:(?:1[6-9]|[2-9]\\d)?\\d{2})$%';
+            $separator . '(?:0?[1,3-9]|1[0-2])\\2))' . $year . '$|^(?:29' .
+            $separator . '0?2\\3' . $leapYear . ')$|^(?:0?[1-9]|1\\d|2[0-8])' .
+            $separator . '(?:(?:0?[1-9])|(?:1[0-2]))\\4' . $year . '$%';
 
         $regex['mdy'] = '%^(?:(?:(?:0?[13578]|1[02])(\\/|-|\\.|\\x20)31)\\1|(?:(?:0?[13-9]|1[0-2])' .
-            $separator . '(?:29|30)\\2))(?:(?:1[6-9]|[2-9]\\d)?\\d{2})$|^(?:0?2' . $separator . '29\\3(?:(?:(?:1[6-9]|[2-9]\\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:(?:0?[1-9])|(?:1[0-2]))' .
-            $separator . '(?:0?[1-9]|1\\d|2[0-8])\\4(?:(?:1[6-9]|[2-9]\\d)?\\d{2})$%';
+            $separator . '(?:29|30)\\2))' . $year . '$|^(?:0?2' . $separator . '29\\3' . $leapYear . ')$|^(?:(?:0?[1-9])|(?:1[0-2]))' .
+            $separator . '(?:0?[1-9]|1\\d|2[0-8])\\4' . $year . '$%';
 
-        $regex['ymd'] = '%^(?:(?:(?:(?:(?:1[6-9]|[2-9]\\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00)))' .
-            $separator . '(?:0?2\\1(?:29)))|(?:(?:(?:1[6-9]|[2-9]\\d)?\\d{2})' .
+        $regex['ymd'] = '%^(?:(?:' . $leapYear .
+            $separator . '(?:0?2\\1(?:29)))|(?:' . $year .
             $separator . '(?:(?:(?:0?[13578]|1[02])\\2(?:31))|(?:(?:0?[1,3-9]|1[0-2])\\2(29|30))|(?:(?:0?[1-9])|(?:1[0-2]))\\2(?:0?[1-9]|1\\d|2[0-8]))))$%';
 
-        $regex['dMy'] = '/^((31(?!\\ (Feb(ruary)?|Apr(il)?|June?|(Sep(?=\\b|t)t?|Nov)(ember)?)))|((30|29)(?!\\ Feb(ruary)?))|(29(?=\\ Feb(ruary)?\\ (((1[6-9]|[2-9]\\d)(0[48]|[2468][048]|[13579][26])|((16|[2468][048]|[3579][26])00)))))|(0?[1-9])|1\\d|2[0-8])\\ (Jan(uary)?|Feb(ruary)?|Ma(r(ch)?|y)|Apr(il)?|Ju((ly?)|(ne?))|Aug(ust)?|Oct(ober)?|(Sep(?=\\b|t)t?|Nov|Dec)(ember)?)\\ ((1[6-9]|[2-9]\\d)\\d{2})$/';
+        $regex['dMy'] = '/^((31(?!\\ (Feb(ruary)?|Apr(il)?|June?|(Sep(?=\\b|t)t?|Nov)(ember)?)))|((30|29)(?!\\ Feb(ruary)?))|(29(?=\\ Feb(ruary)?\\ ' . $fourDigitLeapYear . '))|(0?[1-9])|1\\d|2[0-8])\\ (Jan(uary)?|Feb(ruary)?|Ma(r(ch)?|y)|Apr(il)?|Ju((ly?)|(ne?))|Aug(ust)?|Oct(ober)?|(Sep(?=\\b|t)t?|Nov|Dec)(ember)?)\\ ' . $fourDigitYear . '$/';
 
-        $regex['Mdy'] = '/^(?:(((Jan(uary)?|Ma(r(ch)?|y)|Jul(y)?|Aug(ust)?|Oct(ober)?|Dec(ember)?)\\ 31)|((Jan(uary)?|Ma(r(ch)?|y)|Apr(il)?|Ju((ly?)|(ne?))|Aug(ust)?|Oct(ober)?|(Sep)(tember)?|(Nov|Dec)(ember)?)\\ (0?[1-9]|([12]\\d)|30))|(Feb(ruary)?\\ (0?[1-9]|1\\d|2[0-8]|(29(?=,?\\ ((1[6-9]|[2-9]\\d)(0[48]|[2468][048]|[13579][26])|((16|[2468][048]|[3579][26])00)))))))\\,?\\ ((1[6-9]|[2-9]\\d)\\d{2}))$/';
+        $regex['Mdy'] = '/^(?:(((Jan(uary)?|Ma(r(ch)?|y)|Jul(y)?|Aug(ust)?|Oct(ober)?|Dec(ember)?)\\ 31)|((Jan(uary)?|Ma(r(ch)?|y)|Apr(il)?|Ju((ly?)|(ne?))|Aug(ust)?|Oct(ober)?|(Sep)(tember)?|(Nov|Dec)(ember)?)\\ (0?[1-9]|([12]\\d)|30))|(Feb(ruary)?\\ (0?[1-9]|1\\d|2[0-8]|(29(?=,?\\ ' . $fourDigitLeapYear . ')))))\\,?\\ ' . $fourDigitYear . ')$/';
 
         $regex['My'] = '%^(Jan(uary)?|Feb(ruary)?|Ma(r(ch)?|y)|Apr(il)?|Ju((ly?)|(ne?))|Aug(ust)?|Oct(ober)?|(Sep(?=\\b|t)t?|Nov|Dec)(ember)?)' .
-            $separator . '((1[6-9]|[2-9]\\d)\\d{2})$%';
+            $separator . $fourDigitYear . '$%';
 
         $regex['my'] = '%^(' . $month . $separator . $year . ')$%';
         $regex['ym'] = '%^(' . $year . $separator . $month . ')$%';
@@ -563,6 +573,7 @@ class Validation
      *
      * @param string|\DateTimeInterface $check Value to check
      * @param string|array $dateFormat Format of the date part. See Validation::date() for more information.
+     *      Or `Validation::DATETIME_ISO8601` to valid an ISO8601 datetime value
      * @param string|null $regex Regex for the date part. If a custom regular expression is used this is the only validation that will occur.
      * @return bool True if the value is valid, false otherwise
      * @see \Cake\Validation\Validation::date()
@@ -576,19 +587,52 @@ class Validation
         if (is_object($check)) {
             return false;
         }
+        if ($dateFormat === static::DATETIME_ISO8601 && !static::iso8601($check)) {
+            return false;
+        }
+
         $valid = false;
         if (is_array($check)) {
             $check = static::_getDateString($check);
             $dateFormat = 'ymd';
         }
-        $parts = explode(' ', $check);
+        $parts = preg_split("/[\sT]+/", $check);
         if (!empty($parts) && count($parts) > 1) {
             $date = rtrim(array_shift($parts), ',');
             $time = implode(' ', $parts);
+            if ($dateFormat === static::DATETIME_ISO8601) {
+                $dateFormat = 'ymd';
+                $time = preg_split("/[TZ\-\+\.]/", $time);
+                $time = array_shift($time);
+            }
             $valid = static::date($date, $dateFormat, $regex) && static::time($time);
         }
 
         return $valid;
+    }
+
+    /**
+     * Validates an iso8601 datetime format
+     * ISO8601 recognize datetime like 2019 as a valid date. To validate and check date integrity, use @see \Cake\Validation\Validation::datetime()
+     *
+     * @param string|\DateTimeInterface $check Value to check
+     *
+     * @return bool True if the value is valid, false otherwise
+     *
+     * @see Regex credits: https://www.myintervals.com/blog/2009/05/20/iso-8601-date-validation-that-doesnt-suck/
+     */
+    public static function iso8601($check)
+    {
+        if ($check instanceof DateTimeInterface) {
+            return true;
+        }
+        if (is_object($check)) {
+            return false;
+        }
+
+        $regex = '/^([\+-]?\d{4}(?!\d{2}\b))((-?)((0[1-9]|1[0-2])(\3([12]\d|0[1-9]|3[01]))?|W([0-4]\d|5[0-2])(-?[1-7])?|(00[1-9]|0[1-9]\d|[12]\d{2}|3([0-5]\d|6[1-6])))([T\s]((([01]\d|2[0-3])((:?)[0-5]\d)?|24\:?00)([\.,]\d+(?!:))?)?(\17[0-5]\d([\.,]\d+)?)?([zZ]|([\+-])([01]\d|2[0-3]):?([0-5]\d)?)?)?)?$/';
+
+        return static::_check($check, $regex);
     }
 
     /**
@@ -738,6 +782,13 @@ class Validation
         $formatter = new NumberFormatter($locale, NumberFormatter::DECIMAL);
         $decimalPoint = $formatter->getSymbol(NumberFormatter::DECIMAL_SEPARATOR_SYMBOL);
         $groupingSep = $formatter->getSymbol(NumberFormatter::GROUPING_SEPARATOR_SYMBOL);
+
+        // There are two types of non-breaking spaces - we inject a space to account for human input
+        if ($groupingSep == "\xc2\xa0" || $groupingSep == "\xe2\x80\xaf") {
+            $check = str_replace([' ', $groupingSep, $decimalPoint], ['', '', '.'], $check);
+        } else {
+            $check = str_replace([$groupingSep, $decimalPoint], ['', '.'], $check);
+        }
 
         $check = str_replace([$groupingSep, $decimalPoint], ['', '.'], $check);
 
@@ -1069,7 +1120,7 @@ class Validation
      * Checks if a value is in a given list. Comparison is case sensitive by default.
      *
      * @param string $check Value to check.
-     * @param array $list List to check against.
+     * @param string[] $list List to check against.
      * @param bool $caseInsensitive Set to true for case insensitive comparison.
      * @return bool Success.
      */
@@ -1202,7 +1253,7 @@ class Validation
             $mimeTypes[$key] = strtolower($val);
         }
 
-        return in_array($mime, $mimeTypes);
+        return in_array(strtolower($mime), $mimeTypes, true);
     }
 
     /**
@@ -1210,7 +1261,7 @@ class Validation
      * we accept.
      *
      * @param string|array|\Psr\Http\Message\UploadedFileInterface $check The data to read a filename out of.
-     * @return string|bool Either the filename or false on failure.
+     * @return string|false Either the filename or false on failure.
      */
     protected static function getFilename($check)
     {
@@ -1401,8 +1452,8 @@ class Validation
         return self::imageSize($file, [
             'width' => [
                 $operator,
-                $width
-            ]
+                $width,
+            ],
         ]);
     }
 
@@ -1419,8 +1470,8 @@ class Validation
         return self::imageSize($file, [
             'height' => [
                 $operator,
-                $height
-            ]
+                $height,
+            ],
         ]);
     }
 
@@ -1445,7 +1496,7 @@ class Validation
     {
         $options += [
             'format' => 'both',
-            'type' => 'latLong'
+            'type' => 'latLong',
         ];
         if ($options['type'] !== 'latLong') {
             throw new RuntimeException(sprintf(
@@ -1644,7 +1695,8 @@ class Validation
     protected static function _getDateString($value)
     {
         $formatted = '';
-        if (isset($value['year'], $value['month'], $value['day']) &&
+        if (
+            isset($value['year'], $value['month'], $value['day']) &&
             (is_numeric($value['year']) && is_numeric($value['month']) && is_numeric($value['day']))
         ) {
             $formatted .= sprintf('%d-%02d-%02d ', $value['year'], $value['month'], $value['day']);

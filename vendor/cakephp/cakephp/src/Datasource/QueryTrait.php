@@ -24,7 +24,6 @@ use Cake\Datasource\Exception\RecordNotFoundException;
  */
 trait QueryTrait
 {
-
     /**
      * Instance of a table object this query is bound to
      *
@@ -86,6 +85,8 @@ trait QueryTrait
      *
      * When called with a Table argument, the default table object will be set
      * and this query object will be returned for chaining.
+     *
+     * Deprecated: 3.6.0 Using Query::repository() as getter is deprecated. Use getRepository() instead.
      *
      * @param \Cake\Datasource\RepositoryInterface|null $table The default table object to use
      * @return \Cake\Datasource\RepositoryInterface|$this
@@ -179,7 +180,7 @@ trait QueryTrait
      * $query->cache(false);
      * ```
      *
-     * @param false|string|\Closure $key Either the cache key or a function to generate the cache key.
+     * @param \Closure|string|false $key Either the cache key or a function to generate the cache key.
      *   When using a function, this query instance will be supplied as an argument.
      * @param string|\Cake\Cache\CacheEngine $config Either the name of the cache config to use, or
      *   a cache config instance.

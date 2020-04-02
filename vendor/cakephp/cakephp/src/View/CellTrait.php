@@ -23,7 +23,6 @@ use Cake\View\Exception\MissingCellException;
  */
 trait CellTrait
 {
-
     /**
      * Renders the given cell.
      *
@@ -92,7 +91,7 @@ trait CellTrait
      */
     protected function _createCell($className, $action, $plugin, $options)
     {
-        /* @var \Cake\View\Cell $instance */
+        /** @var \Cake\View\Cell $instance */
         $instance = new $className($this->request, $this->response, $this->getEventManager(), $options);
 
         $builder = $instance->viewBuilder();

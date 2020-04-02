@@ -39,7 +39,6 @@ use Throwable;
  */
 class Router
 {
-
     /**
      * Have routes been loaded
      *
@@ -130,7 +129,7 @@ class Router
         'Month' => Router::MONTH,
         'Day' => Router::DAY,
         'ID' => Router::ID,
-        'UUID' => Router::UUID
+        'UUID' => Router::UUID,
     ];
 
     /**
@@ -161,7 +160,7 @@ class Router
     /**
      * Default extensions defined with Router::extensions()
      *
-     * @var array
+     * @var string[]
      */
     protected static $_defaultExtensions = [];
 
@@ -420,7 +419,7 @@ class Router
             $requestData[0] += [
                 'controller' => false,
                 'action' => false,
-                'plugin' => null
+                'plugin' => null,
             ];
             $request = new ServerRequest([
                 'params' => $requestData[0],
@@ -706,7 +705,8 @@ class Router
 
             if (!isset($url['_name'])) {
                 // Copy the current action if the controller is the current one.
-                if (empty($url['action']) &&
+                if (
+                    empty($url['action']) &&
                     (empty($url['controller']) || $params['controller'] === $url['controller'])
                 ) {
                     $url['action'] = $params['action'];
@@ -721,7 +721,7 @@ class Router
                     'plugin' => $params['plugin'],
                     'controller' => $params['controller'],
                     'action' => 'index',
-                    '_ext' => null
+                    '_ext' => null,
                 ];
             }
 
@@ -852,7 +852,9 @@ class Router
             $params['bare'],
             $params['requested'],
             $params['return'],
+            $params['isAjax'],
             $params['_Token'],
+            $params['_csrfToken'],
             $params['_matchedRoute'],
             $params['_name']
         );
@@ -941,10 +943,10 @@ class Router
      * A string or an array of valid extensions can be passed to this method.
      * If called without any parameters it will return current list of set extensions.
      *
-     * @param array|string|null $extensions List of extensions to be added.
+     * @param string[]|string|null $extensions List of extensions to be added.
      * @param bool $merge Whether to merge with or override existing extensions.
      *   Defaults to `true`.
-     * @return array Array of extensions Router is configured to parse.
+     * @return string[] Array of extensions Router is configured to parse.
      */
     public static function extensions($extensions = null, $merge = true)
     {
@@ -1010,7 +1012,7 @@ class Router
                         $arr = [$arr];
                     } else {
                         $arr = [
-                            $match[1] => $arr
+                            $match[1] => $arr,
                         ];
                     }
                 }

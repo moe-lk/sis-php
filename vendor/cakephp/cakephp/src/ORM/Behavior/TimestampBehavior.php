@@ -27,7 +27,6 @@ use UnexpectedValueException;
  */
 class TimestampBehavior extends Behavior
 {
-
     /**
      * Default config
      *
@@ -47,15 +46,15 @@ class TimestampBehavior extends Behavior
         'implementedFinders' => [],
         'implementedMethods' => [
             'timestamp' => 'timestamp',
-            'touch' => 'touch'
+            'touch' => 'touch',
         ],
         'events' => [
             'Model.beforeSave' => [
                 'created' => 'new',
-                'modified' => 'always'
-            ]
+                'modified' => 'always',
+            ],
         ],
-        'refreshTimestamp' => true
+        'refreshTimestamp' => true,
     ];
 
     /**
@@ -104,7 +103,8 @@ class TimestampBehavior extends Behavior
                     sprintf('When should be one of "always", "new" or "existing". The passed value "%s" is invalid', $when)
                 );
             }
-            if ($when === 'always' ||
+            if (
+                $when === 'always' ||
                 ($when === 'new' && $new) ||
                 ($when === 'existing' && !$new)
             ) {

@@ -28,7 +28,6 @@ use SimpleXMLElement;
  */
 class Xml
 {
-
     /**
      * Initialize SimpleXMLElement or DOMDocument from a given XML string, file path, URL or array.
      *
@@ -273,7 +272,7 @@ class Xml
             'version' => '1.0',
             'encoding' => mb_internal_encoding(),
             'return' => 'simplexml',
-            'pretty' => false
+            'pretty' => false,
         ];
         $options += $defaults;
 
@@ -320,7 +319,7 @@ class Xml
                     }
                     $isNamespace = strpos($key, 'xmlns:');
                     if ($isNamespace !== false) {
-                        $node->setAttributeNS('http://www.w3.org/2000/xmlns/', $key, $value);
+                        $node->setAttributeNS('http://www.w3.org/2000/xmlns/', $key, (string)$value);
                         continue;
                     }
                     if ($key[0] !== '@' && $format === 'tags') {
@@ -329,7 +328,7 @@ class Xml
                             // https://www.w3.org/TR/REC-xml/#syntax
                             // https://bugs.php.net/bug.php?id=36795
                             $child = $dom->createElement($key, '');
-                            $child->appendChild(new DOMText($value));
+                            $child->appendChild(new DOMText((string)$value));
                         } else {
                             $child = $dom->createElement($key, $value);
                         }
@@ -443,7 +442,7 @@ class Xml
      * @param \SimpleXMLElement $xml SimpleXMLElement object
      * @param array $parentData Parent array with data
      * @param string $ns Namespace of current child
-     * @param array $namespaces List of namespaces in XML
+     * @param string[] $namespaces List of namespaces in XML
      * @return void
      */
     protected static function _toArray($xml, &$parentData, $ns, $namespaces)

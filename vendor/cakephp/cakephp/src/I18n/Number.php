@@ -21,11 +21,10 @@ use NumberFormatter;
  *
  * Methods to make numbers more readable.
  *
- * @link https://book.cakephp.org/3.0/en/core-libraries/number.html
+ * @link https://book.cakephp.org/3/en/core-libraries/number.html
  */
 class Number
 {
-
     /**
      * Default locale
      *
@@ -65,7 +64,7 @@ class Number
      * @param int $precision The precision of the returned number.
      * @param array $options Additional options
      * @return string Formatted float.
-     * @link https://book.cakephp.org/3.0/en/core-libraries/number.html#formatting-floating-point-numbers
+     * @link https://book.cakephp.org/3/en/core-libraries/number.html#formatting-floating-point-numbers
      */
     public static function precision($value, $precision = 3, array $options = [])
     {
@@ -79,7 +78,7 @@ class Number
      *
      * @param int $size Size in bytes
      * @return string Human readable size
-     * @link https://book.cakephp.org/3.0/en/core-libraries/number.html#interacting-with-human-readable-values
+     * @link https://book.cakephp.org/3/en/core-libraries/number.html#interacting-with-human-readable-values
      */
     public static function toReadableSize($size)
     {
@@ -109,16 +108,16 @@ class Number
      * @param int $precision The precision of the returned number
      * @param array $options Options
      * @return string Percentage string
-     * @link https://book.cakephp.org/3.0/en/core-libraries/number.html#formatting-percentages
+     * @link https://book.cakephp.org/3/en/core-libraries/number.html#formatting-percentages
      */
     public static function toPercentage($value, $precision = 2, array $options = [])
     {
-        $options += ['multiply' => false];
-        if ($options['multiply']) {
-            $value *= 100;
+        $options += ['multiply' => false, 'type' => NumberFormatter::PERCENT];
+        if (!$options['multiply']) {
+            $value /= 100;
         }
 
-        return static::precision($value, $precision, $options) . '%';
+        return static::precision($value, $precision, $options);
     }
 
     /**
@@ -240,7 +239,7 @@ class Number
     /**
      * Getter/setter for default currency
      *
-     * @param string|bool|null $currency Default currency string to be used by currency()
+     * @param string|false|null $currency Default currency string to be used by currency()
      * if $currency argument is not provided. If boolean false is passed, it will clear the
      * currently stored value
      * @return string|null Currency
@@ -304,13 +303,14 @@ class Number
             static::$_formatters[$locale][$type] = new NumberFormatter($locale, $type);
         }
 
+        /** @var \NumberFormatter $formatter */
         $formatter = static::$_formatters[$locale][$type];
 
         $options = array_intersect_key($options, [
             'places' => null,
             'precision' => null,
             'pattern' => null,
-            'useIntlCode' => null
+            'useIntlCode' => null,
         ]);
         if (empty($options)) {
             return $formatter;

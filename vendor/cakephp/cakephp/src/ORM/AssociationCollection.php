@@ -29,7 +29,6 @@ use IteratorAggregate;
  */
 class AssociationCollection implements IteratorAggregate
 {
-
     use AssociationsNormalizerTrait;
     use LocatorAwareTrait;
 
@@ -84,7 +83,7 @@ class AssociationCollection implements IteratorAggregate
     public function load($className, $associated, array $options = [])
     {
         $options += [
-            'tableLocator' => $this->getTableLocator()
+            'tableLocator' => $this->getTableLocator(),
         ];
 
         $association = new $className($associated, $options);
@@ -171,7 +170,7 @@ class AssociationCollection implements IteratorAggregate
     /**
      * Get an array of associations matching a specific type.
      *
-     * @param string|array $class The type of associations you want.
+     * @param string|string[] $class The type of associations you want.
      *   For example 'BelongsTo' or array like ['BelongsTo', 'HasOne']
      * @return array An array of Association objects.
      * @since 3.5.3

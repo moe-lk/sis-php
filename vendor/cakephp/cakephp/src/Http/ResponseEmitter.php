@@ -227,7 +227,7 @@ class ResponseEmitter implements EmitterInterface
                 'path' => '',
                 'domain' => '',
                 'secure' => false,
-                'httponly' => false
+                'httponly' => false,
             ];
 
             foreach ($parts as $part) {
@@ -279,7 +279,7 @@ class ResponseEmitter implements EmitterInterface
      * https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.16
      *
      * @param string $header The Content-Range header to parse.
-     * @return false|array [unit, first, last, length]; returns false if no
+     * @return array|false [unit, first, last, length]; returns false if no
      *     content range or an invalid content range is provided
      */
     protected function parseContentRange($header)

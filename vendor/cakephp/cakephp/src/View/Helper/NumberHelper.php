@@ -24,19 +24,18 @@ use Cake\View\View;
  *
  * Methods to make numbers more readable.
  *
- * @link https://book.cakephp.org/3.0/en/views/helpers/number.html
+ * @link https://book.cakephp.org/3/en/views/helpers/number.html
  * @see \Cake\I18n\Number
  */
 class NumberHelper extends Helper
 {
-
     /**
      * Default config for this class
      *
      * @var array
      */
     protected $_defaultConfig = [
-        'engine' => 'Cake\I18n\Number'
+        'engine' => 'Cake\I18n\Number',
     ];
 
     /**
@@ -89,13 +88,14 @@ class NumberHelper extends Helper
      *
      * @param float $number A floating point number.
      * @param int $precision The precision of the returned number.
+     * @param array $options Additional options.
      * @return string Formatted float.
      * @see \Cake\I18n\Number::precision()
-     * @link https://book.cakephp.org/3.0/en/views/helpers/number.html#formatting-floating-point-numbers
+     * @link https://book.cakephp.org/3/en/views/helpers/number.html#formatting-floating-point-numbers
      */
-    public function precision($number, $precision = 3)
+    public function precision($number, $precision = 3, array $options = [])
     {
-        return $this->_engine->precision($number, $precision);
+        return $this->_engine->precision($number, $precision, $options);
     }
 
     /**
@@ -104,7 +104,7 @@ class NumberHelper extends Helper
      * @param int $size Size in bytes
      * @return string Human readable size
      * @see \Cake\I18n\Number::toReadableSize()
-     * @link https://book.cakephp.org/3.0/en/views/helpers/number.html#interacting-with-human-readable-values
+     * @link https://book.cakephp.org/3/en/views/helpers/number.html#interacting-with-human-readable-values
      */
     public function toReadableSize($size)
     {
@@ -123,7 +123,7 @@ class NumberHelper extends Helper
      * @param array $options Options
      * @return string Percentage string
      * @see \Cake\I18n\Number::toPercentage()
-     * @link https://book.cakephp.org/3.0/en/views/helpers/number.html#formatting-percentages
+     * @link https://book.cakephp.org/3/en/views/helpers/number.html#formatting-percentages
      */
     public function toPercentage($number, $precision = 2, array $options = [])
     {
@@ -145,7 +145,7 @@ class NumberHelper extends Helper
      * @param float $number A floating point number.
      * @param array $options An array with options.
      * @return string Formatted number
-     * @link https://book.cakephp.org/3.0/en/views/helpers/number.html#formatting-numbers
+     * @link https://book.cakephp.org/3/en/views/helpers/number.html#formatting-numbers
      */
     public function format($number, array $options = [])
     {

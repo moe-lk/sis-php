@@ -35,7 +35,6 @@ use RuntimeException;
  */
 class Marshaller
 {
-
     use AssociationsNormalizerTrait;
 
     /**
@@ -309,7 +308,7 @@ class Marshaller
         $targetTable = $assoc->getTarget();
         $marshaller = $targetTable->marshaller();
         $types = [Association::ONE_TO_ONE, Association::MANY_TO_ONE];
-        if (in_array($assoc->type(), $types)) {
+        if (in_array($assoc->type(), $types, true)) {
             return $marshaller->one($value, (array)$options);
         }
         if ($assoc->type() === Association::ONE_TO_MANY || $assoc->type() === Association::MANY_TO_MANY) {
@@ -419,7 +418,7 @@ class Marshaller
             $query = $target->find();
             $query->andWhere(function ($exp) use ($conditions) {
                 /** @var \Cake\Database\Expression\QueryExpression $exp */
-                return $exp->or_($conditions);
+                return $exp->or($conditions);
             });
 
             $keyFields = array_keys($primaryKey);
@@ -587,7 +586,8 @@ class Marshaller
                 // change. Arrays will always be marked as dirty because
                 // the original/updated list could contain references to the
                 // same objects, even though those objects may have changed internally.
-                if ((is_scalar($value) && $original === $value) ||
+                if (
+                    (is_scalar($value) && $original === $value) ||
                     ($value === null && $original === $value) ||
                     (is_object($value) && !($value instanceof EntityInterface) && $original == $value)
                 ) {
@@ -747,7 +747,7 @@ class Marshaller
         $targetTable = $assoc->getTarget();
         $marshaller = $targetTable->marshaller();
         $types = [Association::ONE_TO_ONE, Association::MANY_TO_ONE];
-        if (in_array($assoc->type(), $types)) {
+        if (in_array($assoc->type(), $types, true)) {
             return $marshaller->merge($original, $value, (array)$options);
         }
         if ($assoc->type() === Association::MANY_TO_MANY) {
@@ -792,7 +792,7 @@ class Marshaller
             return [];
         }
 
-        if (!empty($associated) && !in_array('_joinData', $associated) && !isset($associated['_joinData'])) {
+        if (!empty($associated) && !in_array('_joinData', $associated, true) && !isset($associated['_joinData'])) {
             return $this->mergeMany($original, $value, $options);
         }
 

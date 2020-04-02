@@ -19,7 +19,6 @@ namespace Cake\Console;
  */
 class ConsoleInput
 {
-
     /**
      * Input value.
      *
@@ -52,7 +51,7 @@ class ConsoleInput
     /**
      * Read a value from the stream
      *
-     * @return mixed The value of the stream
+     * @return string|false The value of the stream
      */
     public function read()
     {
@@ -81,6 +80,6 @@ class ConsoleInput
         $errorFds = null;
         $readyFds = stream_select($readFds, $writeFds, $errorFds, $timeout);
 
-        return ($readyFds > 0);
+        return $readyFds > 0;
     }
 }

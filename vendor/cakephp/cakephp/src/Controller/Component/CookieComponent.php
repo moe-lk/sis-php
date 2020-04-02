@@ -32,7 +32,7 @@ use Cake\Utility\Security;
  * - Store non-scalar data.
  * - Use hash compatible syntax to read/write/delete values.
  *
- * @link https://book.cakephp.org/3.0/en/controllers/components/cookie.html
+ * @link https://book.cakephp.org/3/en/controllers/components/cookie.html
  * @deprecated 3.5.0 Use Cake\Http\Middleware\EncryptedCookieMiddleware and Cake\Http\Cookie\Cookie methods instead.
  */
 class CookieComponent extends Component
@@ -154,7 +154,7 @@ class CookieComponent extends Component
      * ```
      *
      * @param string $keyname The top level keyname to configure.
-     * @param null|string|array $option Either the option name to set, or an array of options to set,
+     * @param array|string|null $option Either the option name to set, or an array of options to set,
      *   or null to read config options for a given key.
      * @param string|null $value Either the value to set, or empty when $option is an array.
      * @return array|null

@@ -29,7 +29,6 @@ use Exception;
  */
 abstract class BaseErrorHandler
 {
-
     /**
      * Options to use for the Error handling.
      *
@@ -115,8 +114,8 @@ abstract class BaseErrorHandler
      * Set as the default error handler by CakePHP.
      *
      * Use config/error.php to customize or replace this error handler.
-     * This function will use Debugger to display errors when debug > 0. And
-     * will log errors to Log, when debug == 0.
+     * This function will use Debugger to display errors when debug mode is on. And
+     * will log errors to Log, when debug mode is off.
      *
      * You can use the 'errorLevel' option to set what type of errors will be handled.
      * Stack traces for errors can be enabled with the 'trace' option.
@@ -149,10 +148,20 @@ abstract class BaseErrorHandler
 
         $debug = Configure::read('debug');
         if ($debug) {
+            // By default trim 3 frames off for the public and protected methods
+            // used by ErrorHandler instances.
+            $start = 3;
+
+            // Can be used by error handlers that wrap other error handlers
+            // to coerce the generated stack trace to the correct point.
+            if (isset($context['_trace_frame_offset'])) {
+                $start += $context['_trace_frame_offset'];
+                unset($context['_trace_frame_offset']);
+            }
             $data += [
                 'context' => $context,
-                'start' => 3,
-                'path' => Debugger::trimPath($file)
+                'start' => $start,
+                'path' => Debugger::trimPath($file),
             ];
         }
         $this->_displayError($data, $debug);
@@ -283,7 +292,7 @@ abstract class BaseErrorHandler
         if (!empty($this->_options['trace'])) {
             $trace = Debugger::trace([
                 'start' => 1,
-                'format' => 'log'
+                'format' => 'log',
             ]);
 
             $request = Router::getRequest();

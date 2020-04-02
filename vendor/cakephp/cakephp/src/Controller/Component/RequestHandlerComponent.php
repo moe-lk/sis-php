@@ -36,11 +36,10 @@ use RuntimeException;
  * and the like. These units have no use for AJAX requests, and this Component can tell how Cake
  * should respond to the different needs of a handheld computer and a desktop machine.
  *
- * @link https://book.cakephp.org/3.0/en/controllers/components/request-handling.html
+ * @link https://book.cakephp.org/3/en/controllers/components/request-handling.html
  */
 class RequestHandlerComponent extends Component
 {
-
     /**
      * @var bool
      * @deprecated 3.4.0 Unused. Will be removed in 4.0.0
@@ -83,7 +82,7 @@ class RequestHandlerComponent extends Component
         'checkHttpCache' => true,
         'viewClassMap' => [],
         'inputTypeMap' => [],
-        'enableBeforeRedirect' => true
+        'enableBeforeRedirect' => true,
     ];
 
     /**
@@ -107,12 +106,12 @@ class RequestHandlerComponent extends Component
             'viewClassMap' => [
                 'json' => 'Json',
                 'xml' => 'Xml',
-                'ajax' => 'Ajax'
+                'ajax' => 'Ajax',
             ],
             'inputTypeMap' => [
                 'json' => ['json_decode', true],
                 'xml' => [[$this, 'convertXml']],
-            ]
+            ],
         ];
         parent::__construct($registry, $config);
     }
@@ -292,10 +291,10 @@ class RequestHandlerComponent extends Component
             'return',
             'bare' => false,
             'environment' => [
-                'REQUEST_METHOD' => 'GET'
+                'REQUEST_METHOD' => 'GET',
             ],
             'query' => $query,
-            'cookies' => $request->getCookieParams()
+            'cookies' => $request->getCookieParams(),
         ]));
 
         return $response->withStatus(200);
@@ -343,7 +342,8 @@ class RequestHandlerComponent extends Component
             $response = $response->withCharset(Configure::read('App.encoding'));
         }
 
-        if ($this->_config['checkHttpCache'] &&
+        if (
+            $this->_config['checkHttpCache'] &&
             $response->checkNotModified($request)
         ) {
             $controller->setResponse($response);
@@ -498,7 +498,8 @@ class RequestHandlerComponent extends Component
         $request = $controller->getRequest();
         $response = $controller->getResponse();
 
-        if (!$request->is('post') &&
+        if (
+            !$request->is('post') &&
             !$request->is('put') &&
             !$request->is('patch') &&
             !$request->is('delete')
@@ -724,7 +725,7 @@ class RequestHandlerComponent extends Component
      * Maps a content type alias back to its mime-type(s)
      *
      * @param string|array $alias String alias to convert back into a content type. Or an array of aliases to map.
-     * @return string|null|array Null on an undefined alias. String value of the mapped alias type. If an
+     * @return string|array|null Null on an undefined alias. String value of the mapped alias type. If an
      *   alias maps to more than one content type, the first one will be returned. If an array is provided
      *   for $alias, an array of mapped types will be returned.
      */

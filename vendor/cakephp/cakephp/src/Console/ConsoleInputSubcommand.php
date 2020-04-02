@@ -26,7 +26,6 @@ use SimpleXMLElement;
  */
 class ConsoleInputSubcommand
 {
-
     /**
      * Name of the subcommand
      *
@@ -112,7 +111,7 @@ class ConsoleInputSubcommand
     /**
      * Get the usage value for this option
      *
-     * @return \Cake\Console\ConsoleOptionParser|bool Either false or a ConsoleOptionParser
+     * @return \Cake\Console\ConsoleOptionParser|false Either false or a ConsoleOptionParser
      */
     public function parser()
     {

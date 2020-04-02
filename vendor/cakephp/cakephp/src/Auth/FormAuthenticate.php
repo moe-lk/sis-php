@@ -42,11 +42,10 @@ use Cake\Http\ServerRequest;
  * When configuring FormAuthenticate you can pass in config to which fields, model and finder
  * are used. See `BaseAuthenticate::$_defaultConfig` for more information.
  *
- * @see https://book.cakephp.org/3.0/en/controllers/components/authentication.html
+ * @see https://book.cakephp.org/3/en/controllers/components/authentication.html
  */
 class FormAuthenticate extends BaseAuthenticate
 {
-
     /**
      * Checks the fields to ensure they are supplied.
      *
@@ -73,7 +72,7 @@ class FormAuthenticate extends BaseAuthenticate
      *
      * @param \Cake\Http\ServerRequest $request The request that contains login information.
      * @param \Cake\Http\Response $response Unused response object.
-     * @return mixed False on login failure. An array of User data on success.
+     * @return array|false False on login failure. An array of User data on success.
      */
     public function authenticate(ServerRequest $request, Response $response)
     {

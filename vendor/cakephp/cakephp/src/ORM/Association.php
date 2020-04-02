@@ -34,7 +34,6 @@ use RuntimeException;
  */
 abstract class Association
 {
-
     use ConventionsTrait;
     use LocatorAwareTrait;
 
@@ -105,14 +104,14 @@ abstract class Association
     /**
      * The field name in the owning side table that is used to match with the foreignKey
      *
-     * @var string|array
+     * @var string|string[]
      */
     protected $_bindingKey;
 
     /**
      * The name of the field representing the foreign key to the table to load
      *
-     * @var string|array
+     * @var string|string[]
      */
     protected $_foreignKey;
 
@@ -188,12 +187,12 @@ abstract class Association
     /**
      * Valid strategies for this association. Subclasses can narrow this down.
      *
-     * @var array
+     * @var string[]
      */
     protected $_validStrategies = [
         self::STRATEGY_JOIN,
         self::STRATEGY_SELECT,
-        self::STRATEGY_SUBQUERY
+        self::STRATEGY_SUBQUERY,
     ];
 
     /**
@@ -217,7 +216,7 @@ abstract class Association
             'tableLocator',
             'propertyName',
             'sourceTable',
-            'targetTable'
+            'targetTable',
         ];
         foreach ($defaults as $property) {
             if (isset($options[$property])) {
@@ -345,7 +344,8 @@ abstract class Association
      */
     public function setClassName($className)
     {
-        if ($this->_targetTable !== null &&
+        if (
+            $this->_targetTable !== null &&
             get_class($this->_targetTable) !== App::className($className, 'Model/Table', 'Table')
         ) {
             throw new InvalidArgumentException(
@@ -561,7 +561,7 @@ abstract class Association
      * Sets the name of the field representing the binding field with the target table.
      * When not manually specified the primary key of the owning side table is used.
      *
-     * @param string|array $key the table field or fields to be used to link both tables together
+     * @param string|string[] $key the table field or fields to be used to link both tables together
      * @return $this
      */
     public function setBindingKey($key)
@@ -575,7 +575,7 @@ abstract class Association
      * Gets the name of the field representing the binding field with the target table.
      * When not manually specified the primary key of the owning side table is used.
      *
-     * @return string|array
+     * @return string|string[]
      */
     public function getBindingKey()
     {
@@ -614,7 +614,7 @@ abstract class Association
     /**
      * Gets the name of the field representing the foreign key to the target table.
      *
-     * @return string|array
+     * @return string|string[]
      */
     public function getForeignKey()
     {
@@ -624,7 +624,7 @@ abstract class Association
     /**
      * Sets the name of the field representing the foreign key to the target table.
      *
-     * @param string|array $key the key or keys to be used to link both tables together
+     * @param string|string[] $key the key or keys to be used to link both tables together
      * @return $this
      */
     public function setForeignKey($key)
@@ -994,7 +994,7 @@ abstract class Association
             'fields' => [],
             'type' => $joinType,
             'table' => $table,
-            'finder' => $this->getFinder()
+            'finder' => $this->getFinder(),
         ];
 
         if (!empty($options['foreignKey'])) {
@@ -1264,7 +1264,7 @@ abstract class Association
 
         $property = $options['propertyPath'];
         $propertyPath = explode('.', $property);
-        $query->formatResults(function ($results) use ($formatters, $property, $propertyPath) {
+        $query->formatResults(function ($results) use ($formatters, $property, $propertyPath, $query) {
             $extracted = [];
             foreach ($results as $result) {
                 foreach ($propertyPath as $propertyPathItem) {
@@ -1281,8 +1281,17 @@ abstract class Association
                 $extracted = new ResultSetDecorator($callable($extracted));
             }
 
-            /* @var \Cake\Collection\CollectionInterface $results */
-            return $results->insert($property, $extracted);
+            /** @var \Cake\Collection\CollectionInterface $results */
+            $results = $results->insert($property, $extracted);
+            if ($query->isHydrationEnabled()) {
+                $results = $results->map(function ($result) {
+                    $result->clean();
+
+                    return $result;
+                });
+            }
+
+            return $results;
         }, Query::PREPEND);
     }
 
@@ -1523,7 +1532,7 @@ abstract class Association
      *
      * @param \Cake\Datasource\EntityInterface $entity the data to be saved
      * @param array $options The options for saving associated data.
-     * @return bool|\Cake\Datasource\EntityInterface false if $entity could not be saved, otherwise it returns
+     * @return \Cake\Datasource\EntityInterface|false False if $entity could not be saved, otherwise it returns
      * the saved entity
      * @see \Cake\ORM\Table::save()
      */

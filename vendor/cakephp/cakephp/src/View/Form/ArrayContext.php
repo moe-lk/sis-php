@@ -66,7 +66,6 @@ use Cake\Validation\Validator;
  */
 class ArrayContext implements ContextInterface
 {
-
     /**
      * The request object.
      *
@@ -106,7 +105,8 @@ class ArrayContext implements ContextInterface
      */
     public function primaryKey()
     {
-        if (empty($this->_context['schema']['_constraints']) ||
+        if (
+            empty($this->_context['schema']['_constraints']) ||
             !is_array($this->_context['schema']['_constraints'])
         ) {
             return [];
@@ -127,7 +127,7 @@ class ArrayContext implements ContextInterface
     {
         $primaryKey = $this->primaryKey();
 
-        return in_array($field, $primaryKey);
+        return in_array($field, $primaryKey, true);
     }
 
     /**
@@ -170,7 +170,7 @@ class ArrayContext implements ContextInterface
     {
         $options += [
             'default' => null,
-            'schemaDefault' => true
+            'schemaDefault' => true,
         ];
 
         $val = $this->_request->getData($field);
@@ -261,7 +261,7 @@ class ArrayContext implements ContextInterface
      * Get the abstract field type for a given field name.
      *
      * @param string $field A dot separated path to get a schema type for.
-     * @return null|string An abstract data type or null.
+     * @return string|null An abstract data type or null.
      * @see \Cake\Database\Type
      */
     public function type($field)

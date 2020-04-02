@@ -61,11 +61,10 @@ use Cake\Utility\Security;
  * `User.password` would store the password hash for use with other methods like
  * Basic or Form.
  *
- * @see https://book.cakephp.org/3.0/en/controllers/components/authentication.html
+ * @see https://book.cakephp.org/3/en/controllers/components/authentication.html
  */
 class DigestAuthenticate extends BasicAuthenticate
 {
-
     /**
      * Constructor
      *
@@ -100,7 +99,7 @@ class DigestAuthenticate extends BasicAuthenticate
      * Get a user based on information in the request. Used by cookie-less auth for stateless clients.
      *
      * @param \Cake\Http\ServerRequest $request Request object.
-     * @return mixed Either false or an array of user information
+     * @return array|false Either false or an array of user information
      */
     public function getUser(ServerRequest $request)
     {
@@ -213,7 +212,7 @@ class DigestAuthenticate extends BasicAuthenticate
      * Generate the login headers
      *
      * @param \Cake\Http\ServerRequest $request Request object.
-     * @return array Headers for logging in.
+     * @return string[] Headers for logging in.
      */
     public function loginHeaders(ServerRequest $request)
     {
@@ -223,7 +222,7 @@ class DigestAuthenticate extends BasicAuthenticate
             'realm' => $realm,
             'qop' => $this->_config['qop'],
             'nonce' => $this->generateNonce(),
-            'opaque' => $this->_config['opaque'] ?: md5($realm)
+            'opaque' => $this->_config['opaque'] ?: md5($realm),
         ];
 
         $digest = $this->_getDigest($request);
@@ -242,7 +241,7 @@ class DigestAuthenticate extends BasicAuthenticate
         }
 
         return [
-            'WWW-Authenticate' => 'Digest ' . implode(',', $opts)
+            'WWW-Authenticate' => 'Digest ' . implode(',', $opts),
         ];
     }
 

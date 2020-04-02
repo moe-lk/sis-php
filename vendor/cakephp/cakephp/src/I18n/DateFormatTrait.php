@@ -26,7 +26,6 @@ use RuntimeException;
  */
 trait DateFormatTrait
 {
-
     /**
      * The default locale to be used for displaying formatted date strings.
      *
@@ -56,7 +55,7 @@ trait DateFormatTrait
      * @var string|array|int
      * @see \Cake\I18n\Time::i18nFormat()
      */
-    protected static $_jsonEncodeFormat = "yyyy-MM-dd'T'HH:mm:ssxxx";
+    protected static $_jsonEncodeFormat = "yyyy-MM-dd'T'HH':'mm':'ssxxx";
 
     /**
      * Caches whether or not this class is a subclass of a Date or MutableDate
@@ -454,9 +453,9 @@ trait DateFormatTrait
     public function __debugInfo()
     {
         return [
-            'time' => $this->toIso8601String(),
+            'time' => $this->format('Y-m-d H:i:s.uP'),
             'timezone' => $this->getTimezone()->getName(),
-            'fixedNowTime' => static::hasTestNow() ? static::getTestNow()->toIso8601String() : false
+            'fixedNowTime' => static::hasTestNow() ? static::getTestNow()->format('Y-m-d H:i:s.uP') : false,
         ];
     }
 }

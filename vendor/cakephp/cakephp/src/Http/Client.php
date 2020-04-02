@@ -114,6 +114,7 @@ class Client
         'ssl_verify_depth' => 5,
         'ssl_verify_host' => true,
         'redirect' => false,
+        'protocolVersion' => '1.1',
     ];
 
     /**
@@ -156,8 +157,10 @@ class Client
      * - adapter - The adapter class name or instance. Defaults to
      *   \Cake\Http\Client\Adapter\Curl if `curl` extension is loaded else
      *   \Cake\Http\Client\Adapter\Stream.
+     * - protocolVersion - The HTTP protocol version to use. Defaults to 1.1
      *
      * @param array $config Config options for scoped clients.
+     * @throws \InvalidArgumentException
      */
     public function __construct($config = [])
     {
@@ -206,6 +209,7 @@ class Client
      *
      * @param \Cake\Http\Cookie\CookieInterface $cookie Cookie object.
      * @return $this
+     * @throws \InvalidArgumentException
      */
     public function addCookie(CookieInterface $cookie)
     {
@@ -416,17 +420,16 @@ class Client
             $handleRedirect = $response->isRedirect() && $redirects-- > 0;
             if ($handleRedirect) {
                 $url = $request->getUri();
-                $request = $this->_cookies->addToRequest($request, []);
 
                 $location = $response->getHeaderLine('Location');
                 $locationUrl = $this->buildUrl($location, [], [
                     'host' => $url->getHost(),
                     'port' => $url->getPort(),
                     'scheme' => $url->getScheme(),
-                    'protocolRelative' => true
+                    'protocolRelative' => true,
                 ]);
-
                 $request = $request->withUri(new Uri($locationUrl));
+                $request = $this->_cookies->addToRequest($request, []);
             }
         } while ($handleRedirect);
 
@@ -473,7 +476,7 @@ class Client
             'host' => null,
             'port' => null,
             'scheme' => 'http',
-            'protocolRelative' => false
+            'protocolRelative' => false,
         ];
         $options += $defaults;
 
@@ -486,7 +489,7 @@ class Client
 
         $defaultPorts = [
             'http' => 80,
-            'https' => 443
+            'https' => 443,
         ];
         $out = $options['scheme'] . '://' . $options['host'];
         if ($options['port'] && $options['port'] != $defaultPorts[$options['scheme']]) {
@@ -517,6 +520,8 @@ class Client
         }
 
         $request = new Request($url, $method, $headers, $data);
+        $request = $request->withProtocolVersion($this->getConfig('protocolVersion'));
+
         $cookies = isset($options['cookies']) ? $options['cookies'] : [];
         /** @var \Cake\Http\Client\Request $request */
         $request = $this->_cookies->addToRequest($request, $cookies);
@@ -535,7 +540,7 @@ class Client
      * or full mime-type.
      *
      * @param string $type short type alias or full mimetype.
-     * @return array Headers to set on the request.
+     * @return string[] Headers to set on the request.
      * @throws \Cake\Core\Exception\Exception When an unknown type alias is used.
      */
     protected function _typeHeaders($type)
@@ -543,7 +548,7 @@ class Client
         if (strpos($type, '/') !== false) {
             return [
                 'Accept' => $type,
-                'Content-Type' => $type
+                'Content-Type' => $type,
             ];
         }
         $typeMap = [
@@ -573,6 +578,7 @@ class Client
     protected function _addAuthentication(Request $request, $options)
     {
         $auth = $options['auth'];
+        /** @var \Cake\Http\Client\Auth\Basic $adapter */
         $adapter = $this->_createAuth($auth, $options);
         $result = $adapter->authentication($request, $options['auth']);
 
@@ -592,6 +598,7 @@ class Client
     protected function _addProxy(Request $request, $options)
     {
         $auth = $options['proxy'];
+        /** @var \Cake\Http\Client\Auth\Basic $adapter */
         $adapter = $this->_createAuth($auth, $options);
         $result = $adapter->proxyAuthentication($request, $options['proxy']);
 
@@ -606,7 +613,7 @@ class Client
      *
      * @param array $auth The authentication options to use.
      * @param array $options The overall request options to use.
-     * @return mixed Authentication strategy instance.
+     * @return object Authentication strategy instance.
      * @throws \Cake\Core\Exception\Exception when an invalid strategy is chosen.
      */
     protected function _createAuth($auth, $options)

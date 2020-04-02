@@ -85,7 +85,7 @@ class FloatType extends Type implements TypeInterface, BatchCastingInterface
     /**
      * Convert float values to PHP integers
      *
-     * @param null|string|resource $value The value to convert.
+     * @param resource|string|null $value The value to convert.
      * @param \Cake\Database\Driver $driver The driver instance to convert with.
      * @return float|null
      * @throws \Cake\Core\Exception\Exception
@@ -102,7 +102,7 @@ class FloatType extends Type implements TypeInterface, BatchCastingInterface
     /**
      * {@inheritDoc}
      *
-     * @return array
+     * @return float[]
      */
     public function manyToPHP(array $values, array $fields, Driver $driver)
     {
@@ -130,10 +130,10 @@ class FloatType extends Type implements TypeInterface, BatchCastingInterface
     }
 
     /**
-     * Marshalls request data into PHP floats.
+     * Marshals request data into PHP floats.
      *
      * @param mixed $value The value to convert.
-     * @return float|null Converted value.
+     * @return float|string|null Converted value.
      */
     public function marshal($value)
     {
@@ -167,7 +167,8 @@ class FloatType extends Type implements TypeInterface, BatchCastingInterface
 
             return $this;
         }
-        if (static::$numberClass === 'Cake\I18n\Number' ||
+        if (
+            static::$numberClass === 'Cake\I18n\Number' ||
             is_subclass_of(static::$numberClass, 'Cake\I18n\Number')
         ) {
             $this->_useLocaleParser = $enable;

@@ -30,7 +30,7 @@ use Cake\Core\Exception\Exception;
  * ```
  * <?php
  * return [
- *     'debug' => 0,
+ *     'debug' => false,
  *     'Security' => [
  *         'salt' => 'its-secret'
  *     ],
@@ -44,7 +44,6 @@ use Cake\Core\Exception\Exception;
  */
 class PhpConfig implements ConfigEngineInterface
 {
-
     use FileConfigTrait;
 
     /**

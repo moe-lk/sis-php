@@ -22,12 +22,11 @@ use SplFileInfo;
  */
 class File
 {
-
     /**
      * Folder object of the file
      *
      * @var \Cake\Filesystem\Folder
-     * @link https://book.cakephp.org/3.0/en/core-libraries/file-folder.html
+     * @link https://book.cakephp.org/3/en/core-libraries/file-folder.html
      */
     public $Folder;
 
@@ -35,7 +34,7 @@ class File
      * File name
      *
      * @var string
-     * https://book.cakephp.org/3.0/en/core-libraries/file-folder.html#Cake\Filesystem\File::$name
+     * https://book.cakephp.org/3/en/core-libraries/file-folder.html#Cake\Filesystem\File::$name
      */
     public $name;
 
@@ -43,7 +42,7 @@ class File
      * File info
      *
      * @var array
-     * https://book.cakephp.org/3.0/en/core-libraries/file-folder.html#Cake\Filesystem\File::$info
+     * https://book.cakephp.org/3/en/core-libraries/file-folder.html#Cake\Filesystem\File::$info
      */
     public $info = [];
 
@@ -51,7 +50,7 @@ class File
      * Holds the file handler resource if the file is opened
      *
      * @var resource|null
-     * https://book.cakephp.org/3.0/en/core-libraries/file-folder.html#Cake\Filesystem\File::$handle
+     * https://book.cakephp.org/3/en/core-libraries/file-folder.html#Cake\Filesystem\File::$handle
      */
     public $handle;
 
@@ -59,7 +58,7 @@ class File
      * Enable locking for file reading and writing
      *
      * @var bool|null
-     * https://book.cakephp.org/3.0/en/core-libraries/file-folder.html#Cake\Filesystem\File::$lock
+     * https://book.cakephp.org/3/en/core-libraries/file-folder.html#Cake\Filesystem\File::$lock
      */
     public $lock;
 
@@ -69,7 +68,7 @@ class File
      * Current file's absolute path
      *
      * @var string|null
-     * https://book.cakephp.org/3.0/en/core-libraries/file-folder.html#Cake\Filesystem\File::$path
+     * https://book.cakephp.org/3/en/core-libraries/file-folder.html#Cake\Filesystem\File::$path
      */
     public $path;
 
@@ -79,7 +78,7 @@ class File
      * @param string $path Path to file
      * @param bool $create Create file if it does not exist (if true)
      * @param int $mode Mode to apply to the folder holding the file
-     * @link https://book.cakephp.org/3.0/en/core-libraries/file-folder.html#file-api
+     * @link https://book.cakephp.org/3/en/core-libraries/file-folder.html#file-api
      */
     public function __construct($path, $create = false, $mode = 0755)
     {
@@ -140,14 +139,14 @@ class File
     /**
      * Return the contents of this file as a string.
      *
-     * @param string|bool $bytes where to start
+     * @param int|false $lengthInBytes The length to read in bytes or `false` for the full file. Defaults to `false`.
      * @param string $mode A `fread` compatible mode.
      * @param bool $force If true then the file will be re-opened even if its already opened, otherwise it won't
-     * @return string|false string on success, false on failure
+     * @return string|false String on success, false on failure
      */
-    public function read($bytes = false, $mode = 'rb', $force = false)
+    public function read($lengthInBytes = false, $mode = 'rb', $force = false)
     {
-        if ($bytes === false && $this->lock === null) {
+        if ($lengthInBytes === false && $this->lock === null) {
             return file_get_contents($this->path);
         }
         if ($this->open($mode, $force) === false) {
@@ -156,8 +155,8 @@ class File
         if ($this->lock !== null && flock($this->handle, LOCK_SH) === false) {
             return false;
         }
-        if (is_int($bytes)) {
-            return fread($this->handle, $bytes);
+        if (is_int($lengthInBytes)) {
+            return fread($this->handle, $lengthInBytes);
         }
 
         $data = '';
@@ -168,7 +167,7 @@ class File
         if ($this->lock !== null) {
             flock($this->handle, LOCK_UN);
         }
-        if ($bytes === false) {
+        if ($lengthInBytes === false) {
             $this->close();
         }
 
@@ -363,7 +362,7 @@ class File
     {
         // check for multibyte string and use basename() if not found
         if (mb_strlen($path) === strlen($path)) {
-            return ($ext === null)? basename($path) : basename($path, $ext);
+            return ($ext === null) ? basename($path) : basename($path, $ext);
         }
 
         $splInfo = new SplFileInfo($path);
@@ -376,7 +375,7 @@ class File
         $new = preg_replace("/({$ext})$/u", "", $name);
 
         // basename of '/etc/.d' is '.d' not ''
-        return ($new === '')? $name : $new;
+        return ($new === '') ? $name : $new;
     }
 
     /**
@@ -591,7 +590,7 @@ class File
      * Gets the mime type of the file. Uses the finfo extension if
      * it's available, otherwise falls back to mime_content_type().
      *
-     * @return false|string The mimetype of the file, or false if reading fails.
+     * @return string|false The mimetype of the file, or false if reading fails.
      */
     public function mime()
     {

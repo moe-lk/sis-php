@@ -24,11 +24,10 @@ use RecursiveIteratorIterator;
  * Folder structure browser, lists folders and files.
  * Provides an Object interface for Common directory related tasks.
  *
- * @link https://book.cakephp.org/3.0/en/core-libraries/file-folder.html#folder-api
+ * @link https://book.cakephp.org/3/en/core-libraries/file-folder.html#folder-api
  */
 class Folder
 {
-
     /**
      * Default scheme for Folder::copy
      * Recursively merges subfolders with the same name
@@ -86,7 +85,7 @@ class Folder
      * Mode to be used on create. Does nothing on windows platforms.
      *
      * @var int
-     * https://book.cakephp.org/3.0/en/core-libraries/file-folder.html#Cake\Filesystem\Folder::$mode
+     * https://book.cakephp.org/3/en/core-libraries/file-folder.html#Cake\Filesystem\Folder::$mode
      */
     public $mode = 0755;
 
@@ -95,7 +94,7 @@ class Folder
      */
     protected $_fsorts = [
         self::SORT_NAME => 'getPathname',
-        self::SORT_TIME => 'getCTime'
+        self::SORT_TIME => 'getCTime',
     ];
 
     /**
@@ -167,7 +166,7 @@ class Folder
      * Change directory to $path.
      *
      * @param string $path Path to the directory to change to
-     * @return string|bool The new path. Returns false on failure
+     * @return string|false The new path. Returns false on failure
      */
     public function cd($path)
     {
@@ -596,7 +595,7 @@ class Folder
         foreach ($iterator as $itemPath => $fsIterator) {
             if ($skipHidden) {
                 $subPathName = $fsIterator->getSubPathname();
-                if ($subPathName{0} === '.' || strpos($subPathName, DIRECTORY_SEPARATOR . '.') !== false) {
+                if ($subPathName[0] === '.' || strpos($subPathName, DIRECTORY_SEPARATOR . '.') !== false) {
                     continue;
                 }
             }
@@ -803,7 +802,7 @@ class Folder
             'mode' => $this->mode,
             'skip' => [],
             'scheme' => Folder::MERGE,
-            'recursive' => true
+            'recursive' => true,
         ];
 
         $fromDir = $options['from'];

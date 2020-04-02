@@ -74,7 +74,6 @@ use RuntimeException;
  */
 class View implements EventDispatcherInterface
 {
-
     use CellTrait {
         cell as public;
     }
@@ -198,7 +197,7 @@ class View implements EventDispatcherInterface
     /**
      * List of generated DOM UUIDs.
      *
-     * @var array
+     * @var string[]
      * @deprecated 3.7.0 The property is deprecated and will be removed in 4.0.0.
      */
     public $uuids = [];
@@ -232,31 +231,31 @@ class View implements EventDispatcherInterface
     /**
      * List of variables to collect from the associated controller.
      *
-     * @var array
+     * @var string[]
      */
     protected $_passedVars = [
         'viewVars', 'autoLayout', 'helpers', 'template', 'layout', 'name', 'theme',
-        'layoutPath', 'templatePath', 'plugin', 'passedArgs'
+        'layoutPath', 'templatePath', 'plugin', 'passedArgs',
     ];
 
     /**
      * Holds an array of paths.
      *
-     * @var array
+     * @var string[]
      */
     protected $_paths = [];
 
     /**
      * Holds an array of plugin paths.
      *
-     * @var array
+     * @var string[][]
      */
     protected $_pathsForPlugin = [];
 
     /**
      * The names of views and their parents used with View::extend();
      *
-     * @var array
+     * @var string[]
      */
     protected $_parents = [];
 
@@ -278,7 +277,7 @@ class View implements EventDispatcherInterface
     /**
      * Content stack, used for nested templates that all use View::extend();
      *
-     * @var array
+     * @var string[]
      */
     protected $_stack = [];
 
@@ -367,7 +366,7 @@ class View implements EventDispatcherInterface
             $this->request = new ServerRequest([
                 'base' => '',
                 'url' => '',
-                'webroot' => '/'
+                'webroot' => '/',
             ]);
         }
         $this->Blocks = new $this->_viewBlockClass();
@@ -899,7 +898,7 @@ class View implements EventDispatcherInterface
      *
      * @param string $content Content to render in a template, wrapped by the surrounding layout.
      * @param string|null $layout Layout name
-     * @return mixed Rendered output, or false on error
+     * @return string|false Rendered output, or false on error
      * @throws \Cake\Core\Exception\Exception if there is an error in the view.
      * @triggers View.beforeLayout $this, [$layoutFileName]
      * @triggers View.afterLayout $this, [$layoutFileName]
@@ -912,7 +911,7 @@ class View implements EventDispatcherInterface
         }
 
         if (!empty($content)) {
-             $this->Blocks->set('content', $content);
+            $this->Blocks->set('content', $content);
         }
 
         $this->dispatchEvent('View.beforeLayout', [$layoutFileName]);
@@ -960,7 +959,7 @@ class View implements EventDispatcherInterface
     /**
      * Get the names of all the existing blocks.
      *
-     * @return array An array containing the blocks.
+     * @return string[] An array containing the blocks.
      * @see \Cake\View\ViewBlock::keys()
      */
     public function blocks()
@@ -1144,7 +1143,7 @@ class View implements EventDispatcherInterface
         if ($parent == $this->_current) {
             throw new LogicException('You cannot have views extend themselves.');
         }
-        if (isset($this->_parents[$parent]) && $this->_parents[$parent] == $this->_current) {
+        if (isset($this->_parents[$parent]) && $this->_parents[$parent] === $this->_current) {
             throw new LogicException('You cannot have views extend in a loop.');
         }
         $this->_parents[$this->_current] = $parent;
@@ -1167,7 +1166,7 @@ class View implements EventDispatcherInterface
         $c = 1;
         $url = Router::url($url);
         $hash = $object . substr(md5($object . $url), 0, 10);
-        while (in_array($hash, $this->uuids)) {
+        while (in_array($hash, $this->uuids, true)) {
             $hash = $object . substr(md5($object . $url . $c), 0, 10);
             $c++;
         }
@@ -1326,7 +1325,9 @@ class View implements EventDispatcherInterface
                 'Use the helper registry through View::helpers() to manage helpers.'
             );
 
-            return $this->helpers = $value;
+            $this->helpers = $value;
+
+            return;
         }
 
         if ($name === 'name') {
@@ -1674,7 +1675,7 @@ class View implements EventDispatcherInterface
             }
         }
         throw new MissingLayoutException([
-            'file' => $layoutPaths[0] . $name . $this->_ext
+            'file' => $layoutPaths[0] . $name . $this->_ext,
         ]);
     }
 
@@ -1738,7 +1739,7 @@ class View implements EventDispatcherInterface
      *
      * @param string|null $plugin Optional plugin name to scan for view files.
      * @param bool $cached Set to false to force a refresh of view paths. Default true.
-     * @return array paths
+     * @return string[] paths
      */
     protected function _paths($plugin = null, $cached = true)
     {
@@ -1803,26 +1804,27 @@ class View implements EventDispatcherInterface
         $plugin = null;
         list($plugin, $name) = $this->pluginSplit($name);
 
-        $underscored = null;
+        $pluginKey = null;
         if ($plugin) {
-            $underscored = Inflector::underscore($plugin);
+            $pluginKey = str_replace('/', '_', Inflector::underscore($plugin));
         }
+        $elementKey = str_replace(['\\', '/'], '_', $name);
 
         $cache = $options['cache'];
         unset($options['cache'], $options['callbacks'], $options['plugin']);
         $keys = array_merge(
-            [$underscored, $name],
+            [$pluginKey, $elementKey],
             array_keys($options),
             array_keys($data)
         );
         $config = [
             'config' => $this->elementCache,
-            'key' => implode('_', $keys)
+            'key' => implode('_', $keys),
         ];
         if (is_array($cache)) {
             $defaults = [
                 'config' => $this->elementCache,
-                'key' => $config['key']
+                'key' => $config['key'],
             ];
             $config = $cache + $defaults;
         }

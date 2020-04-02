@@ -23,7 +23,6 @@ use PDO;
  */
 class Type implements TypeInterface
 {
-
     /**
      * List of supported database types. A human readable
      * identifier is used as key and a complete namespaced class name as value
@@ -63,7 +62,7 @@ class Type implements TypeInterface
         'text' => ['callback' => [Type::class, 'strval']],
         'boolean' => [
             'callback' => [Type::class, 'boolval'],
-            'pdo' => PDO::PARAM_BOOL
+            'pdo' => PDO::PARAM_BOOL,
         ],
     ];
 

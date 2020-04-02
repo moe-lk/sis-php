@@ -26,7 +26,6 @@ use Cake\Http\Cookie\CookieInterface;
  */
 class CookieCollection extends BaseCollection
 {
-
     /**
      * {@inheritDoc}
      */
@@ -112,7 +111,7 @@ class CookieCollection extends BaseCollection
             'domain' => $cookie->getDomain(),
             'secure' => $cookie->isSecure(),
             'httponly' => $cookie->isHttpOnly(),
-            'expires' => $cookie->getExpiresTimestamp()
+            'expires' => $cookie->getExpiresTimestamp(),
         ];
     }
 }
