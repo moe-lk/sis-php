@@ -1,23 +1,23 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          http://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * @link          https://cakephp.org CakePHP(tm) Project
  * @since         2.0.0
- * @license       http://www.opensource.org/licenses/mit-license.php MIT License
+ * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Auth;
 
 use Cake\Controller\ComponentRegistry;
 use Cake\Controller\Controller;
 use Cake\Core\Exception\Exception;
-use Cake\Network\Request;
+use Cake\Http\ServerRequest;
 
 /**
  * An authorization adapter for AuthComponent. Provides the ability to authorize
@@ -27,7 +27,7 @@ use Cake\Network\Request;
  * ```
  *  public function isAuthorized($user)
  *  {
- *      if ($this->request->param('admin')) {
+ *      if ($this->request->getParam('admin')) {
  *          return $user['role'] === 'admin';
  *      }
  *      return !empty($user);
@@ -47,7 +47,7 @@ class ControllerAuthorize extends BaseAuthorize
      *
      * @var \Cake\Controller\Controller
      */
-    protected $_Controller = null;
+    protected $_Controller;
 
     /**
      * {@inheritDoc}
@@ -85,10 +85,10 @@ class ControllerAuthorize extends BaseAuthorize
      * Checks user authorization using a controller callback.
      *
      * @param array|\ArrayAccess $user Active user data
-     * @param \Cake\Network\Request $request Request instance.
+     * @param \Cake\Http\ServerRequest $request Request instance.
      * @return bool
      */
-    public function authorize($user, Request $request)
+    public function authorize($user, ServerRequest $request)
     {
         return (bool)$this->_Controller->isAuthorized($user);
     }

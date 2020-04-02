@@ -16,7 +16,7 @@ Plugin containing the vanilla javascript file for the triggering of webhook even
 "repositories":[
         {
             "type": "git",
-            "url": "git@bitbucket.org:korditpteltd/kd-cakephp-webhooks.git"
+            "url": "git@github.com:mohamednizar/kd-cakephp-webhooks.git"
         }
     ]
 ```
@@ -42,7 +42,7 @@ Plugin containing the vanilla javascript file for the triggering of webhook even
     "repositories":[
         {
             "type": "git",
-            "url": "git@bitbucket.org:korditpteltd/kd-cakephp-webhooks.git"
+            "url": "git@github.com:mohamednizar/kd-cakephp-webhooks.git"
         }
     ]
 }

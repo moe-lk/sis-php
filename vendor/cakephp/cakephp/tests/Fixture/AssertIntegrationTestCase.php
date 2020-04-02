@@ -1,7 +1,7 @@
 <?php
 namespace Cake\Test\Fixture;
 
-use Cake\Network\Response;
+use Cake\Http\Response;
 use Cake\TestSuite\IntegrationTestCase;
 
 /**
@@ -18,7 +18,7 @@ class AssertIntegrationTestCase extends IntegrationTestCase
     public function testBadAssertNoRedirect()
     {
         $this->_response = new Response();
-        $this->_response->header('Location', 'http://localhost/tasks/index');
+        $this->_response = $this->_response->withLocation('http://localhost/tasks/index');
 
         $this->assertNoRedirect();
     }

@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          http://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * @link          https://cakephp.org CakePHP(tm) Project
  * @since         3.3.0
- * @license       http://www.opensource.org/licenses/mit-license.php MIT License
+ * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Routing\Middleware;
 
@@ -88,6 +88,10 @@ class AssetMiddleware
             return $next($request, $response);
         }
 
+        if (strpos($url, '/.') !== false) {
+            return $next($request, $response);
+        }
+
         $assetFile = $this->_getAssetFile($url);
         if ($assetFile === null || !file_exists($assetFile)) {
             return $next($request, $response);
@@ -126,7 +130,7 @@ class AssetMiddleware
      * Builds asset file path based off url
      *
      * @param string $url Asset URL
-     * @return string Absolute path for asset file
+     * @return string|null Absolute path for asset file, null on failure
      */
     protected function _getAssetFile($url)
     {
@@ -138,7 +142,7 @@ class AssetMiddleware
             }
             $pluginPart[] = Inflector::camelize($parts[$i]);
             $plugin = implode('/', $pluginPart);
-            if ($plugin && Plugin::loaded($plugin)) {
+            if ($plugin && Plugin::isLoaded($plugin)) {
                 $parts = array_slice($parts, $i + 1);
                 $fileFragment = implode(DIRECTORY_SEPARATOR, $parts);
                 $pluginWebroot = Plugin::path($plugin) . 'webroot' . DIRECTORY_SEPARATOR;
@@ -147,7 +151,7 @@ class AssetMiddleware
             }
         }
 
-        return '';
+        return null;
     }
 
     /**

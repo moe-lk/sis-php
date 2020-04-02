@@ -11,8 +11,6 @@ namespace JsonSchema;
 
 use JsonSchema\Constraints\BaseConstraint;
 use JsonSchema\Constraints\Constraint;
-use JsonSchema\Exception\InvalidConfigException;
-use JsonSchema\SchemaStorage;
 
 /**
  * A JsonSchema Constraint
@@ -36,9 +34,7 @@ class Validator extends BaseConstraint
      * Both the php object and the schema are supposed to be a result of a json_decode call.
      * The validation works as defined by the schema proposal in http://json-schema.org.
      *
-     * Note that the first argument is passwd by reference, so you must pass in a variable.
-     *
-     * {@inheritdoc}
+     * Note that the first argument is passed by reference, so you must pass in a variable.
      */
     public function validate(&$value, $schema = null, $checkMode = null)
     {
@@ -54,10 +50,18 @@ class Validator extends BaseConstraint
         }
 
         // add provided schema to SchemaStorage with internal URI to allow internal $ref resolution
-        $this->factory->getSchemaStorage()->addSchema(SchemaStorage::INTERNAL_PROVIDED_SCHEMA_URI, $schema);
+        if (is_object($schema) && property_exists($schema, 'id')) {
+            $schemaURI = $schema->id;
+        } else {
+            $schemaURI = SchemaStorage::INTERNAL_PROVIDED_SCHEMA_URI;
+        }
+        $this->factory->getSchemaStorage()->addSchema($schemaURI, $schema);
 
         $validator = $this->factory->createInstanceFor('schema');
-        $validator->check($value, $schema);
+        $validator->check(
+            $value,
+            $this->factory->getSchemaStorage()->getSchema($schemaURI)
+        );
 
         $this->factory->setConfig($initialCheckMode);
 

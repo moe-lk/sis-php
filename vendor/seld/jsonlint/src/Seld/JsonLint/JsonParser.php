@@ -172,7 +172,7 @@ class JsonParser
         $errStr = null;
 
         while (true) {
-            // retreive state number from top of stack
+            // retrieve state number from top of stack
             $state = $this->stack[count($this->stack)-1];
 
             // use default actions if available
@@ -468,7 +468,7 @@ class JsonParser
         case '\/':
             return "/";
         default:
-            return html_entity_decode('&#x'.ltrim(substr($match[0], 2), '0').';', 0, 'UTF-8');
+            return html_entity_decode('&#x'.ltrim(substr($match[0], 2), '0').';', ENT_QUOTES, 'UTF-8');
         }
     }
 

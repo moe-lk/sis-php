@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          http://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * @link          https://cakephp.org CakePHP(tm) Project
  * @since         0.2.9
- * @license       http://www.opensource.org/licenses/mit-license.php MIT License
+ * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
 use Cake\Core\Configure;
 use Cake\Error\Debugger;
@@ -37,8 +37,8 @@ if (!function_exists('debug')) {
      * @param bool|null $showHtml If set to true, the method prints the debug data in a browser-friendly way.
      * @param bool $showFrom If set to true, the method prints from where the function was called.
      * @return mixed The same $var that was passed
-     * @link http://book.cakephp.org/3.0/en/development/debugging.html#basic-debugging
-     * @link http://book.cakephp.org/3.0/en/core-libraries/global-constants-and-functions.html#debug
+     * @link https://book.cakephp.org/3.0/en/development/debugging.html#basic-debugging
+     * @link https://book.cakephp.org/3.0/en/core-libraries/global-constants-and-functions.html#debug
      */
     function debug($var, $showHtml = null, $showFrom = true)
     {
@@ -106,7 +106,7 @@ if (!function_exists('breakpoint')) {
             return 'extract(\Psy\Shell::debug(get_defined_vars(), isset($this) ? $this : null));';
         }
         trigger_error(
-            "psy/psysh must be installed and you must be in a CLI environment to use the breakpoint function",
+            'psy/psysh must be installed and you must be in a CLI environment to use the breakpoint function',
             E_USER_WARNING
         );
     }
@@ -122,7 +122,7 @@ if (!function_exists('dd')) {
      * @param mixed $var Variable to show debug information for.
      * @param bool|null $showHtml If set to true, the method prints the debug data in a browser-friendly way.
      * @return void
-     * @link http://book.cakephp.org/3.0/en/development/debugging.html#basic-debugging
+     * @link https://book.cakephp.org/3.0/en/development/debugging.html#basic-debugging
      */
     function dd($var, $showHtml = null)
     {
@@ -136,7 +136,22 @@ if (!function_exists('dd')) {
             'file' => $trace[0]['file']
         ];
 
-        Debugger::printVar($var, $location);
+        Debugger::printVar($var, $location, $showHtml);
         die(1);
+    }
+}
+
+if (!function_exists('loadPHPUnitAliases')) {
+    /**
+     * Loads PHPUnit aliases
+     *
+     * This is an internal function used for backwards compatibility during
+     * fixture related tests.
+     *
+     * @return void
+     */
+    function loadPHPUnitAliases()
+    {
+        require_once dirname(__DIR__) . DS . 'tests' . DS . 'phpunit_aliases.php';
     }
 }

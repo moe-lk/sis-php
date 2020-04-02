@@ -1,15 +1,15 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          http://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * @link          https://cakephp.org CakePHP(tm) Project
  * @since         3.0.0
- * @license       http://www.opensource.org/licenses/mit-license.php MIT License
+ * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Http\Client\Auth;
 
@@ -48,6 +48,8 @@ class Oauth
             $credentials['method'] = 'hmac-sha1';
         }
         $credentials['method'] = strtoupper($credentials['method']);
+
+        $value = null;
         switch ($credentials['method']) {
             case 'HMAC-SHA1':
                 $hasKeys = isset(
@@ -252,21 +254,12 @@ class Oauth
      *
      * Section 9.1.2. of the Oauth spec
      *
-     * @param Psr\Http\Message\UriInterface $uri Uri object to build a normalized version of.
+     * @param \Psr\Http\Message\UriInterface $uri Uri object to build a normalized version of.
      * @return string Normalized URL
      */
     protected function _normalizedUrl($uri)
     {
-        $scheme = $uri->getScheme();
-        $defaultPorts = [
-            'http' => 80,
-            'https' => 443
-        ];
-        $port = $uri->getPort();
-        if ($port && $port != $defaultPorts[$scheme]) {
-            $parts['host'] .= ':' . $port;
-        }
-        $out = $scheme . '://';
+        $out = $uri->getScheme() . '://';
         $out .= strtolower($uri->getHost());
         $out .= $uri->getPath();
 
@@ -287,7 +280,7 @@ class Oauth
      */
     protected function _normalizedParams($request, $oauthValues)
     {
-        $query = parse_url($request->url(), PHP_URL_QUERY);
+        $query = parse_url($request->getUri(), PHP_URL_QUERY);
         parse_str($query, $queryArgs);
 
         $post = [];
@@ -300,21 +293,47 @@ class Oauth
         }
 
         $args = array_merge($queryArgs, $oauthValues, $post);
-        uksort($args, 'strcmp');
+        $pairs = $this->_normalizeData($args);
+        $data = [];
+        foreach ($pairs as $pair) {
+            $data[] = implode('=', $pair);
+        }
+        sort($data, SORT_STRING);
 
-        $pairs = [];
-        foreach ($args as $k => $val) {
-            if (is_array($val)) {
-                sort($val, SORT_STRING);
-                foreach ($val as $nestedVal) {
-                    $pairs[] = "$k=$nestedVal";
+        return implode('&', $data);
+    }
+
+    /**
+     * Recursively convert request data into the normalized form.
+     *
+     * @param array $args The arguments to normalize.
+     * @param string $path The current path being converted.
+     * @see https://tools.ietf.org/html/rfc5849#section-3.4.1.3.2
+     * @return array
+     */
+    protected function _normalizeData($args, $path = '')
+    {
+        $data = [];
+        foreach ($args as $key => $value) {
+            if ($path) {
+                // Fold string keys with [].
+                // Numeric keys result in a=b&a=c. While this isn't
+                // standard behavior in PHP, it is common in other platforms.
+                if (!is_numeric($key)) {
+                    $key = "{$path}[{$key}]";
+                } else {
+                    $key = $path;
                 }
+            }
+            if (is_array($value)) {
+                uksort($value, 'strcmp');
+                $data = array_merge($data, $this->_normalizeData($value, $key));
             } else {
-                $pairs[] = "$k=$val";
+                $data[] = [$key, $value];
             }
         }
 
-        return implode('&', $pairs);
+        return $data;
     }
 
     /**
@@ -343,10 +362,9 @@ class Oauth
      */
     protected function _encode($value)
     {
-        return str_replace(
-            '+',
-            ' ',
-            str_replace('%7E', '~', rawurlencode($value))
-        );
+        return str_replace(['%7E', '+'], ['~', ' '], rawurlencode($value));
     }
 }
+
+// @deprecated 3.4.0 Add backwards compat alias.
+class_alias('Cake\Http\Client\Auth\Oauth', 'Cake\Network\Http\Auth\Oauth');

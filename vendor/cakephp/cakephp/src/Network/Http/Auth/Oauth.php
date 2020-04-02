@@ -1,3 +1,4 @@
 <?php
-// @deprecated Backwards compatibility with earlier 3.x versions.
-class_alias('Cake\Http\Client\Auth\Oauth', 'Cake\Network\Http\Auth\Oauth');
+// @deprecated 3.4.0 Load new class and alias.
+class_exists('Cake\Http\Client\Auth\Oauth');
+deprecationWarning('Use Cake\Http\Client\Auth\Oauth instead of Cake\Network\Http\Auth\Oauth.');

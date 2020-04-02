@@ -1,3 +1,4 @@
 <?php
-// @deprecated Backwards compatibility with earlier 3.x versions.
-class_alias('Cake\Http\Client\CookieCollection', 'Cake\Network\Http\CookieCollection');
+// @deprecated 3.4.0 Load new class and alias.
+class_exists('Cake\Http\Client\CookieCollection');
+deprecationWarning('Use Cake\Http\Client\CookieCollection instead of Cake\Network\Http\CookieCollection.');

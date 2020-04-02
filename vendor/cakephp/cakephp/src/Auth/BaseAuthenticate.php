@@ -1,32 +1,32 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          http://cakephp.org CakePHP(tm) Project
- * @license       http://www.opensource.org/licenses/mit-license.php MIT License
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * @link          https://cakephp.org CakePHP(tm) Project
+ * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Auth;
 
 use Cake\Controller\ComponentRegistry;
 use Cake\Core\InstanceConfigTrait;
 use Cake\Event\EventListenerInterface;
-use Cake\Network\Request;
-use Cake\Network\Response;
-use Cake\ORM\TableRegistry;
+use Cake\Http\Response;
+use Cake\Http\ServerRequest;
+use Cake\ORM\Locator\LocatorAwareTrait;
 
 /**
  * Base Authentication class with common methods and properties.
  */
 abstract class BaseAuthenticate implements EventListenerInterface
 {
-
     use InstanceConfigTrait;
+    use LocatorAwareTrait;
 
     /**
      * Default config for this object.
@@ -88,7 +88,14 @@ abstract class BaseAuthenticate implements EventListenerInterface
     public function __construct(ComponentRegistry $registry, array $config = [])
     {
         $this->_registry = $registry;
-        $this->config($config);
+        $this->setConfig($config);
+
+        if ($this->getConfig('scope') || $this->getConfig('contain')) {
+            deprecationWarning(
+                'The `scope` and `contain` options for Authentication are deprecated. ' .
+                'Use the `finder` option instead to define additional conditions.'
+            );
+        }
     }
 
     /**
@@ -107,18 +114,35 @@ abstract class BaseAuthenticate implements EventListenerInterface
         $result = $this->_query($username)->first();
 
         if (empty($result)) {
+            // Waste time hashing the password, to prevent
+            // timing side-channels. However, don't hash
+            // null passwords as authentication systems
+            // like digest auth don't use passwords
+            // and hashing *could* create a timing side-channel.
+            if ($password !== null) {
+                $hasher = $this->passwordHasher();
+                $hasher->hash($password);
+            }
+
             return false;
         }
 
+        $passwordField = $this->_config['fields']['password'];
         if ($password !== null) {
             $hasher = $this->passwordHasher();
-            $hashedPassword = $result->get($this->_config['fields']['password']);
+            $hashedPassword = $result->get($passwordField);
             if (!$hasher->check($password, $hashedPassword)) {
                 return false;
             }
 
             $this->_needsPasswordRehash = $hasher->needsRehash($hashedPassword);
-            $result->unsetProperty($this->_config['fields']['password']);
+            $result->unsetProperty($passwordField);
+        }
+        $hidden = $result->getHidden();
+        if ($password === null && in_array($passwordField, $hidden)) {
+            $key = array_search($passwordField, $hidden);
+            unset($hidden[$key]);
+            $result->setHidden($hidden);
         }
 
         return $result->toArray();
@@ -133,7 +157,7 @@ abstract class BaseAuthenticate implements EventListenerInterface
     protected function _query($username)
     {
         $config = $this->_config;
-        $table = TableRegistry::get($config['userModel']);
+        $table = $this->getTableLocator()->get($config['userModel']);
 
         $options = [
             'conditions' => [$table->aliasField($config['fields']['username']) => $username]
@@ -156,9 +180,7 @@ abstract class BaseAuthenticate implements EventListenerInterface
             $options['username'] = $username;
         }
 
-        $query = $table->find($finder, $options);
-
-        return $query;
+        return $table->find($finder, $options);
     }
 
     /**
@@ -193,20 +215,20 @@ abstract class BaseAuthenticate implements EventListenerInterface
     /**
      * Authenticate a user based on the request information.
      *
-     * @param \Cake\Network\Request $request Request to get authentication information from.
-     * @param \Cake\Network\Response $response A response object that can have headers added.
+     * @param \Cake\Http\ServerRequest $request Request to get authentication information from.
+     * @param \Cake\Http\Response $response A response object that can have headers added.
      * @return mixed Either false on failure, or an array of user data on success.
      */
-    abstract public function authenticate(Request $request, Response $response);
+    abstract public function authenticate(ServerRequest $request, Response $response);
 
     /**
      * Get a user based on information in the request. Primarily used by stateless authentication
      * systems like basic and digest auth.
      *
-     * @param \Cake\Network\Request $request Request object.
+     * @param \Cake\Http\ServerRequest $request Request object.
      * @return mixed Either false or an array of user information
      */
-    public function getUser(Request $request)
+    public function getUser(ServerRequest $request)
     {
         return false;
     }
@@ -216,14 +238,14 @@ abstract class BaseAuthenticate implements EventListenerInterface
      * can be:
      *
      * - Null - No action taken, AuthComponent should return appropriate response.
-     * - Cake\Network\Response - A response object, which will cause AuthComponent to
+     * - Cake\Http\Response - A response object, which will cause AuthComponent to
      *   simply return that response.
      *
-     * @param \Cake\Network\Request $request A request object.
-     * @param \Cake\Network\Response $response A response object.
+     * @param \Cake\Http\ServerRequest $request A request object.
+     * @param \Cake\Http\Response $response A response object.
      * @return void
      */
-    public function unauthenticated(Request $request, Response $response)
+    public function unauthenticated(ServerRequest $request, Response $response)
     {
     }
 

@@ -12,13 +12,14 @@
 
 namespace Composer\Downloader;
 
+use Composer\Config;
+use Composer\IO\IOInterface;
 use Composer\Package\PackageInterface;
+use Composer\Util\Filesystem;
 use Composer\Util\Git as GitUtil;
 use Composer\Util\Platform;
 use Composer\Util\ProcessExecutor;
-use Composer\IO\IOInterface;
-use Composer\Util\Filesystem;
-use Composer\Config;
+use Composer\Cache;
 
 /**
  * @author Jordi Boggiano <j.boggiano@seld.be>
@@ -43,30 +44,47 @@ class GitDownloader extends VcsDownloader implements DvcsDownloaderInterface
         GitUtil::cleanEnv();
         $path = $this->normalizePath($path);
         $cachePath = $this->config->get('cache-vcs-dir').'/'.preg_replace('{[^a-z0-9.]}i', '-', $url).'/';
-        $cacheOptions = '';
         $ref = $package->getSourceReference();
         $flag = Platform::isWindows() ? '/D ' : '';
 
         // --dissociate option is only available since git 2.3.0-rc0
         $gitVersion = $this->gitUtil->getVersion();
         $msg = "Cloning ".$this->getShortHash($ref);
-        if ($gitVersion && version_compare($gitVersion, '2.3.0-rc0', '>=')) {
+
+        $command = 'git clone --no-checkout %url% %path% && cd '.$flag.'%path% && git remote add composer %url% && git fetch composer && git remote set-url origin %sanitizedUrl% && git remote set-url composer %sanitizedUrl%';
+        if ($gitVersion && version_compare($gitVersion, '2.3.0-rc0', '>=') && Cache::isUsable($cachePath)) {
             $this->io->writeError('', true, IOInterface::DEBUG);
             $this->io->writeError(sprintf('    Cloning to cache at %s', ProcessExecutor::escape($cachePath)), true, IOInterface::DEBUG);
             try {
-                $this->gitUtil->syncMirror($url, $cachePath);
+                if (!$this->gitUtil->fetchRefOrSyncMirror($url, $cachePath, $ref)) {
+                    $this->io->writeError('<error>Failed to update '.$url.' in cache, package installation for '.$package->getPrettyName().' might fail.</error>');
+                }
                 if (is_dir($cachePath)) {
-                    $cacheOptions = sprintf('--dissociate --reference %s ', ProcessExecutor::escape($cachePath));
+                    $command =
+                        'git clone --no-checkout %cachePath% %path% --dissociate --reference %cachePath% '
+                        . '&& cd '.$flag.'%path% '
+                        . '&& git remote set-url origin %sanitizedUrl% && git remote add composer %sanitizedUrl%';
                     $msg = "Cloning ".$this->getShortHash($ref).' from cache';
                 }
             } catch (\RuntimeException $e) {
+                if (0 === strpos(get_class($e), 'PHPUnit')) {
+                    throw $e;
+                }
             }
         }
-        $command = 'git clone --no-checkout %s %s '.$cacheOptions.'&& cd '.$flag.'%2$s && git remote add composer %1$s && git fetch composer';
         $this->io->writeError($msg);
 
-        $commandCallable = function ($url) use ($ref, $path, $command) {
-            return sprintf($command, ProcessExecutor::escape($url), ProcessExecutor::escape($path), ProcessExecutor::escape($ref));
+        $commandCallable = function ($url) use ($path, $command, $cachePath) {
+            return str_replace(
+                array('%url%', '%path%', '%cachePath%', '%sanitizedUrl%'),
+                array(
+                    ProcessExecutor::escape($url),
+                    ProcessExecutor::escape($path),
+                    ProcessExecutor::escape($cachePath),
+                    ProcessExecutor::escape(preg_replace('{://([^@]+?):(.+?)@}', '://', $url)),
+                ),
+                $command
+            );
         };
 
         $this->gitUtil->runCommand($commandCallable, $url, $path, true);
@@ -107,10 +125,15 @@ class GitDownloader extends VcsDownloader implements DvcsDownloaderInterface
 
         $ref = $target->getSourceReference();
         $this->io->writeError(" Checking out ".$this->getShortHash($ref));
-        $command = 'git remote set-url composer %s && git rev-parse --quiet --verify %s^{commit} || (git fetch composer && git fetch --tags composer)';
+        $command = '(git remote set-url composer %s && git rev-parse --quiet --verify %s || (git fetch composer && git fetch --tags composer)) && git remote set-url composer %s';
 
         $commandCallable = function ($url) use ($command, $ref) {
-            return sprintf($command, ProcessExecutor::escape($url), ProcessExecutor::escape($ref));
+            return sprintf(
+                $command,
+                ProcessExecutor::escape($url),
+                ProcessExecutor::escape($ref.'^{commit}'),
+                ProcessExecutor::escape(preg_replace('{://([^@]+?):(.+?)@}', '://', $url))
+            );
         };
 
         $this->gitUtil->runCommand($commandCallable, $url, $path);
@@ -412,7 +435,7 @@ class GitDownloader extends VcsDownloader implements DvcsDownloaderInterface
     protected function getCommitLogs($fromReference, $toReference, $path)
     {
         $path = $this->normalizePath($path);
-        $command = sprintf('git log %s..%s --pretty=format:"%%h - %%an: %%s"', $fromReference, $toReference);
+        $command = sprintf('git log %s..%s --pretty=format:"%%h - %%an: %%s"', ProcessExecutor::escape($fromReference), ProcessExecutor::escape($toReference));
 
         if (0 !== $this->process->execute($command, $output, $path)) {
             throw new \RuntimeException('Failed to execute ' . $command . "\n\n" . $this->process->getErrorOutput());
@@ -422,7 +445,7 @@ class GitDownloader extends VcsDownloader implements DvcsDownloaderInterface
     }
 
     /**
-     * @param $path
+     * @param string $path
      * @throws \RuntimeException
      */
     protected function discardChanges($path)
@@ -436,7 +459,7 @@ class GitDownloader extends VcsDownloader implements DvcsDownloaderInterface
     }
 
     /**
-     * @param $path
+     * @param string $path
      * @throws \RuntimeException
      */
     protected function stashChanges($path)
@@ -450,7 +473,7 @@ class GitDownloader extends VcsDownloader implements DvcsDownloaderInterface
     }
 
     /**
-     * @param $path
+     * @param string $path
      * @throws \RuntimeException
      */
     protected function viewDiff($path)

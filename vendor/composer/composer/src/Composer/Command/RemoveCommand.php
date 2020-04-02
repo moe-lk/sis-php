@@ -22,6 +22,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Output\OutputInterface;
+use Composer\Package\BasePackage;
 
 /**
  * @author Pierre du Plessis <pdples@gmail.com>
@@ -35,7 +36,7 @@ class RemoveCommand extends BaseCommand
             ->setName('remove')
             ->setDescription('Removes a package from the require or require-dev.')
             ->setDefinition(array(
-                new InputArgument('packages', InputArgument::IS_ARRAY, 'Packages that should be removed.'),
+                new InputArgument('packages', InputArgument::IS_ARRAY | InputArgument::REQUIRED, 'Packages that should be removed.'),
                 new InputOption('dev', null, InputOption::VALUE_NONE, 'Removes a package from the require-dev section.'),
                 new InputOption('no-progress', null, InputOption::VALUE_NONE, 'Do not output download progress.'),
                 new InputOption('no-update', null, InputOption::VALUE_NONE, 'Disables the automatic update of the dependencies.'),
@@ -48,12 +49,14 @@ class RemoveCommand extends BaseCommand
                 new InputOption('classmap-authoritative', 'a', InputOption::VALUE_NONE, 'Autoload classes from the classmap only. Implicitly enables `--optimize-autoloader`.'),
                 new InputOption('apcu-autoloader', null, InputOption::VALUE_NONE, 'Use APCu to cache found/not-found classes.'),
             ))
-            ->setHelp(<<<EOT
+            ->setHelp(
+                <<<EOT
 The <info>remove</info> command removes a package from the current
 list of installed packages
 
 <info>php composer.phar remove</info>
 
+Read more at https://getcomposer.org/doc/03-cli.md#remove
 EOT
             )
         ;
@@ -93,10 +96,23 @@ EOT
             if (isset($composer[$type][$package])) {
                 $json->removeLink($type, $composer[$type][$package]);
             } elseif (isset($composer[$altType][$package])) {
-                $io->writeError('<warning>'.$composer[$altType][$package].' could not be found in '.$type.' but it is present in '.$altType.'</warning>');
+                $io->writeError('<warning>' . $composer[$altType][$package] . ' could not be found in ' . $type . ' but it is present in ' . $altType . '</warning>');
                 if ($io->isInteractive()) {
-                    if ($io->askConfirmation('Do you want to remove it from '.$altType.' [<comment>yes</comment>]? ', true)) {
+                    if ($io->askConfirmation('Do you want to remove it from ' . $altType . ' [<comment>yes</comment>]? ', true)) {
                         $json->removeLink($altType, $composer[$altType][$package]);
+                    }
+                }
+            } elseif (isset($composer[$type]) && $matches = preg_grep(BasePackage::packageNameToRegexp($package), array_keys($composer[$type]))) {
+                foreach ($matches as $matchedPackage) {
+                    $json->removeLink($type, $matchedPackage);
+                }
+            } elseif (isset($composer[$altType]) && $matches = preg_grep(BasePackage::packageNameToRegexp($package), array_keys($composer[$altType]))) {
+                foreach ($matches as $matchedPackage) {
+                    $io->writeError('<warning>' . $matchedPackage . ' could not be found in ' . $type . ' but it is present in ' . $altType . '</warning>');
+                    if ($io->isInteractive()) {
+                        if ($io->askConfirmation('Do you want to remove it from ' . $altType . ' [<comment>yes</comment>]? ', true)) {
+                            $json->removeLink($altType, $matchedPackage);
+                        }
                     }
                 }
             } else {
@@ -131,23 +147,15 @@ EOT
             ->setApcuAutoloader($apcu)
             ->setUpdate(true)
             ->setUpdateWhitelist($packages)
-            ->setWhitelistDependencies(!$input->getOption('no-update-with-dependencies'))
+            ->setWhitelistTransitiveDependencies(!$input->getOption('no-update-with-dependencies'))
             ->setIgnorePlatformRequirements($input->getOption('ignore-platform-reqs'))
             ->setRunScripts(!$input->getOption('no-scripts'))
         ;
 
-        $exception = null;
-        try {
-            $status = $install->run();
-        } catch (\Exception $exception) {
-            $status = 1;
-        }
+        $status = $install->run();
         if ($status !== 0) {
             $io->writeError("\n".'<error>Removal failed, reverting '.$file.' to its original content.</error>');
             file_put_contents($jsonFile->getPath(), $composerBackup);
-        }
-        if ($exception) {
-            throw $exception;
         }
 
         return $status;

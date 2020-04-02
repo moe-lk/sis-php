@@ -1,20 +1,20 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          http://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * @link          https://cakephp.org CakePHP(tm) Project
  * @since         3.3.5
- * @license       http://www.opensource.org/licenses/mit-license.php MIT License
+ * @license       https://opensource.org/licenses/mit-license.php MIT License
  *
  * Parts of this file are derived from Zend-Diactoros
  *
- * @copyright Copyright (c) 2015-2016 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2015-2016 Zend Technologies USA Inc. (https://www.zend.com/)
  * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
  */
 namespace Cake\Http;
@@ -33,6 +33,9 @@ use Zend\Diactoros\Response\EmitterInterface;
  *
  * - It logs headers sent using CakePHP's logging tools.
  * - Cookies are emitted using setcookie() to not conflict with ext/session
+ * - For fastcgi servers with PHP-FPM session_write_close() is called just
+ *   before fastcgi_finish_request() to make sure session data is saved
+ *   correctly (especially on slower session backends).
  */
 class ResponseEmitter implements EmitterInterface
 {
@@ -63,6 +66,7 @@ class ResponseEmitter implements EmitterInterface
         }
 
         if (function_exists('fastcgi_finish_request')) {
+            session_write_close();
             fastcgi_finish_request();
         }
     }
@@ -76,6 +80,9 @@ class ResponseEmitter implements EmitterInterface
      */
     protected function emitBody(ResponseInterface $response, $maxBufferLength)
     {
+        if (in_array($response->getStatusCode(), [204, 304])) {
+            return;
+        }
         $body = $response->getBody();
 
         if (!$body->isSeekable()) {
@@ -159,9 +166,14 @@ class ResponseEmitter implements EmitterInterface
      */
     protected function emitHeaders(ResponseInterface $response)
     {
+        $cookies = [];
+        if (method_exists($response, 'getCookies')) {
+            $cookies = $response->getCookies();
+        }
+
         foreach ($response->getHeaders() as $name => $values) {
             if (strtolower($name) === 'set-cookie') {
-                $this->emitCookies($values);
+                $cookies = array_merge($cookies, $values);
                 continue;
             }
             $first = true;
@@ -174,6 +186,8 @@ class ResponseEmitter implements EmitterInterface
                 $first = false;
             }
         }
+
+        $this->emitCookies($cookies);
     }
 
     /**
@@ -184,10 +198,23 @@ class ResponseEmitter implements EmitterInterface
      */
     protected function emitCookies(array $cookies)
     {
-        foreach ((array)$cookies as $cookie) {
+        foreach ($cookies as $cookie) {
+            if (is_array($cookie)) {
+                setcookie(
+                    $cookie['name'],
+                    $cookie['value'],
+                    $cookie['expire'],
+                    $cookie['path'],
+                    $cookie['domain'],
+                    $cookie['secure'],
+                    $cookie['httpOnly']
+                );
+                continue;
+            }
+
             if (strpos($cookie, '";"') !== false) {
-                $cookie = str_replace('";"', "{__cookie_replace__}", $cookie);
-                $parts = str_replace("{__cookie_replace__}", '";"', explode(';', $cookie));
+                $cookie = str_replace('";"', '{__cookie_replace__}', $cookie);
+                $parts = str_replace('{__cookie_replace__}', '";"', explode(';', $cookie));
             } else {
                 $parts = preg_split('/\;[ \t]*/', $cookie);
             }
@@ -249,7 +276,7 @@ class ResponseEmitter implements EmitterInterface
 
     /**
      * Parse content-range header
-     * http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.16
+     * https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.16
      *
      * @param string $header The Content-Range header to parse.
      * @return false|array [unit, first, last, length]; returns false if no

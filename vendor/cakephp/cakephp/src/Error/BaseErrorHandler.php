@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          http://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * @link          https://cakephp.org CakePHP(tm) Project
  * @since         2.0.0
- * @license       http://www.opensource.org/licenses/mit-license.php MIT License
+ * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Error;
 
@@ -29,6 +29,18 @@ use Exception;
  */
 abstract class BaseErrorHandler
 {
+
+    /**
+     * Options to use for the Error handling.
+     *
+     * @var array
+     */
+    protected $_options = [];
+
+    /**
+     * @var bool
+     */
+    protected $_handled = false;
 
     /**
      * Display an error message in an environment specific way.
@@ -68,7 +80,7 @@ abstract class BaseErrorHandler
         set_error_handler([$this, 'handleError'], $level);
         set_exception_handler([$this, 'wrapAndHandleException']);
         register_shutdown_function(function () {
-            if ((PHP_SAPI === 'cli' || PHP_SAPI === 'phpdbg')) {
+            if ((PHP_SAPI === 'cli' || PHP_SAPI === 'phpdbg') && $this->_handled) {
                 return;
             }
             $megabytes = Configure::read('Error.extraFatalErrorMemory');
@@ -121,7 +133,8 @@ abstract class BaseErrorHandler
         if (error_reporting() === 0) {
             return false;
         }
-        list($error, $log) = $this->mapErrorCode($code);
+        $this->_handled = true;
+        list($error, $log) = static::mapErrorCode($code);
         if ($log === LOG_ERR) {
             return $this->handleFatalError($code, $description, $file, $line);
         }
@@ -173,7 +186,7 @@ abstract class BaseErrorHandler
      * @param \Exception $exception Exception instance.
      * @return void
      * @throws \Exception When renderer class not found
-     * @see http://php.net/manual/en/function.set-exception-handler.php
+     * @see https://secure.php.net/manual/en/function.set-exception-handler.php
      */
     public function handleException(Exception $exception)
     {
@@ -224,7 +237,7 @@ abstract class BaseErrorHandler
      * Increases the PHP "memory_limit" ini setting by the specified amount
      * in kilobytes
      *
-     * @param string $additionalKb Number in kilobytes
+     * @param int $additionalKb Number in kilobytes
      * @return void
      */
     public function increaseMemoryLimit($additionalKb)
@@ -235,9 +248,9 @@ abstract class BaseErrorHandler
         }
         $limit = trim($limit);
         $units = strtoupper(substr($limit, -1));
-        $current = substr($limit, 0, strlen($limit) - 1);
+        $current = (int)substr($limit, 0, strlen($limit) - 1);
         if ($units === 'M') {
-            $current = $current * 1024;
+            $current *= 1024;
             $units = 'K';
         }
         if ($units === 'G') {
@@ -315,14 +328,14 @@ abstract class BaseErrorHandler
     /**
      * Get the request context for an error/exception trace.
      *
-     * @param \Cake\Network\Request $request The request to read from.
+     * @param \Cake\Http\ServerRequest $request The request to read from.
      * @return string
      */
     protected function _requestContext($request)
     {
-        $message = "\nRequest URL: " . $request->here();
+        $message = "\nRequest URL: " . $request->getRequestTarget();
 
-        $referer = $request->env('HTTP_REFERER');
+        $referer = $request->getEnv('HTTP_REFERER');
         if ($referer) {
             $message .= "\nReferer URL: " . $referer;
         }
@@ -342,14 +355,37 @@ abstract class BaseErrorHandler
      */
     protected function _getMessage(Exception $exception)
     {
+        $message = $this->getMessageForException($exception);
+
+        $request = Router::getRequest();
+        if ($request) {
+            $message .= $this->_requestContext($request);
+        }
+
+        return $message;
+    }
+
+    /**
+     * Generate the message for the exception
+     *
+     * @param \Exception $exception The exception to log a message for.
+     * @param bool $isPrevious False for original exception, true for previous
+     * @return string Error message
+     */
+    protected function getMessageForException($exception, $isPrevious = false)
+    {
         $exception = $exception instanceof PHP7ErrorException ?
             $exception->getError() :
             $exception;
         $config = $this->_options;
+
         $message = sprintf(
-            "[%s] %s",
+            '%s[%s] %s in %s on line %s',
+            $isPrevious ? "\nCaused by: " : '',
             get_class($exception),
-            $exception->getMessage()
+            $exception->getMessage(),
+            $exception->getFile(),
+            $exception->getLine()
         );
         $debug = Configure::read('debug');
 
@@ -360,13 +396,13 @@ abstract class BaseErrorHandler
             }
         }
 
-        $request = Router::getRequest();
-        if ($request) {
-            $message .= $this->_requestContext($request);
-        }
-
         if (!empty($config['trace'])) {
             $message .= "\nStack Trace:\n" . $exception->getTraceAsString() . "\n\n";
+        }
+
+        $previous = $exception->getPrevious();
+        if ($previous) {
+            $message .= $this->getMessageForException($previous, true);
         }
 
         return $message;

@@ -1,21 +1,23 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          http://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * @link          https://cakephp.org CakePHP(tm) Project
  * @since         3.0.0
- * @license       http://www.opensource.org/licenses/mit-license.php MIT License
+ * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\ORM;
 
 use ArrayIterator;
 use Cake\Datasource\EntityInterface;
+use Cake\ORM\Locator\LocatorAwareTrait;
+use Cake\ORM\Locator\LocatorInterface;
 use InvalidArgumentException;
 use IteratorAggregate;
 
@@ -29,6 +31,7 @@ class AssociationCollection implements IteratorAggregate
 {
 
     use AssociationsNormalizerTrait;
+    use LocatorAwareTrait;
 
     /**
      * Stored associations
@@ -36,6 +39,21 @@ class AssociationCollection implements IteratorAggregate
      * @var \Cake\ORM\Association[]
      */
     protected $_items = [];
+
+    /**
+     * Constructor.
+     *
+     * Sets the default table locator for associations.
+     * If no locator is provided, the global one will be used.
+     *
+     * @param \Cake\ORM\Locator\LocatorInterface|null $tableLocator Table locator instance.
+     */
+    public function __construct(LocatorInterface $tableLocator = null)
+    {
+        if ($tableLocator !== null) {
+            $this->_tableLocator = $tableLocator;
+        }
+    }
 
     /**
      * Add an association to the collection
@@ -52,6 +70,30 @@ class AssociationCollection implements IteratorAggregate
         list(, $alias) = pluginSplit($alias);
 
         return $this->_items[strtolower($alias)] = $association;
+    }
+
+    /**
+     * Creates and adds the Association object to this collection.
+     *
+     * @param string $className The name of association class.
+     * @param string $associated The alias for the target table.
+     * @param array $options List of options to configure the association definition.
+     * @return \Cake\ORM\Association
+     * @throws \InvalidArgumentException
+     */
+    public function load($className, $associated, array $options = [])
+    {
+        $options += [
+            'tableLocator' => $this->getTableLocator()
+        ];
+
+        $association = new $className($associated, $options);
+        if (!$association instanceof Association) {
+            $message = sprintf('The association must extend `%s` class, `%s` given.', Association::class, get_class($association));
+            throw new InvalidArgumentException($message);
+        }
+
+        return $this->add($association->getName(), $association);
     }
 
     /**
@@ -79,7 +121,7 @@ class AssociationCollection implements IteratorAggregate
     public function getByProperty($prop)
     {
         foreach ($this->_items as $assoc) {
-            if ($assoc->property() === $prop) {
+            if ($assoc->getProperty() === $prop) {
                 return $assoc;
             }
         }
@@ -101,7 +143,7 @@ class AssociationCollection implements IteratorAggregate
     /**
      * Get the names of all the associations in the collection.
      *
-     * @return array
+     * @return string[]
      */
     public function keys()
     {
@@ -114,8 +156,27 @@ class AssociationCollection implements IteratorAggregate
      * @param string|array $class The type of associations you want.
      *   For example 'BelongsTo' or array like ['BelongsTo', 'HasOne']
      * @return array An array of Association objects.
+     * @deprecated 3.5.3 Use getByType() instead.
      */
     public function type($class)
+    {
+        deprecationWarning(
+            'AssociationCollection::type() is deprecated. ' .
+            'Use getByType() instead.'
+        );
+
+        return $this->getByType($class);
+    }
+
+    /**
+     * Get an array of associations matching a specific type.
+     *
+     * @param string|array $class The type of associations you want.
+     *   For example 'BelongsTo' or array like ['BelongsTo', 'HasOne']
+     * @return array An array of Association objects.
+     * @since 3.5.3
+     */
+    public function getByType($class)
     {
         $class = array_map('strtolower', (array)$class);
 
@@ -224,7 +285,7 @@ class AssociationCollection implements IteratorAggregate
                 $msg = sprintf(
                     'Cannot save %s, it is not associated to %s',
                     $alias,
-                    $table->alias()
+                    $table->getAlias()
                 );
                 throw new InvalidArgumentException($msg);
             }
@@ -250,7 +311,7 @@ class AssociationCollection implements IteratorAggregate
      */
     protected function _save($association, $entity, $nested, $options)
     {
-        if (!$entity->dirty($association->property())) {
+        if (!$entity->isDirty($association->getProperty())) {
             return true;
         }
         if (!empty($nested)) {
@@ -287,7 +348,7 @@ class AssociationCollection implements IteratorAggregate
     {
         $noCascade = [];
         foreach ($this->_items as $assoc) {
-            if (!$assoc->cascadeCallbacks()) {
+            if (!$assoc->getCascadeCallbacks()) {
                 $noCascade[] = $assoc;
                 continue;
             }

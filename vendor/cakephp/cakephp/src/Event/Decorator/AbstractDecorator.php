@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP : Rapid Development Framework (http://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * CakePHP : Rapid Development Framework (https://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          http://cakephp.org CakePHP Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * @link          https://cakephp.org CakePHP Project
  * @since         3.3.0
- * @license       http://www.opensource.org/licenses/mit-license.php MIT License
+ * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Event\Decorator;
 
@@ -49,7 +49,7 @@ abstract class AbstractDecorator
     /**
      * Invoke
      *
-     * @link http://php.net/manual/en/language.oop5.magic.php#object.invoke
+     * @link https://secure.php.net/manual/en/language.oop5.magic.php#object.invoke
      * @return mixed
      */
     public function __invoke()
@@ -66,17 +66,7 @@ abstract class AbstractDecorator
     protected function _call($args)
     {
         $callable = $this->_callable;
-        switch (count($args)) {
-            case 0:
-                return $callable();
-            case 1:
-                return $callable($args[0]);
-            case 2:
-                return $callable($args[0], $args[1]);
-            case 3:
-                return $callable($args[0], $args[1], $args[2]);
-            default:
-                return call_user_func_array($callable, $args);
-        }
+
+        return $callable(...$args);
     }
 }

@@ -26,11 +26,14 @@ class ClearCacheCommand extends BaseCommand
     {
         $this
             ->setName('clear-cache')
-            ->setAliases(array('clearcache'))
+            ->setAliases(array('clearcache', 'cc'))
             ->setDescription('Clears composer\'s internal package cache.')
-            ->setHelp(<<<EOT
+            ->setHelp(
+                <<<EOT
 The <info>clear-cache</info> deletes all cached packages from composer's
 cache directory.
+
+Read more at https://getcomposer.org/doc/03-cli.md#clear-cache-clearcache-
 EOT
             )
         ;
@@ -42,10 +45,10 @@ EOT
         $io = $this->getIO();
 
         $cachePaths = array(
-            'cache-dir' => $config->get('cache-dir'),
-            'cache-files-dir' => $config->get('cache-files-dir'),
-            'cache-repo-dir' => $config->get('cache-repo-dir'),
             'cache-vcs-dir' => $config->get('cache-vcs-dir'),
+            'cache-repo-dir' => $config->get('cache-repo-dir'),
+            'cache-files-dir' => $config->get('cache-files-dir'),
+            'cache-dir' => $config->get('cache-dir'),
         );
 
         foreach ($cachePaths as $key => $cachePath) {
@@ -63,9 +66,11 @@ EOT
             }
 
             $io->writeError("<info>Clearing cache ($key): $cachePath</info>");
-            $cache->gc(0, 0);
+            $cache->clear();
         }
 
         $io->writeError('<info>All caches cleared.</info>');
+
+        return 0;
     }
 }

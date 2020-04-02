@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          http://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * @link          https://cakephp.org CakePHP(tm) Project
  * @since         3.0.7
- * @license       http://www.opensource.org/licenses/mit-license.php MIT License
+ * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Datasource;
 
@@ -63,28 +63,28 @@ class RulesChecker
     /**
      * The list of rules to be checked on both create and update operations
      *
-     * @var array
+     * @var callable[]
      */
     protected $_rules = [];
 
     /**
      * The list of rules to check during create operations
      *
-     * @var array
+     * @var callable[]
      */
     protected $_createRules = [];
 
     /**
      * The list of rules to check during update operations
      *
-     * @var array
+     * @var callable[]
      */
     protected $_updateRules = [];
 
     /**
      * The list of rules to check during delete operations
      *
-     * @var array
+     * @var callable[]
      */
     protected $_deleteRules = [];
 
@@ -293,7 +293,7 @@ class RulesChecker
     protected function _checkRules(EntityInterface $entity, array $options = [], array $rules = [])
     {
         $success = true;
-        $options = $options + $this->_options;
+        $options += $this->_options;
         foreach ($rules as $rule) {
             $success = $rule($entity, $options) && $success;
         }

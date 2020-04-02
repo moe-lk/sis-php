@@ -131,11 +131,19 @@ class ControllerTask extends BakeTask
         $singularHumanName = $this->_singularHumanName($controllerName);
         $pluralHumanName = $this->_variableName($controllerName);
 
+        $defaultModel = sprintf('%s\Model\Table\%sTable', $namespace, $controllerName);
+        if (!class_exists($defaultModel)) {
+            $defaultModel = null;
+        }
+        $entityClassName = $this->_entityName($modelObj->getAlias());
+
         $data = compact(
             'actions',
             'admin',
             'components',
             'currentModelName',
+            'defaultModel',
+            'entityClassName',
             'helpers',
             'modelObj',
             'namespace',
@@ -258,7 +266,7 @@ class ControllerTask extends BakeTask
     public function getOptionParser()
     {
         $parser = parent::getOptionParser();
-        $parser->description(
+        $parser->setDescription(
             'Bake a controller skeleton.'
         )->addArgument('name', [
             'help' => 'Name of the controller to bake (without the `Controller` suffix). ' .

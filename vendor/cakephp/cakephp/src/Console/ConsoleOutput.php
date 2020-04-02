@@ -1,18 +1,20 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          http://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * @link          https://cakephp.org CakePHP(tm) Project
  * @since         2.0.0
- * @license       http://www.opensource.org/licenses/mit-license.php MIT License
+ * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Console;
+
+use InvalidArgumentException;
 
 /**
  * Object wrapper for outputting information from a shell application.
@@ -93,7 +95,7 @@ class ConsoleOutput
      */
     protected static $_foregroundColors = [
         'black' => 30,
-        'red' => 91,
+        'red' => 31,
         'green' => 32,
         'yellow' => 33,
         'blue' => 34,
@@ -119,9 +121,9 @@ class ConsoleOutput
     ];
 
     /**
-     * formatting options for colored output
+     * Formatting options for colored output.
      *
-     * @var string
+     * @var array
      */
     protected static $_options = [
         'bold' => 1,
@@ -160,7 +162,7 @@ class ConsoleOutput
      */
     public function __construct($stream = 'php://stdout')
     {
-        $this->_output = fopen($stream, 'w');
+        $this->_output = fopen($stream, 'wb');
 
         if ((DIRECTORY_SEPARATOR === '\\' && !(bool)env('ANSICON') && env('ConEmuANSI') !== 'ON') ||
             (function_exists('posix_isatty') && !posix_isatty($this->_output))
@@ -303,13 +305,44 @@ class ConsoleOutput
     }
 
     /**
+     * Get the output type on how formatting tags are treated.
+     *
+     * @return int
+     */
+    public function getOutputAs()
+    {
+        return $this->_outputAs;
+    }
+
+    /**
+     * Set the output type on how formatting tags are treated.
+     *
+     * @param int $type The output type to use. Should be one of the class constants.
+     * @return void
+     * @throws \InvalidArgumentException in case of a not supported output type.
+     */
+    public function setOutputAs($type)
+    {
+        if (!in_array($type, [self::RAW, self::PLAIN, self::COLOR], true)) {
+            throw new InvalidArgumentException(sprintf('Invalid output type "%s".', $type));
+        }
+
+        $this->_outputAs = $type;
+    }
+
+    /**
      * Get/Set the output type to use. The output type how formatting tags are treated.
      *
+     * @deprecated 3.5.0 Use getOutputAs()/setOutputAs() instead.
      * @param int|null $type The output type to use. Should be one of the class constants.
-     * @return int|null  Either null or the value if getting.
+     * @return int|null Either null or the value if getting.
      */
     public function outputAs($type = null)
     {
+        deprecationWarning(
+            'ConsoleOutput::outputAs() is deprecated. ' .
+            'Use ConsoleOutput::setOutputAs()/getOutputAs() instead.'
+        );
         if ($type === null) {
             return $this->_outputAs;
         }
