@@ -84,7 +84,7 @@ try {
 try {
     Configure::load('datasource', 'default');
     Configure::load('app_extra', 'default');
-    ConnectionManager::setConfig(Configure::consume('Datasources'));
+    ConnectionManager::config(Configure::consume('Datasources'));
     // if (!Configure::read('Application.private.key') || !Configure::read('Application.public.key')) {
     //     throw new Exception('Could not load application key, please contact administrator to have the key set up for your application.');
     // }
@@ -179,7 +179,7 @@ if (!Configure::read('App.fullBaseUrl')) {
     unset($httpHost, $s);
 }
 
-Cache::setConfig(Configure::consume('Cache'));
+Cache::config(Configure::consume('Cache'));
 Email::configTransport(Configure::consume('EmailTransport'));
 Email::config(Configure::consume('Email'));
 Log::config(Configure::consume('Log'));

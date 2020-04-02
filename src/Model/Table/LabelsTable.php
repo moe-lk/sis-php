@@ -19,14 +19,14 @@ class LabelsTable extends AppTable
     {
         $label = false;
         $keyFetch = $module.'.'.$field;
-        $label = Cache::read($keyFetch);
+        $label = Cache::read($keyFetch, $this->defaultConfig);
 
         if ($label !== false) {
             $label =  __(ucfirst($label));
         } else {
             //check whether the key is part of the excluded list
             if (in_array($field, $this->excludeList)) {
-                $label = Cache::read('General.'.$field);
+                $label = Cache::read('General.'.$field, $this->defaultConfig);
             }
         }
 
@@ -59,7 +59,7 @@ class LabelsTable extends AppTable
             }
 
             //Write multiple to cache
-            $result = Cache::writeMany($keyArray);
+            $result = Cache::writeMany($keyArray, $this->defaultConfig);
         }
     }
 
