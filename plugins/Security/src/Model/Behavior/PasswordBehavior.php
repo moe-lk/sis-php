@@ -93,6 +93,13 @@ class PasswordBehavior extends Behavior {
 			],
 		]);
 
+        $validator->add($this->targetField,[
+            'ruleCheckUserPasswordCross' => [
+                'rule' => 'checkUserPasswordCross',
+                'message' => 'You may be trying to use an older password'
+            ]
+        ]);
+
 		if ($passwordHasUppercase) {
 			$validator->add($this->targetField, [
 				'ruleCheckUppercaseExists' => [
