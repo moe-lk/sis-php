@@ -59,7 +59,7 @@ class LabelsTable extends AppTable
             }
 
             //Write multiple to cache
-            $result = Cache::writeMany($keyArray, $this->defaultConfig);
+            $result = Cache::writeMany($keyArray);
         }
     }
 
