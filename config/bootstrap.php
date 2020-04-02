@@ -84,7 +84,7 @@ try {
 try {
     Configure::load('datasource', 'default');
     Configure::load('app_extra', 'default');
-    ConnectionManager::setConfig(Configure::consume('Datasources'));
+    ConnectionManager::config(Configure::consume('Datasources'));
     // if (!Configure::read('Application.private.key') || !Configure::read('Application.public.key')) {
     //     throw new Exception('Could not load application key, please contact administrator to have the key set up for your application.');
     // }
