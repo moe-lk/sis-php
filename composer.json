@@ -6,18 +6,21 @@
     "license": "GPL-2.0",
     "require": {
         "php": ">=5.4.16",
-        "cakephp/cakephp": "3.3.*",
+        "cakephp/cakephp": "3.8.*",
         "mobiledetect/mobiledetectlib": "2.*",
         "phpoffice/phpspreadsheet": "1.5.2",
         "admad/cakephp-jwt-auth": "2.0.1",
-        "mk-j/php_xlsxwriter": "^0.32"
+        "mk-j/php_xlsxwriter": "^0.32",
+        "korditpteltd/kd-cakephp-page": "dev-master",
+        "korditpteltd/kd-cakephp-restful": "dev-master",
+        "korditpteltd/kd-cakephp-webhooks": "dev-master",
+        "cakephp/debug_kit": "3.7.*"
     },
     "require-dev": {
         "psy/psysh": "@stable",
         "phpunit/phpunit": "*",
         "cakephp/plugin-installer": "*",
         "cakephp/migrations": "~1.0",
-        "cakephp/debug_kit": "~3.2",
         "cakephp/bake": "~1.1"
     },
     "suggest": {
