@@ -2,7 +2,7 @@ FROM php:7.4-apache
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-RUN  apt-get update && apt-get install -y && apt-get install software-properties-common && add-apt-repository ppa:ondrej/php \
+RUN  apt-get update && apt-get install -y && apt-get install software-properties-common \
      libfreetype6-dev \
      libjpeg62-turbo-dev \
      libmcrypt-dev \
