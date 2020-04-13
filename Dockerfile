@@ -8,6 +8,7 @@ RUN apt-get update  && apt-get install -y \
         libfreetype6-dev \
         autoconf \
         ruby \
+        zip \
         libjpeg62-turbo-dev \
         libmcrypt-dev \
         libpng-dev \
@@ -16,6 +17,8 @@ RUN apt-get update  && apt-get install -y \
         libzip-dev \
         libonig-dev \
         graphviz \
+        re2c \
+        file
 
     && docker-php-ext-configure gd \
     && docker-php-ext-install -j$(nproc) gd \
@@ -23,6 +26,7 @@ RUN apt-get update  && apt-get install -y \
     && docker-php-ext-install pdo_mysql \
     && docker-php-ext-install mysqli \
     && docker-php-ext-install zip \
+    && docker-php-ext-configure gmp && docker-php-ext-install gmp \
     && docker-php-source delete
 
 
