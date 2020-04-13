@@ -54,7 +54,7 @@ RUN a2enmod rewrite && \
 
 # Clone your application (cloning CakePHP 3 / app instead of composer create project to demonstrate application deployment example)
 RUN rm -rf /var/www/apachephp
-ADD ./app /var/www/apachephp
+ADD ./ /var/www/apachephp
 WORKDIR /var/www/apachephp
 RUN mkdir -p \
     tmp/cache/models \
