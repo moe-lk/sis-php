@@ -27,7 +27,6 @@ RUN apt-get update  && apt-get install -y \
     && docker-php-ext-install pdo_mysql \
     && docker-php-ext-install mysqli \
     && docker-php-ext-install zip \
-    && docker-php-ext-configure gmp && docker-php-ext-install gmp \
     && docker-php-source delete
 
 
