@@ -2,7 +2,7 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
     <xs:annotation>
         <xs:documentation source="https://phpunit.de/documentation.html">
-            This Schema file defines the rules by which the XML configuration file of PHPUnit 8.5 may be structured.
+            This Schema file defines the rules by which the XML configuration file of PHPUnit 9.0 may be structured.
         </xs:documentation>
         <xs:appinfo source="https://phpunit.de/documentation.html"/>
     </xs:annotation>
@@ -137,9 +137,7 @@
                     <xs:enumeration value="coverage-crap4j"/>
                     <xs:enumeration value="coverage-xml"/>
                     <xs:enumeration value="coverage-php"/>
-                    <xs:enumeration value="json"/>
                     <xs:enumeration value="plain"/>
-                    <xs:enumeration value="tap"/>
                     <xs:enumeration value="teamcity"/>
                     <xs:enumeration value="junit"/>
                     <xs:enumeration value="testdox-html"/>
@@ -260,7 +258,9 @@
         <xs:attribute name="stopOnIncomplete" type="xs:boolean" default="false"/>
         <xs:attribute name="stopOnRisky" type="xs:boolean" default="false"/>
         <xs:attribute name="stopOnSkipped" type="xs:boolean" default="false"/>
+        <xs:attribute name="failOnIncomplete" type="xs:boolean" default="false"/>
         <xs:attribute name="failOnRisky" type="xs:boolean" default="false"/>
+        <xs:attribute name="failOnSkipped" type="xs:boolean" default="false"/>
         <xs:attribute name="failOnWarning" type="xs:boolean" default="false"/>
         <xs:attribute name="beStrictAboutChangesToGlobalState" type="xs:boolean" default="false"/>
         <xs:attribute name="beStrictAboutOutputDuringTests" type="xs:boolean" default="false"/>

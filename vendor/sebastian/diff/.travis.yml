@@ -1,19 +1,13 @@
 language: php
 
+dist: bionic
+
 php:
-  - 7.1
-  - 7.2
   - 7.3
-  - master
-
-sudo: false
-
-before_install:
-  - composer self-update
-  - composer clear-cache
+  - 7.4
 
 install:
-  - travis_retry composer update --no-interaction --no-ansi --no-progress --no-suggest --optimize-autoloader --prefer-stable
+  - travis_retry ./tools/composer update --no-interaction --no-ansi --no-progress --no-suggest
 
 script:
   - ./vendor/bin/phpunit --coverage-clover=coverage.xml
@@ -23,4 +17,3 @@ after_success:
 
 notifications:
   email: false
-

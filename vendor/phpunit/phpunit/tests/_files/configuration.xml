@@ -13,10 +13,12 @@
          forceCoversAnnotation="false"
          stopOnFailure="false"
          stopOnWarning="false"
-         failOnWarning="false"
+         failOnIncomplete="false"
          failOnRisky="false"
+         failOnSkipped="false"
+         failOnWarning="false"
          extensionsDirectory="/tmp"
-         printerClass="PHPUnit\TextUI\ResultPrinter"
+         printerClass="PHPUnit\TextUI\DefaultResultPrinter"
          testSuiteLoaderClass="PHPUnit\Runner\StandardTestSuiteLoader"
          defaultTestSuite="My Test Suite"
          beStrictAboutChangesToGlobalState="false"
@@ -131,9 +133,7 @@
         <log type="coverage-clover" target="/tmp/clover.xml"/>
         <log type="coverage-crap4j" threshold="50" target="/tmp/crap4j.xml"/>
         <log type="coverage-text" showUncoveredFiles="true" showOnlySummary="true" target="/tmp/coverage.txt"/>
-        <log type="json" target="/tmp/logfile.json"/>
         <log type="plain" target="/tmp/logfile.txt"/>
-        <log type="tap" target="/tmp/logfile.tap"/>
         <log type="junit" target="/tmp/logfile.xml"/>
         <log type="testdox-html" target="/tmp/testdox.html"/>
         <log type="testdox-text" target="/tmp/testdox.txt"/>
@@ -145,7 +145,6 @@
         <includePath>/path/to/lib</includePath>
         <ini name="foo" value="bar"/>
         <ini name="highlight.keyword" value="#123456"/>
-        <ini name="highlight.string" value="TEST_FILES_PATH"/>
         <const name="FOO" value="false"/>
         <const name="BAR" value="true"/>
         <var name="foo" value="false"/>

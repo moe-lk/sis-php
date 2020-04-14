@@ -9,9 +9,6 @@
  */
 namespace PHPUnit\Framework;
 
-use AssertionError;
-use Countable;
-use Error;
 use PHPUnit\Framework\MockObject\Exception as MockObjectException;
 use PHPUnit\Util\Blacklist;
 use PHPUnit\Util\ErrorHandler;
@@ -26,12 +23,11 @@ use SebastianBergmann\Invoker\Invoker;
 use SebastianBergmann\Invoker\TimeoutException;
 use SebastianBergmann\ResourceOperations\ResourceOperations;
 use SebastianBergmann\Timer\Timer;
-use Throwable;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for PHPUnit
  */
-final class TestResult implements Countable
+final class TestResult implements \Countable
 {
     /**
      * @var array
@@ -259,7 +255,7 @@ final class TestResult implements Countable
     /**
      * Adds an error to the list of errors.
      */
-    public function addError(Test $test, Throwable $t, float $time): void
+    public function addError(Test $test, \Throwable $t, float $time): void
     {
         if ($t instanceof RiskyTestError) {
             $this->risky[] = new TestFailure($test, $t);
@@ -296,7 +292,7 @@ final class TestResult implements Countable
         }
 
         // @see https://github.com/sebastianbergmann/phpunit/issues/1953
-        if ($t instanceof Error) {
+        if ($t instanceof \Error) {
             $t = new ExceptionWrapper($t);
         }
 
@@ -659,10 +655,12 @@ final class TestResult implements Countable
         Timer::start();
 
         try {
+            $invoker = new Invoker;
+
             if (!$test instanceof WarningTestCase &&
                 $this->enforceTimeLimit &&
                 ($this->defaultTimeLimit || $test->getSize() != \PHPUnit\Util\Test::UNKNOWN) &&
-                \extension_loaded('pcntl') && \class_exists(Invoker::class)) {
+                $invoker->canInvokeWithTimeout()) {
                 switch ($test->getSize()) {
                     case \PHPUnit\Util\Test::SMALL:
                         $_timeout = $this->timeoutForSmallTests;
@@ -685,7 +683,6 @@ final class TestResult implements Countable
                         break;
                 }
 
-                $invoker = new Invoker;
                 $invoker->invoke([$test, 'runBare'], [], $_timeout);
             } else {
                 $test->runBare();
@@ -716,7 +713,7 @@ final class TestResult implements Countable
             } elseif ($e instanceof SkippedTestError) {
                 $skipped = true;
             }
-        } catch (AssertionError $e) {
+        } catch (\AssertionError $e) {
             $test->addToAssertionCount(1);
 
             $failure = true;
@@ -734,7 +731,7 @@ final class TestResult implements Countable
             $warning = true;
         } catch (Exception $e) {
             $error = true;
-        } catch (Throwable $e) {
+        } catch (\Throwable $e) {
             $e     = new ExceptionWrapper($e);
             $error = true;
         }

@@ -100,6 +100,11 @@ class TestSuite implements \IteratorAggregate, SelfDescribing, Test
     private $declaredClasses;
 
     /**
+     * @psalm-var array<int,string>
+     */
+    private $warnings = [];
+
+    /**
      * Constructs a new TestSuite:
      *
      *   - PHPUnit\Framework\TestSuite() constructs an empty TestSuite.
@@ -329,6 +334,11 @@ class TestSuite implements \IteratorAggregate, SelfDescribing, Test
         }
     }
 
+    public function addWarning(string $warning): void
+    {
+        $this->warnings[] = $warning;
+    }
+
     /**
      * Wraps both <code>addTest()</code> and <code>addTestSuite</code>
      * as well as the separate import statements for the user's convenience.
@@ -342,12 +352,14 @@ class TestSuite implements \IteratorAggregate, SelfDescribing, Test
     public function addTestFile(string $filename): void
     {
         if (\file_exists($filename) && \substr($filename, -5) === '.phpt') {
-            $this->addTest(
-                new PhptTestCase($filename)
-            );
+            $this->addTest(new PhptTestCase($filename));
+
+            $this->declaredClasses = \get_declared_classes();
 
             return;
         }
+
+        $numTests = \count($this->tests);
 
         // The given file may contain further stub classes in addition to the
         // test class itself. Figure out the actual test class.
@@ -433,9 +445,39 @@ class TestSuite implements \IteratorAggregate, SelfDescribing, Test
                         $this->addTest($method->invoke(null, $className));
                     }
                 } elseif ($class->implementsInterface(Test::class)) {
+                    $expectedClassName = $shortName;
+
+                    if (($pos = \strpos($expectedClassName, '.')) !== false) {
+                        $expectedClassName = \substr(
+                            $expectedClassName,
+                            0,
+                            $pos
+                        );
+                    }
+
+                    if ($class->getShortName() !== $expectedClassName) {
+                        $this->addWarning(
+                            \sprintf(
+                                "Test case class not matching filename is deprecated\n               in %s\n               Class name was '%s', expected '%s'",
+                                $filename,
+                                $class->getShortName(),
+                                $expectedClassName
+                            )
+                        );
+                    }
+
                     $this->addTestSuite($class);
                 }
             }
+        }
+
+        if (\count($this->tests) > ++$numTests) {
+            $this->addWarning(
+                \sprintf(
+                    "Multiple test case classes per file is deprecated\n               in %s",
+                    $filename
+                )
+            );
         }
 
         $this->numTests = -1;
@@ -727,6 +769,14 @@ class TestSuite implements \IteratorAggregate, SelfDescribing, Test
                 $test->injectFilter($filter);
             }
         }
+    }
+
+    /**
+     * @psalm-return array<int,string>
+     */
+    public function warnings(): array
+    {
+        return \array_unique($this->warnings);
     }
 
     /**

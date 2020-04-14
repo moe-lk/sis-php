@@ -18,7 +18,6 @@ use Cake\TestSuite\Fixture\TestFixture;
 
 /**
  * InvitationsFixture
- *
  */
 class InvitationsFixture extends TestFixture
 {
@@ -50,7 +49,7 @@ class InvitationsFixture extends TestFixture
                 'update' => 'noAction',
                 'delete' => 'noAction',
             ],
-        ]
+        ],
     ];
 
     /**
@@ -63,6 +62,6 @@ class InvitationsFixture extends TestFixture
             'sender_id' => 1,
             'receiver_id' => 1,
             'body' => 'Try it out!',
-        ]
+        ],
     ];
 }

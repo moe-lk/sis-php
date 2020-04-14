@@ -1,17 +1,13 @@
 language: php
 
-php:
-  - 7.1
-  - 7.2
-  - 7.3
-  - 7.4snapshot
+dist: bionic
 
-before_install:
-  - composer self-update
-  - composer clear-cache
+php:
+  - 7.3
+  - 7.4
 
 install:
-  - travis_retry composer update --no-interaction --no-ansi --no-progress --no-suggest
+  - travis_retry ./tools/composer update --no-interaction --no-ansi --no-progress --no-suggest
 
 script:
   - ./vendor/bin/phpunit --coverage-clover=coverage.xml

@@ -90,9 +90,14 @@ final class Console
                 return true;
             }
 
-            $stat = @\fstat(\STDOUT);
             // Check if formatted mode is S_IFCHR
-            return $stat ? 0020000 === ($stat['mode'] & 0170000) : false;
+            if (\function_exists('fstat') && @\stream_isatty($fileDescriptor)) {
+                $stat = @\fstat(\STDOUT);
+
+                return $stat ? 0020000 === ($stat['mode'] & 0170000) : false;
+            }
+
+            return false;
         }
 
         return \function_exists('posix_isatty') && @\posix_isatty($fileDescriptor);
@@ -132,7 +137,7 @@ final class Console
         $columns = 80;
 
         if (\is_string($ansicon) && \preg_match('/^(\d+)x\d+ \(\d+x(\d+)\)$/', \trim($ansicon), $matches)) {
-            $columns = $matches[1];
+            $columns = (int) $matches[1];
         } elseif (\function_exists('proc_open')) {
             $process = \proc_open(
                 'mode CON',
@@ -154,7 +159,7 @@ final class Console
                 \proc_close($process);
 
                 if (\preg_match('/--------+\r?\n.+?(\d+)\r?\n.+?(\d+)\r?\n/', $info, $matches)) {
-                    $columns = $matches[2];
+                    $columns = (int) $matches[2];
                 }
             }
         }

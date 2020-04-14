@@ -18,7 +18,6 @@ use Cake\TestSuite\Fixture\TestFixture;
 
 /**
  * Short description for class.
- *
  */
 class BakeArticlesBakeTagsFixture extends TestFixture
 {
@@ -30,7 +29,7 @@ class BakeArticlesBakeTagsFixture extends TestFixture
     public $fields = [
         'bake_article_id' => ['type' => 'integer', 'null' => false],
         'bake_tag_id' => ['type' => 'integer', 'null' => false],
-        '_constraints' => ['UNIQUE_TAG' => ['type' => 'unique', 'columns' => ['bake_article_id', 'bake_tag_id']]]
+        '_constraints' => ['UNIQUE_TAG' => ['type' => 'unique', 'columns' => ['bake_article_id', 'bake_tag_id']]],
     ];
 
     /**
