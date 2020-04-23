@@ -15,6 +15,7 @@ use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Inflector;
 use Cake\Validation\Validator;
+use Cake\Utility\Text;
 
 class UsersTable extends AppTable
 {
@@ -525,36 +526,18 @@ class UsersTable extends AppTable
 
     public function getUniqueOpenemisId($options = [])
     {
-//        return Text::uuid();
-        $prefix = '';
-
-        $prefix = TableRegistry::get('Configuration.ConfigItems')->value('openemis_id_prefix');
-        $prefix = explode(",", $prefix);
-        $prefix = ($prefix[1] > 0) ? $prefix[0] : '';
-
+       $openemis_no = str_split(Text::uuid(),8);
+       $openemis_no = $openemis_no[0];
         $latest = $this->find()
             ->order($this->aliasField('id') . ' DESC')
+            ->where([$this->aliasField('openemis_no') => $openemis_no])
             ->first();
 
-        if (is_array($latest)) {
-            $latestOpenemisNo = $latest['SecurityUser']['openemis_no'];
+        if (!is_null($latest)) {
+            $this->getUniqueOpenemisId();
         } else {
-            $latestOpenemisNo = $latest->openemis_no;
+           return $openemis_no;
         }
-        if (empty($prefix)) {
-            $latestDbStamp = $latestOpenemisNo;
-        } else {
-            $latestDbStamp = substr($latestOpenemisNo, strlen($prefix));
-        }
-
-        $currentStamp = time();
-        if ($latestDbStamp >= $currentStamp) {
-            $newStamp = $latestDbStamp + 1;
-        } else {
-            $newStamp = $currentStamp;
-        }
-
-        return $prefix . $newStamp;
     }
 
     public function validationDefault(Validator $validator)
