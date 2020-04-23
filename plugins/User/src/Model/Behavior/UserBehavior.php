@@ -478,32 +478,18 @@ class UserBehavior extends Behavior
 
     public function getUniqueOpenemisId($options = [])
     {
-        return Text::uuid();
-//        $prefix = TableRegistry::get('Configuration.ConfigItems')->value('openemis_id_prefix');
-//        $prefix = explode(",", $prefix);
-//        $prefix = ($prefix[1] > 0)? $prefix[0]: '';
-//
-//        $latest = $this->_table->find()
-//            ->order($this->_table->aliasField('id').' DESC')
-//            ->first();
-//
-//
-//        $latestOpenemisNo = $latest->openemis_no;
-//        $latestOpenemisNo = 0;
-//        if (empty($prefix)) {
-//            $latestDbStamp = $latestOpenemisNo;
-//        } else {
-//            $latestDbStamp = substr($latestOpenemisNo, strlen($prefix));
-//        }
-//
-//        $currentStamp = time();
-//        if ($latestDbStamp >= $currentStamp) {
-//            $newStamp = $latestDbStamp + 1;
-//        } else {
-//            $newStamp = $currentStamp;
-//        }
-//
-//        return $prefix.$newStamp;
+        $openemis_no = str_split(Text::uuid(),8);
+              $openemis_no = $openemis_no[0];
+               $latest = $this->_table->find()
+                   ->order($this->aliasField('id') . ' DESC')
+                   ->where([$this->aliasField('openemis_no') => $openemis_no])
+                   ->first();
+
+               if (!is_null($latest)) {
+                   $this->getUniqueOpenemisId();
+               } else {
+                  return $openemis_no;
+               }
     }
 
     public function getImage($id)
