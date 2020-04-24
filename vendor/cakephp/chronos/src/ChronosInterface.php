@@ -17,10 +17,11 @@ use DateTimeZone;
 
 /**
  * An extension to the DateTimeInterface for a friendlier API
+ *
+ * @method static modify(string $relative)
  */
 interface ChronosInterface extends DateTimeInterface
 {
-
     /**
      * The day constants
      */
@@ -285,8 +286,26 @@ interface ChronosInterface extends DateTimeInterface
      *
      * @param \Cake\Chronos\ChronosInterface $dt The instance to compare with.
      * @return bool
+     * @see equals
      */
     public function eq(ChronosInterface $dt);
+
+    /**
+     * Determines if the instance is equal to another
+     *
+     * @param \Cake\Chronos\ChronosInterface $dt The instance to compare with.
+     * @return bool
+     */
+    public function equals(ChronosInterface $dt);
+
+    /**
+     * Determines if the instance is not equal to another
+     *
+     * @param \Cake\Chronos\ChronosInterface $dt The instance to compare with.
+     * @return bool
+     * @see notEquals
+     */
+    public function ne(ChronosInterface $dt);
 
     /**
      * Determines if the instance is not equal to another
@@ -294,7 +313,16 @@ interface ChronosInterface extends DateTimeInterface
      * @param \Cake\Chronos\ChronosInterface $dt The instance to compare with.
      * @return bool
      */
-    public function ne(ChronosInterface $dt);
+    public function notEquals(ChronosInterface $dt);
+
+    /**
+     * Determines if the instance is greater (after) than another
+     *
+     * @param \Cake\Chronos\ChronosInterface $dt The instance to compare with.
+     * @return bool
+     * @see greaterThan
+     */
+    public function gt(ChronosInterface $dt);
 
     /**
      * Determines if the instance is greater (after) than another
@@ -302,7 +330,16 @@ interface ChronosInterface extends DateTimeInterface
      * @param \Cake\Chronos\ChronosInterface $dt The instance to compare with.
      * @return bool
      */
-    public function gt(ChronosInterface $dt);
+    public function greaterThan(ChronosInterface $dt);
+
+    /**
+     * Determines if the instance is greater (after) than or equal to another
+     *
+     * @param \Cake\Chronos\ChronosInterface $dt The instance to compare with.
+     * @return bool
+     * @see greaterThanOrEquals
+     */
+    public function gte(ChronosInterface $dt);
 
     /**
      * Determines if the instance is greater (after) than or equal to another
@@ -310,7 +347,16 @@ interface ChronosInterface extends DateTimeInterface
      * @param \Cake\Chronos\ChronosInterface $dt The instance to compare with.
      * @return bool
      */
-    public function gte(ChronosInterface $dt);
+    public function greaterThanOrEquals(ChronosInterface $dt);
+
+    /**
+     * Determines if the instance is less (before) than another
+     *
+     * @param \Cake\Chronos\ChronosInterface $dt The instance to compare with.
+     * @return bool
+     * @see lessThan
+     */
+    public function lt(ChronosInterface $dt);
 
     /**
      * Determines if the instance is less (before) than another
@@ -318,7 +364,16 @@ interface ChronosInterface extends DateTimeInterface
      * @param \Cake\Chronos\ChronosInterface $dt The instance to compare with.
      * @return bool
      */
-    public function lt(ChronosInterface $dt);
+    public function lessThan(ChronosInterface $dt);
+
+    /**
+     * Determines if the instance is less (before) or equal to another
+     *
+     * @param \Cake\Chronos\ChronosInterface $dt The instance to compare with.
+     * @return bool
+     * @see lessThanOrEquals
+     */
+    public function lte(ChronosInterface $dt);
 
     /**
      * Determines if the instance is less (before) or equal to another
@@ -326,7 +381,7 @@ interface ChronosInterface extends DateTimeInterface
      * @param \Cake\Chronos\ChronosInterface $dt The instance to compare with.
      * @return bool
      */
-    public function lte(ChronosInterface $dt);
+    public function lessThanOrEquals(ChronosInterface $dt);
 
     /**
      * Determines if the instance is between two others
@@ -996,7 +1051,7 @@ interface ChronosInterface extends DateTimeInterface
     public function secondsSinceMidnight();
 
     /**
-     * The number of seconds until 23:23:59.
+     * The number of seconds until 23:59:59.
      *
      * @return int
      */

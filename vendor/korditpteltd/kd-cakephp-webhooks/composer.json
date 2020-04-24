@@ -7,16 +7,16 @@
         "cakephp",
         "webhook"
     ],
-    "homepage": "https://bitbucket.org/korditpteltd/kd-cakephp-webhooks",
+    "homepage": "https://github.com/mohamednizar/kd-cakephp-webhooks",
     "license": "GPL-2.0",
     "authors": [
         {
             "name": "KORDIT PHP DEVELOPERS",
-            "homepage": "https://bitbucket.org/korditpteltd/kd-cakephp-webhooks"
+            "homepage": "https://github.com/mohamednizar/kd-cakephp-webhooks"
         }
     ],
     "support": {
-        "source": "https://bitbucket.org/korditpteltd/kd-cakephp-webhooks"
+        "source": "https://github.com/mohamednizar/kd-cakephp-webhooks"
     },
     "require": {
         "cakephp/cakephp": ">3.1.0"

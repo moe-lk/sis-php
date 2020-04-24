@@ -16,10 +16,10 @@ environments:
 
     development:
         adapter: mysql
-        host: sis-mysql
-        name: openemis
+        host: localhost
+        name: development_db
         user: root
-        pass: 'secret'
+        pass: ''
         port: 3306
         charset: utf8
 
@@ -31,3 +31,5 @@ environments:
         pass: ''
         port: 3306
         charset: utf8
+
+version_order: creation

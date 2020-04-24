@@ -1,6 +1,6 @@
-<?php
+<?php declare(strict_types=1);
 /*
- * This file is part of the Text_Template package.
+ * This file is part of phpunit/php-text-template.
  *
  * (c) Sebastian Bergmann <sebastian@phpunit.de>
  *
@@ -8,128 +8,91 @@
  * file that was distributed with this source code.
  */
 
-/**
- * A simple template engine.
- *
- * @since Class available since Release 1.0.0
- */
-class Text_Template
+namespace SebastianBergmann\Template;
+
+final class Template
 {
     /**
      * @var string
      */
-    protected $template = '';
+    private $template = '';
 
     /**
      * @var string
      */
-    protected $openDelimiter = '{';
+    private $openDelimiter;
 
     /**
      * @var string
      */
-    protected $closeDelimiter = '}';
+    private $closeDelimiter;
 
     /**
      * @var array
      */
-    protected $values = array();
+    private $values = [];
 
     /**
-     * Constructor.
-     *
-     * @param  string                   $file
      * @throws InvalidArgumentException
      */
-    public function __construct($file = '', $openDelimiter = '{', $closeDelimiter = '}')
+    public function __construct(string $file = '', string $openDelimiter = '{', string $closeDelimiter = '}')
     {
         $this->setFile($file);
+
         $this->openDelimiter  = $openDelimiter;
         $this->closeDelimiter = $closeDelimiter;
     }
 
     /**
-     * Sets the template file.
-     *
-     * @param  string                   $file
      * @throws InvalidArgumentException
      */
-    public function setFile($file)
+    public function setFile(string $file): void
     {
         $distFile = $file . '.dist';
 
-        if (file_exists($file)) {
-            $this->template = file_get_contents($file);
-        }
-
-        else if (file_exists($distFile)) {
-            $this->template = file_get_contents($distFile);
-        }
-
-        else {
+        if (\file_exists($file)) {
+            $this->template = \file_get_contents($file);
+        } elseif (\file_exists($distFile)) {
+            $this->template = \file_get_contents($distFile);
+        } else {
             throw new InvalidArgumentException(
-              'Template file could not be loaded.'
+                \sprintf(
+                    'Failed to load template "%s"',
+                    $file
+                )
             );
         }
     }
 
-    /**
-     * Sets one or more template variables.
-     *
-     * @param array $values
-     * @param bool  $merge
-     */
-    public function setVar(array $values, $merge = TRUE)
+    public function setVar(array $values, bool $merge = true): void
     {
         if (!$merge || empty($this->values)) {
             $this->values = $values;
         } else {
-            $this->values = array_merge($this->values, $values);
+            $this->values = \array_merge($this->values, $values);
         }
     }
 
-    /**
-     * Renders the template and returns the result.
-     *
-     * @return string
-     */
-    public function render()
+    public function render(): string
     {
-        $keys = array();
+        $keys = [];
 
         foreach ($this->values as $key => $value) {
             $keys[] = $this->openDelimiter . $key . $this->closeDelimiter;
         }
 
-        return str_replace($keys, $this->values, $this->template);
+        return \str_replace($keys, $this->values, $this->template);
     }
 
-    /**
-     * Renders the template and writes the result to a file.
-     *
-     * @param string $target
-     */
-    public function renderTo($target)
+    public function renderTo(string $target): void
     {
-        $fp = @fopen($target, 'wt');
-
-        if ($fp) {
-            fwrite($fp, $this->render());
-            fclose($fp);
-        } else {
-            $error = error_get_last();
-
+        if (!\file_put_contents($target, $this->render())) {
             throw new RuntimeException(
-              sprintf(
-                'Could not write to %s: %s',
-                $target,
-                substr(
-                  $error['message'],
-                  strpos($error['message'], ':') + 2
+                \sprintf(
+                    'Writing rendered result to "%s" failed',
+                    $target
                 )
-              )
             );
         }
     }
 }
-

@@ -52,27 +52,30 @@ trait MagicPropertyTrait
      * Get a part of the ChronosInterface object
      *
      * @param string $name The property name to read.
-     * @return string|int|\DateTimeZone The property value.
+     * @return mixed The property value.
      * @throws \InvalidArgumentException
      */
     public function __get($name)
     {
+        static $formats = [
+            'year' => 'Y',
+            'yearIso' => 'o',
+            'month' => 'n',
+            'day' => 'j',
+            'hour' => 'G',
+            'minute' => 'i',
+            'second' => 's',
+            'micro' => 'u',
+            'microsecond' => 'u',
+            'dayOfWeek' => 'N',
+            'dayOfYear' => 'z',
+            'weekOfYear' => 'W',
+            'daysInMonth' => 't',
+            'timestamp' => 'U',
+        ];
+
         switch (true) {
-            case array_key_exists($name, $formats = [
-                'year' => 'Y',
-                'yearIso' => 'o',
-                'month' => 'n',
-                'day' => 'j',
-                'hour' => 'G',
-                'minute' => 'i',
-                'second' => 's',
-                'micro' => 'u',
-                'dayOfWeek' => 'N',
-                'dayOfYear' => 'z',
-                'weekOfYear' => 'W',
-                'daysInMonth' => 't',
-                'timestamp' => 'U',
-            ]):
+            case isset($formats[$name]):
                 return (int)$this->format($formats[$name]);
 
             case $name === 'weekOfMonth':

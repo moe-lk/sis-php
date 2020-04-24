@@ -46,7 +46,7 @@ abstract class BitbucketDriver extends VcsDriver
      */
     public function initialize()
     {
-        preg_match('#^https?://bitbucket\.org/([^/]+)/([^/]+?)(\.git|/?)$#', $this->url, $match);
+        preg_match('#^https?://bitbucket\.org/([^/]+)/([^/]+?)(\.git|/?)$#i', $this->url, $match);
         $this->owner = $match[1];
         $this->repository = $match[2];
         $this->originUrl = 'bitbucket.org';
@@ -124,50 +124,52 @@ abstract class BitbucketDriver extends VcsDriver
 
             $composer = $this->getBaseComposerInformation($identifier);
 
-            // specials for bitbucket
-            if (!isset($composer['support']['source'])) {
-                $label = array_search(
-                    $identifier,
-                    $this->getTags()
-                ) ?: array_search(
-                    $identifier,
-                    $this->getBranches()
-                ) ?: $identifier;
+            if ($composer) {
+                // specials for bitbucket
+                if (!isset($composer['support']['source'])) {
+                    $label = array_search(
+                        $identifier,
+                        $this->getTags()
+                    ) ?: array_search(
+                        $identifier,
+                        $this->getBranches()
+                    ) ?: $identifier;
 
-                if (array_key_exists($label, $tags = $this->getTags())) {
-                    $hash = $tags[$label];
-                } elseif (array_key_exists($label, $branches = $this->getBranches())) {
-                    $hash = $branches[$label];
+                    if (array_key_exists($label, $tags = $this->getTags())) {
+                        $hash = $tags[$label];
+                    } elseif (array_key_exists($label, $branches = $this->getBranches())) {
+                        $hash = $branches[$label];
+                    }
+
+                    if (! isset($hash)) {
+                        $composer['support']['source'] = sprintf(
+                            'https://%s/%s/%s/src',
+                            $this->originUrl,
+                            $this->owner,
+                            $this->repository
+                        );
+                    } else {
+                        $composer['support']['source'] = sprintf(
+                            'https://%s/%s/%s/src/%s/?at=%s',
+                            $this->originUrl,
+                            $this->owner,
+                            $this->repository,
+                            $hash,
+                            $label
+                        );
+                    }
                 }
-
-                if (! isset($hash)) {
-                    $composer['support']['source'] = sprintf(
-                        'https://%s/%s/%s/src',
+                if (!isset($composer['support']['issues']) && $this->hasIssues) {
+                    $composer['support']['issues'] = sprintf(
+                        'https://%s/%s/%s/issues',
                         $this->originUrl,
                         $this->owner,
                         $this->repository
                     );
-                } else {
-                    $composer['support']['source'] = sprintf(
-                        'https://%s/%s/%s/src/%s/?at=%s',
-                        $this->originUrl,
-                        $this->owner,
-                        $this->repository,
-                        $hash,
-                        $label
-                    );
                 }
-            }
-            if (!isset($composer['support']['issues']) && $this->hasIssues) {
-                $composer['support']['issues'] = sprintf(
-                    'https://%s/%s/%s/issues',
-                    $this->originUrl,
-                    $this->owner,
-                    $this->repository
-                );
-            }
-            if (!isset($composer['homepage'])) {
-                $composer['homepage'] = empty($this->website) ? $this->homeUrl : $this->website;
+                if (!isset($composer['homepage'])) {
+                    $composer['homepage'] = empty($this->website) ? $this->homeUrl : $this->website;
+                }
             }
 
             $this->infoCache[$identifier] = $composer;
@@ -189,8 +191,15 @@ abstract class BitbucketDriver extends VcsDriver
             return $this->fallbackDriver->getFileContent($file, $identifier);
         }
 
+        if (strpos($identifier, '/') !== false) {
+            $branches = $this->getBranches();
+            if (isset($branches[$identifier])) {
+                $identifier = $branches[$identifier];
+            }
+        }
+
         $resource = sprintf(
-            'https://api.bitbucket.org/1.0/repositories/%s/%s/raw/%s/%s',
+            'https://api.bitbucket.org/2.0/repositories/%s/%s/src/%s/%s',
             $this->owner,
             $this->repository,
             $identifier,
@@ -207,6 +216,13 @@ abstract class BitbucketDriver extends VcsDriver
     {
         if ($this->fallbackDriver) {
             return $this->fallbackDriver->getChangeDate($identifier);
+        }
+
+        if (strpos($identifier, '/') !== false) {
+            $branches = $this->getBranches();
+            if (isset($branches[$identifier])) {
+                $identifier = $branches[$identifier];
+            }
         }
 
         $resource = sprintf(
@@ -312,7 +328,7 @@ abstract class BitbucketDriver extends VcsDriver
                 http_build_query(
                     array(
                         'pagelen' => 100,
-                        'fields' => 'values.name,values.target.hash,next',
+                        'fields' => 'values.name,values.target.hash,values.heads,next',
                         'sort' => '-target.date',
                     ),
                     null,
@@ -323,6 +339,11 @@ abstract class BitbucketDriver extends VcsDriver
             while ($hasNext) {
                 $branchData = JsonFile::parseJson($this->getContentsWithOAuthCredentials($resource), $resource);
                 foreach ($branchData['values'] as $data) {
+                    // skip headless branches which seem to be deleted branches that bitbucket nevertheless returns in the API
+                    if ($this->vcsType === 'hg' && empty($data['heads'])) {
+                        continue;
+                    }
+
                     $this->branches[$data['name']] = $data['target']['hash'];
                 }
                 if (empty($branchData['next'])) {
@@ -416,11 +437,16 @@ abstract class BitbucketDriver extends VcsDriver
     protected function getMainBranchData()
     {
         $resource = sprintf(
-            'https://api.bitbucket.org/1.0/repositories/%s/%s/main-branch',
+            'https://api.bitbucket.org/2.0/repositories/%s/%s?fields=mainbranch',
             $this->owner,
             $this->repository
         );
 
-        return JsonFile::parseJson($this->getContentsWithOAuthCredentials($resource), $resource);
+        $data = JsonFile::parseJson($this->getContentsWithOAuthCredentials($resource), $resource);
+        if (isset($data['mainbranch'])) {
+            return $data['mainbranch'];
+        }
+
+        return null;
     }
 }

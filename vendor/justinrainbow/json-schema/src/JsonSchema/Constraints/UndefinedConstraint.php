@@ -72,8 +72,9 @@ class UndefinedConstraint extends Constraint
                                                 // is not set (i.e. don't use $this->getTypeCheck() here).
             $this->checkObject(
                 $value,
-                isset($schema->properties) ? $this->factory->getSchemaStorage()->resolveRefSchema($schema->properties) : $schema,
+                $schema,
                 $path,
+                isset($schema->properties) ? $schema->properties : null,
                 isset($schema->additionalProperties) ? $schema->additionalProperties : null,
                 isset($schema->patternProperties) ? $schema->patternProperties : null,
                 $this->appliedDefaults
@@ -141,7 +142,19 @@ class UndefinedConstraint extends Constraint
             } elseif (isset($schema->required) && !is_array($schema->required)) {
                 // Draft 3 - Required attribute - e.g. "foo": {"type": "string", "required": true}
                 if ($schema->required && $value instanceof self) {
-                    $this->addError($path, 'Is missing and it is required', 'required');
+                    $propertyPaths = $path->getPropertyPaths();
+                    $propertyName = end($propertyPaths);
+                    $this->addError(
+                        $path,
+                        'The property ' . $propertyName . ' is required',
+                        'required'
+                    );
+                }
+            } else {
+                // If the value is both undefined and not required, skip remaining checks
+                // in this method which assume an actual, defined instance when validating.
+                if ($value instanceof self) {
+                    return;
                 }
             }
         }
@@ -236,6 +249,7 @@ class UndefinedConstraint extends Constraint
         if (isset($schema->properties) && LooseTypeCheck::isObject($value)) {
             // $value is an object or assoc array, and properties are defined - treat as an object
             foreach ($schema->properties as $currentProperty => $propertyDefinition) {
+                $propertyDefinition = $this->factory->getSchemaStorage()->resolveRefSchema($propertyDefinition);
                 if (
                     !LooseTypeCheck::propertyExists($value, $currentProperty)
                     && property_exists($propertyDefinition, 'default')
@@ -251,8 +265,15 @@ class UndefinedConstraint extends Constraint
                 }
             }
         } elseif (isset($schema->items) && LooseTypeCheck::isArray($value)) {
+            $items = array();
+            if (LooseTypeCheck::isArray($schema->items)) {
+                $items = $schema->items;
+            } elseif (isset($schema->minItems) && count($value) < $schema->minItems) {
+                $items = array_fill(count($value), $schema->minItems - count($value), $schema->items);
+            }
             // $value is an array, and items are defined - treat as plain array
-            foreach ($schema->items as $currentItem => $itemDefinition) {
+            foreach ($items as $currentItem => $itemDefinition) {
+                $itemDefinition = $this->factory->getSchemaStorage()->resolveRefSchema($itemDefinition);
                 if (
                     !array_key_exists($currentItem, $value)
                     && property_exists($itemDefinition, 'default')

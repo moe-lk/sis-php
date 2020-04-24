@@ -12,11 +12,11 @@
 
 namespace Composer\Package\Loader;
 
-use Composer\Package;
 use Composer\Package\BasePackage;
 use Composer\Semver\Constraint\Constraint;
 use Composer\Package\Version\VersionParser;
 use Composer\Repository\PlatformRepository;
+use Composer\Spdx\SpdxLicenses;
 
 /**
  * @author Jordi Boggiano <j.boggiano@seld.be>
@@ -49,6 +49,10 @@ class ValidatingArrayLoader implements LoaderInterface
         $this->warnings = array();
         $this->config = $config;
 
+        if ($err = self::hasPackageNamingError($config['name'])) {
+            $this->warnings[] = 'Deprecation warning: Your package name '.$err.' Make sure you fix this as Composer 2.0 will error.';
+        }
+
         if ($this->strictName) {
             $this->validateRegex('name', '[A-Za-z0-9][A-Za-z0-9_.-]*/[A-Za-z0-9][A-Za-z0-9_.-]*', true);
         } else {
@@ -64,30 +68,69 @@ class ValidatingArrayLoader implements LoaderInterface
             }
         }
 
+        if (!empty($this->config['config']['platform'])) {
+            foreach ((array) $this->config['config']['platform'] as $key => $platform) {
+                try {
+                    $this->versionParser->normalize($platform);
+                } catch (\Exception $e) {
+                    $this->errors[] = 'config.platform.' . $key . ' : invalid value ('.$platform.'): '.$e->getMessage();
+                }
+            }
+        }
+
         $this->validateRegex('type', '[A-Za-z0-9-]+');
         $this->validateString('target-dir');
         $this->validateArray('extra');
-        $this->validateFlatArray('bin');
+
+        if (isset($this->config['bin'])) {
+            if (is_string($this->config['bin'])) {
+                $this->validateString('bin');
+            } else {
+                $this->validateFlatArray('bin');
+            }
+        }
+
         $this->validateArray('scripts'); // TODO validate event names & listener syntax
         $this->validateString('description');
         $this->validateUrl('homepage');
         $this->validateFlatArray('keywords', '[\p{N}\p{L} ._-]+');
 
-        if (isset($this->config['license'])) {
-            if (is_string($this->config['license'])) {
-                $this->validateRegex('license', '[A-Za-z0-9+. ()-]+');
-            } else {
-                $this->validateFlatArray('license', '[A-Za-z0-9+. ()-]+');
-            }
-        }
-
+        $releaseDate = null;
         $this->validateString('time');
         if (!empty($this->config['time'])) {
             try {
-                $date = new \DateTime($this->config['time'], new \DateTimeZone('UTC'));
+                $releaseDate = new \DateTime($this->config['time'], new \DateTimeZone('UTC'));
             } catch (\Exception $e) {
                 $this->errors[] = 'time : invalid value ('.$this->config['time'].'): '.$e->getMessage();
                 unset($this->config['time']);
+            }
+        }
+
+        // check for license validity on newly updated branches
+        if (isset($this->config['license']) && (!$releaseDate || $releaseDate->getTimestamp() >= strtotime('-8days'))) {
+            if (is_array($this->config['license']) || is_string($this->config['license'])) {
+                $licenses = (array) $this->config['license'];
+
+                // strip proprietary since it's not a valid SPDX identifier, but is accepted by composer
+                foreach ($licenses as $key => $license) {
+                    if ('proprietary' === $license) {
+                        unset($licenses[$key]);
+                    }
+                }
+
+                $licenseValidator = new SpdxLicenses();
+                if (count($licenses) === 1 && !$licenseValidator->validate($licenses) && $licenseValidator->validate(trim($licenses[0]))) {
+                    $this->warnings[] = sprintf(
+                        'License %s must not contain extra spaces, make sure to trim it.',
+                        json_encode($this->config['license'])
+                    );
+                } elseif (array() !== $licenses && !$licenseValidator->validate($licenses)) {
+                    $this->warnings[] = sprintf(
+                        'License %s is not a valid SPDX license identifier, see https://spdx.org/licenses/ if you use an open license.' . PHP_EOL .
+                        'If the software is closed-source, you may use "proprietary" as license.',
+                        json_encode($this->config['license'])
+                    );
+                }
             }
         }
 
@@ -122,7 +165,7 @@ class ValidatingArrayLoader implements LoaderInterface
         }
 
         if ($this->validateArray('support') && !empty($this->config['support'])) {
-            foreach (array('issues', 'forum', 'wiki', 'source', 'email', 'irc', 'docs', 'rss') as $key) {
+            foreach (array('issues', 'forum', 'wiki', 'source', 'email', 'irc', 'docs', 'rss', 'chat') as $key) {
                 if (isset($this->config['support'][$key]) && !is_string($this->config['support'][$key])) {
                     $this->errors[] = 'support.'.$key.' : invalid value, must be a string';
                     unset($this->config['support'][$key]);
@@ -139,7 +182,7 @@ class ValidatingArrayLoader implements LoaderInterface
                 unset($this->config['support']['irc']);
             }
 
-            foreach (array('issues', 'forum', 'wiki', 'source', 'docs') as $key) {
+            foreach (array('issues', 'forum', 'wiki', 'source', 'docs', 'chat') as $key) {
                 if (isset($this->config['support'][$key]) && !$this->filterUrl($this->config['support'][$key])) {
                     $this->warnings[] = 'support.'.$key.' : invalid value ('.$this->config['support'][$key].'), must be an http/https URL';
                     unset($this->config['support'][$key]);
@@ -150,13 +193,41 @@ class ValidatingArrayLoader implements LoaderInterface
             }
         }
 
+        if ($this->validateArray('funding') && !empty($this->config['funding'])) {
+            foreach ($this->config['funding'] as $key => $fundingOption) {
+                if (!is_array($fundingOption)) {
+                    $this->errors[] = 'funding.'.$key.' : should be an array, '.gettype($fundingOption).' given';
+                    unset($this->config['funding'][$key]);
+                    continue;
+                }
+                foreach (array('type', 'url') as $fundingData) {
+                    if (isset($fundingOption[$fundingData]) && !is_string($fundingOption[$fundingData])) {
+                        $this->errors[] = 'funding.'.$key.'.'.$fundingData.' : invalid value, must be a string';
+                        unset($this->config['funding'][$key][$fundingData]);
+                    }
+                }
+                if (isset($fundingOption['url']) && !$this->filterUrl($fundingOption['url'])) {
+                    $this->warnings[] = 'funding.'.$key.'.url : invalid value ('.$fundingOption['url'].'), must be an http/https URL';
+                    unset($this->config['funding'][$key]['url']);
+                }
+                if (empty($this->config['funding'][$key])) {
+                    unset($this->config['funding'][$key]);
+                }
+            }
+            if (empty($this->config['funding'])) {
+                unset($this->config['funding']);
+            }
+        }
+
         $unboundConstraint = new Constraint('=', $this->versionParser->normalize('dev-master'));
         $stableConstraint = new Constraint('=', '1.0.0');
 
         foreach (array_keys(BasePackage::$supportedLinkTypes) as $linkType) {
             if ($this->validateArray($linkType) && isset($this->config[$linkType])) {
                 foreach ($this->config[$linkType] as $package => $constraint) {
-                    if (!preg_match('{^[A-Za-z0-9_./-]+$}', $package)) {
+                    if ($err = self::hasPackageNamingError($package, true)) {
+                        $this->warnings[] = 'Deprecation warning: '.$linkType.'.'.$err.' Make sure you fix this as Composer 2.0 will error.';
+                    } elseif (!preg_match('{^[A-Za-z0-9_./-]+$}', $package)) {
                         $this->warnings[] = $linkType.'.'.$package.' : invalid key, package names must be strings containing only [A-Za-z0-9_./-]';
                     }
                     if (!is_string($constraint)) {
@@ -295,6 +366,38 @@ class ValidatingArrayLoader implements LoaderInterface
     public function getErrors()
     {
         return $this->errors;
+    }
+
+    public static function hasPackageNamingError($name, $isLink = false)
+    {
+        if (preg_match(PlatformRepository::PLATFORM_PACKAGE_REGEX, $name)) {
+            return;
+        }
+
+        if (!preg_match('{^[a-z0-9]([_.-]?[a-z0-9]+)*/[a-z0-9]([_.-]?[a-z0-9]+)*$}iD', $name)) {
+            return $name.' is invalid, it should have a vendor name, a forward slash, and a package name. The vendor and package name can be words separated by -, . or _. The complete name should match "[a-z0-9]([_.-]?[a-z0-9]+)*/[a-z0-9]([_.-]?[a-z0-9]+)*".';
+        }
+
+        $reservedNames = array('nul', 'con', 'prn', 'aux', 'com1', 'com2', 'com3', 'com4', 'com5', 'com6', 'com7', 'com8', 'com9', 'lpt1', 'lpt2', 'lpt3', 'lpt4', 'lpt5', 'lpt6', 'lpt7', 'lpt8', 'lpt9');
+        $bits = explode('/', strtolower($name));
+        if (in_array($bits[0], $reservedNames, true) || in_array($bits[1], $reservedNames, true)) {
+            return $name.' is reserved, package and vendor names can not match any of: '.implode(', ', $reservedNames).'.';
+        }
+
+        if (preg_match('{\.json$}', $name)) {
+            return $name.' is invalid, package names can not end in .json, consider renaming it or perhaps using a -json suffix instead.';
+        }
+
+        if (preg_match('{[A-Z]}', $name)) {
+            if ($isLink) {
+                return $name.' is invalid, it should not contain uppercase characters. Please use '.strtolower($name).' instead.';
+            }
+
+            $suggestName = preg_replace('{(?:([a-z])([A-Z])|([A-Z])([A-Z][a-z]))}', '\\1\\3-\\2\\4', $name);
+            $suggestName = strtolower($suggestName);
+
+            return $name.' is invalid, it should not contain uppercase characters. We suggest using '.$suggestName.' instead.';
+        }
     }
 
     private function validateRegex($property, $regex, $mandatory = false)

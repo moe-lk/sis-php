@@ -1,103 +1,99 @@
 <?php
 /*
- * This file is part of the Comparator package.
+ * This file is part of sebastian/comparator.
  *
  * (c) Sebastian Bergmann <sebastian@phpunit.de>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 namespace SebastianBergmann\Comparator;
 
+use PHPUnit\Framework\TestCase;
+
 /**
- * @coversDefaultClass SebastianBergmann\Comparator\Factory
+ * @covers \SebastianBergmann\Comparator\Factory
  *
+ * @uses \SebastianBergmann\Comparator\Comparator
+ * @uses \SebastianBergmann\Comparator\Factory
+ * @uses \SebastianBergmann\Comparator\ComparisonFailure
  */
-class FactoryTest extends \PHPUnit_Framework_TestCase
+final class FactoryTest extends TestCase
 {
     public function instanceProvider()
     {
-        $tmpfile = tmpfile();
+        $tmpfile = \tmpfile();
 
-        return array(
-            array(NULL, NULL, 'SebastianBergmann\\Comparator\\ScalarComparator'),
-            array(NULL, TRUE, 'SebastianBergmann\\Comparator\\ScalarComparator'),
-            array(TRUE, NULL, 'SebastianBergmann\\Comparator\\ScalarComparator'),
-            array(TRUE, TRUE, 'SebastianBergmann\\Comparator\\ScalarComparator'),
-            array(FALSE, FALSE, 'SebastianBergmann\\Comparator\\ScalarComparator'),
-            array(TRUE, FALSE, 'SebastianBergmann\\Comparator\\ScalarComparator'),
-            array(FALSE, TRUE, 'SebastianBergmann\\Comparator\\ScalarComparator'),
-            array('', '', 'SebastianBergmann\\Comparator\\ScalarComparator'),
-            array('0', '0', 'SebastianBergmann\\Comparator\\ScalarComparator'),
-            array('0', 0, 'SebastianBergmann\\Comparator\\NumericComparator'),
-            array(0, '0', 'SebastianBergmann\\Comparator\\NumericComparator'),
-            array(0, 0, 'SebastianBergmann\\Comparator\\NumericComparator'),
-            array(1.0, 0, 'SebastianBergmann\\Comparator\\DoubleComparator'),
-            array(0, 1.0, 'SebastianBergmann\\Comparator\\DoubleComparator'),
-            array(1.0, 1.0, 'SebastianBergmann\\Comparator\\DoubleComparator'),
-            array(array(1), array(1), 'SebastianBergmann\\Comparator\\ArrayComparator'),
-            array($tmpfile, $tmpfile, 'SebastianBergmann\\Comparator\\ResourceComparator'),
-            array(new \stdClass, new \stdClass, 'SebastianBergmann\\Comparator\\ObjectComparator'),
-            array(new \DateTime, new \DateTime, 'SebastianBergmann\\Comparator\\DateTimeComparator'),
-            array(new \SplObjectStorage, new \SplObjectStorage, 'SebastianBergmann\\Comparator\\SplObjectStorageComparator'),
-            array(new \Exception, new \Exception, 'SebastianBergmann\\Comparator\\ExceptionComparator'),
-            array(new \DOMDocument, new \DOMDocument, 'SebastianBergmann\\Comparator\\DOMNodeComparator'),
+        return [
+            [null, null, ScalarComparator::class],
+            [null, true, ScalarComparator::class],
+            [true, null, ScalarComparator::class],
+            [true, true, ScalarComparator::class],
+            [false, false, ScalarComparator::class],
+            [true, false, ScalarComparator::class],
+            [false, true, ScalarComparator::class],
+            ['', '', ScalarComparator::class],
+            ['0', '0', ScalarComparator::class],
+            ['0', 0, NumericComparator::class],
+            [0, '0', NumericComparator::class],
+            [0, 0, NumericComparator::class],
+            [1.0, 0, DoubleComparator::class],
+            [0, 1.0, DoubleComparator::class],
+            [1.0, 1.0, DoubleComparator::class],
+            [[1], [1], ArrayComparator::class],
+            [$tmpfile, $tmpfile, ResourceComparator::class],
+            [new \stdClass, new \stdClass, ObjectComparator::class],
+            [new \DateTime, new \DateTime, DateTimeComparator::class],
+            [new \SplObjectStorage, new \SplObjectStorage, SplObjectStorageComparator::class],
+            [new \Exception, new \Exception, ExceptionComparator::class],
+            [new \DOMDocument, new \DOMDocument, DOMNodeComparator::class],
             // mixed types
-            array($tmpfile, array(1), 'SebastianBergmann\\Comparator\\TypeComparator'),
-            array(array(1), $tmpfile, 'SebastianBergmann\\Comparator\\TypeComparator'),
-            array($tmpfile, '1', 'SebastianBergmann\\Comparator\\TypeComparator'),
-            array('1', $tmpfile, 'SebastianBergmann\\Comparator\\TypeComparator'),
-            array($tmpfile, new \stdClass, 'SebastianBergmann\\Comparator\\TypeComparator'),
-            array(new \stdClass, $tmpfile, 'SebastianBergmann\\Comparator\\TypeComparator'),
-            array(new \stdClass, array(1), 'SebastianBergmann\\Comparator\\TypeComparator'),
-            array(array(1), new \stdClass, 'SebastianBergmann\\Comparator\\TypeComparator'),
-            array(new \stdClass, '1', 'SebastianBergmann\\Comparator\\TypeComparator'),
-            array('1', new \stdClass, 'SebastianBergmann\\Comparator\\TypeComparator'),
-            array(new ClassWithToString, '1', 'SebastianBergmann\\Comparator\\ScalarComparator'),
-            array('1', new ClassWithToString, 'SebastianBergmann\\Comparator\\ScalarComparator'),
-            array(1.0, new \stdClass, 'SebastianBergmann\\Comparator\\TypeComparator'),
-            array(new \stdClass, 1.0, 'SebastianBergmann\\Comparator\\TypeComparator'),
-            array(1.0, array(1), 'SebastianBergmann\\Comparator\\TypeComparator'),
-            array(array(1), 1.0, 'SebastianBergmann\\Comparator\\TypeComparator'),
-        );
+            [$tmpfile, [1], TypeComparator::class],
+            [[1], $tmpfile, TypeComparator::class],
+            [$tmpfile, '1', TypeComparator::class],
+            ['1', $tmpfile, TypeComparator::class],
+            [$tmpfile, new \stdClass, TypeComparator::class],
+            [new \stdClass, $tmpfile, TypeComparator::class],
+            [new \stdClass, [1], TypeComparator::class],
+            [[1], new \stdClass, TypeComparator::class],
+            [new \stdClass, '1', TypeComparator::class],
+            ['1', new \stdClass, TypeComparator::class],
+            [new ClassWithToString, '1', ScalarComparator::class],
+            ['1', new ClassWithToString, ScalarComparator::class],
+            [1.0, new \stdClass, TypeComparator::class],
+            [new \stdClass, 1.0, TypeComparator::class],
+            [1.0, [1], TypeComparator::class],
+            [[1], 1.0, TypeComparator::class],
+        ];
     }
 
     /**
      * @dataProvider instanceProvider
-     * @covers       ::getComparatorFor
-     * @covers       ::__construct
      */
-    public function testGetComparatorFor($a, $b, $expected)
+    public function testGetComparatorFor($a, $b, $expected): void
     {
         $factory = new Factory;
-        $actual = $factory->getComparatorFor($a, $b);
+        $actual  = $factory->getComparatorFor($a, $b);
         $this->assertInstanceOf($expected, $actual);
     }
 
-    /**
-     * @covers ::register
-     */
-    public function testRegister()
+    public function testCustomComparatorCanBeRegistered(): void
     {
         $comparator = new TestClassComparator;
 
         $factory = new Factory;
         $factory->register($comparator);
 
-        $a = new TestClass;
-        $b = new TestClass;
-        $expected = 'SebastianBergmann\\Comparator\\TestClassComparator';
-        $actual = $factory->getComparatorFor($a, $b);
+        $a        = new TestClass;
+        $b        = new TestClass;
+        $expected = TestClassComparator::class;
+        $actual   = $factory->getComparatorFor($a, $b);
 
         $factory->unregister($comparator);
         $this->assertInstanceOf($expected, $actual);
     }
 
-    /**
-     * @covers ::unregister
-     */
-    public function testUnregister()
+    public function testCustomComparatorCanBeUnregistered(): void
     {
         $comparator = new TestClassComparator;
 
@@ -105,11 +101,33 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
         $factory->register($comparator);
         $factory->unregister($comparator);
 
-        $a = new TestClass;
-        $b = new TestClass;
-        $expected = 'SebastianBergmann\\Comparator\\ObjectComparator';
-        $actual = $factory->getComparatorFor($a, $b);
+        $a        = new TestClass;
+        $b        = new TestClass;
+        $expected = ObjectComparator::class;
+        $actual   = $factory->getComparatorFor($a, $b);
 
         $this->assertInstanceOf($expected, $actual);
+    }
+
+    public function testCustomComparatorsCanBeReset(): void
+    {
+        $comparator = new TestClassComparator;
+
+        $factory = new Factory;
+        $factory->register($comparator);
+        $factory->reset();
+
+        $a        = new TestClass;
+        $b        = new TestClass;
+        $expected = ObjectComparator::class;
+        $actual   = $factory->getComparatorFor($a, $b);
+
+        $this->assertInstanceOf($expected, $actual);
+    }
+
+    public function testIsSingleton(): void
+    {
+        $f = Factory::getInstance();
+        $this->assertSame($f, Factory::getInstance());
     }
 }

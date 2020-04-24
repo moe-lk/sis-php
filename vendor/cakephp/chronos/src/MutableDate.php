@@ -44,8 +44,8 @@ use DateTimeZone;
  * @property-read bool $dst daylight savings time indicator, true if DST, false otherwise
  * @property-read bool $local checks if the timezone is local, true if local, false otherwise
  * @property-read bool $utc checks if the timezone is UTC, true if UTC, false otherwise
- * @property-read string  $timezoneName
- * @property-read string  $tzName
+ * @property-read string $timezoneName
+ * @property-read string $tzName
  */
 class MutableDate extends DateTime implements ChronosInterface
 {
@@ -76,14 +76,15 @@ class MutableDate extends DateTime implements ChronosInterface
      * timezone will always be UTC. Normalizing the timezone allows for
      * subtraction/addition to have deterministic results.
      *
-     * @param string|null $time Fixed or relative time
+     * @param string|null|\DateTimeInterface $time Fixed or relative time
      */
     public function __construct($time = 'now')
     {
         $tz = new DateTimeZone('UTC');
-        if (static::$testNow === null) {
-            $time = $this->stripTime($time);
 
+        $testNow = Chronos::getTestNow();
+        if ($testNow === null) {
+            $time = $this->stripTime($time);
             parent::__construct($time, $tz);
 
             return;
@@ -98,16 +99,19 @@ class MutableDate extends DateTime implements ChronosInterface
             return;
         }
 
-        $testInstance = clone static::getTestNow();
+        $testNow = clone $testNow;
         if ($relative) {
-            $testInstance = $testInstance->modify($time);
+            $time = $this->stripRelativeTime($time);
+            if (strlen($time) > 0) {
+                $testNow = $testNow->modify($time);
+            }
         }
 
-        if ($tz !== $testInstance->getTimezone()) {
-            $testInstance = $testInstance->setTimezone($tz === null ? date_default_timezone_get() : $tz);
+        if ($tz !== $testNow->getTimezone()) {
+            $testNow = $testNow->setTimezone($tz === null ? date_default_timezone_get() : $tz);
         }
 
-        $time = $testInstance->format('Y-m-d 00:00:00');
+        $time = $testNow->format('Y-m-d 00:00:00');
         parent::__construct($time, $tz);
     }
 
@@ -129,8 +133,8 @@ class MutableDate extends DateTime implements ChronosInterface
     public function __debugInfo()
     {
         $properties = [
+            'hasFixedNow' => static::hasTestNow(),
             'date' => $this->format('Y-m-d'),
-            'hasFixedNow' => isset(self::$testNow)
         ];
 
         return $properties;

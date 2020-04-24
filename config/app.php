@@ -217,7 +217,7 @@ return [
             'driver' => 'Cake\Database\Driver\Mysql',
             'persistent' => false,
             'persistent' => false,
-            'host' => 'openemis-mysql-2',
+            'host' => 'sis-mysql',
             /**
              * CakePHP will use the default DB port based on the driver selected
              * MySQL on MAMP uses port 8889, MAMP users will want to uncomment

@@ -13,7 +13,6 @@ use JsonSchema\Entity\JsonPointer;
 use JsonSchema\Exception\InvalidArgumentException;
 use JsonSchema\Exception\InvalidSchemaException;
 use JsonSchema\Exception\RuntimeException;
-use JsonSchema\SchemaStorage;
 use JsonSchema\Validator;
 
 /**
@@ -35,14 +34,15 @@ class SchemaConstraint extends Constraint
             // passed schema
             $validationSchema = $schema;
         } elseif ($this->getTypeCheck()->propertyExists($element, $this->inlineSchemaProperty)) {
-            $inlineSchema = $this->getTypeCheck()->propertyGet($element, $this->inlineSchemaProperty);
-            if (is_array($inlineSchema)) {
-                $inlineSchema = json_decode(json_encode($inlineSchema));
-            }
             // inline schema
-            $validationSchema = $inlineSchema;
+            $validationSchema = $this->getTypeCheck()->propertyGet($element, $this->inlineSchemaProperty);
         } else {
             throw new InvalidArgumentException('no schema found to verify against');
+        }
+
+        // cast array schemas to object
+        if (is_array($validationSchema)) {
+            $validationSchema = BaseConstraint::arrayToObjectRecursive($validationSchema);
         }
 
         // validate schema against whatever is defined in $validationSchema->$schema. If no
