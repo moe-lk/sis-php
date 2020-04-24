@@ -19,6 +19,7 @@ use Composer\Util\ProcessExecutor;
 use Composer\Repository\ArrayRepository;
 use Composer\Package\Dumper\ArrayDumper;
 use Composer\Package\Loader\ArrayLoader;
+use Composer\Plugin\PluginInterface;
 use Composer\Util\Git as GitUtil;
 use Composer\IO\IOInterface;
 use Seld\JsonLint\ParsingException;
@@ -102,7 +103,7 @@ class Locker
     }
 
     /**
-     * Checks whether locker were been locked (lockfile found).
+     * Checks whether locker has been locked (lockfile found).
      *
      * @return bool
      */
@@ -289,7 +290,7 @@ class Locker
     {
         $lock = array(
             '_readme' => array('This file locks the dependencies of your project to a known state',
-                               'Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file',
+                               'Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies',
                                'This file is @gener'.'ated automatically', ),
             'content-hash' => $this->contentHash,
             'packages' => null,
@@ -322,6 +323,7 @@ class Locker
         if ($platformOverrides) {
             $lock['platform-overrides'] = $platformOverrides;
         }
+        $lock['plugin-api-version'] = PluginInterface::PLUGIN_API_VERSION;
 
         if (empty($lock['packages']) && empty($lock['packages-dev']) && empty($lock['platform']) && empty($lock['platform-dev'])) {
             if ($this->lockFile->exists()) {
@@ -360,7 +362,8 @@ class Locker
 
             if (!$name || !$version) {
                 throw new \LogicException(sprintf(
-                    'Package "%s" has no version or name and can not be locked', $package
+                    'Package "%s" has no version or name and can not be locked',
+                    $package
                 ));
             }
 
@@ -432,6 +435,6 @@ class Locker
             }
         }
 
-        return $datetime ? $datetime->format('Y-m-d H:i:s') : null;
+        return $datetime ? $datetime->format(DATE_RFC3339) : null;
     }
 }

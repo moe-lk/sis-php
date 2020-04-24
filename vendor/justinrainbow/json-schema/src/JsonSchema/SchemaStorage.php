@@ -2,15 +2,15 @@
 
 namespace JsonSchema;
 
+use JsonSchema\Constraints\BaseConstraint;
 use JsonSchema\Entity\JsonPointer;
 use JsonSchema\Exception\UnresolvableJsonPointerException;
-use JsonSchema\Iterator\ObjectIterator;
 use JsonSchema\Uri\UriResolver;
 use JsonSchema\Uri\UriRetriever;
 
 class SchemaStorage implements SchemaStorageInterface
 {
-    const INTERNAL_PROVIDED_SCHEMA_URI = 'internal://provided-schema';
+    const INTERNAL_PROVIDED_SCHEMA_URI = 'internal://provided-schema/';
 
     protected $uriRetriever;
     protected $uriResolver;
@@ -51,14 +51,59 @@ class SchemaStorage implements SchemaStorageInterface
             // schemas do not have an associated URI when passed via Validator::validate().
             $schema = $this->uriRetriever->retrieve($id);
         }
-        $objectIterator = new ObjectIterator($schema);
-        foreach ($objectIterator as $toResolveSchema) {
-            if (property_exists($toResolveSchema, '$ref') && is_string($toResolveSchema->{'$ref'})) {
-                $jsonPointer = new JsonPointer($this->uriResolver->resolve($toResolveSchema->{'$ref'}, $id));
-                $toResolveSchema->{'$ref'} = (string) $jsonPointer;
+
+        // cast array schemas to object
+        if (is_array($schema)) {
+            $schema = BaseConstraint::arrayToObjectRecursive($schema);
+        }
+
+        // workaround for bug in draft-03 & draft-04 meta-schemas (id & $ref defined with incorrect format)
+        // see https://github.com/json-schema-org/JSON-Schema-Test-Suite/issues/177#issuecomment-293051367
+        if (is_object($schema) && property_exists($schema, 'id')) {
+            if ($schema->id == 'http://json-schema.org/draft-04/schema#') {
+                $schema->properties->id->format = 'uri-reference';
+            } elseif ($schema->id == 'http://json-schema.org/draft-03/schema#') {
+                $schema->properties->id->format = 'uri-reference';
+                $schema->properties->{'$ref'}->format = 'uri-reference';
             }
         }
+
+        // resolve references
+        $this->expandRefs($schema, $id);
+
         $this->schemas[$id] = $schema;
+    }
+
+    /**
+     * Recursively resolve all references against the provided base
+     *
+     * @param mixed  $schema
+     * @param string $base
+     */
+    private function expandRefs(&$schema, $base = null)
+    {
+        if (!is_object($schema)) {
+            if (is_array($schema)) {
+                foreach ($schema as &$member) {
+                    $this->expandRefs($member, $base);
+                }
+            }
+
+            return;
+        }
+
+        if (property_exists($schema, 'id') && is_string($schema->id) && $base != $schema->id) {
+            $base = $this->uriResolver->resolve($schema->id, $base);
+        }
+
+        if (property_exists($schema, '$ref') && is_string($schema->{'$ref'})) {
+            $refPointer = new JsonPointer($this->uriResolver->resolve($schema->{'$ref'}, $base));
+            $schema->{'$ref'} = (string) $refPointer;
+        }
+
+        foreach ($schema as &$member) {
+            $this->expandRefs($member, $base);
+        }
     }
 
     /**

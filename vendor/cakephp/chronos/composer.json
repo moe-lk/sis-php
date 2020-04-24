@@ -26,24 +26,23 @@
     "source": "https://github.com/cakephp/chronos"
   },
   "require": {
-    "php": ">=5.5.9"
+    "php": ">=5.6"
   },
   "require-dev": {
-    "phpunit/phpunit": "<6.0",
+    "phpunit/phpunit": "<6.0 || ^7.0",
     "athletic/athletic": "~0.1",
-    "cakephp/cakephp-codesniffer": "~2.3",
-    "phpbench/phpbench": "@dev",
-    "phpstan/phpstan": "^0.6.4"
+    "cakephp/cakephp-codesniffer": "^3.0",
+    "phpbench/phpbench": "@dev"
   },
   "autoload": {
     "psr-4": {
-      "Cake\\Chronos\\": "src"
+      "Cake\\Chronos\\": "src/"
     },
     "files": ["src/carbon_compat.php"]
   },
   "autoload-dev": {
     "psr-4": {
-      "Cake\\Chronos\\Test\\": "tests"
+      "Cake\\Chronos\\Test\\": "tests/"
     },
     "files": ["tests/TestCase.php"]
   },
@@ -57,6 +56,7 @@
     "cs-check": "phpcs",
     "cs-fix": "phpcbf",
     "bench": "phpbench run",
-    "phpstan": "phpstan analyze -c phpstan.neon -l 3 src tests"
+    "phpstan-setup": "cp composer.json composer.backup && composer require --dev phpstan/phpstan-shim:^0.11 && mv composer.backup composer.json",
+    "phpstan": "phpstan analyze -c phpstan.neon -l 3 src/"
   }
 }

@@ -11,6 +11,8 @@
  */
 namespace Cake\Chronos\Traits;
 
+use DateTimeInterface;
+
 /**
  * A trait for freezing the time aspect of a DateTime.
  *
@@ -18,7 +20,6 @@ namespace Cake\Chronos\Traits;
  */
 trait FrozenTimeTrait
 {
-
     use RelativeKeywordTrait;
 
     /**
@@ -26,17 +27,20 @@ trait FrozenTimeTrait
      *
      * Used to ensure constructed objects always lack time.
      *
-     * @param string|int $time The input time. Integer values will be assumed
+     * @param string|int|\DateTimeInterface $time The input time. Integer values will be assumed
      *   to be in UTC. The 'now' and '' values will use the current local time.
      * @return string The date component of $time.
      */
     protected function stripTime($time)
     {
-        if (substr($time, 0, 1) === '@') {
-            return gmdate('Y-m-d 00:00:00', substr($time, 1));
-        }
         if (is_int($time) || ctype_digit($time)) {
             return gmdate('Y-m-d 00:00:00', $time);
+        }
+        if ($time instanceof DateTimeInterface) {
+            $time = $time->format('Y-m-d 00:00:00');
+        }
+        if (substr($time, 0, 1) === '@') {
+            return gmdate('Y-m-d 00:00:00', substr($time, 1));
         }
         if ($time === null || $time === 'now' || $time === '') {
             return date('Y-m-d 00:00:00');
@@ -46,6 +50,17 @@ trait FrozenTimeTrait
         }
 
         return preg_replace('/\d{1,2}:\d{1,2}:\d{1,2}(?:\.\d+)?/', '00:00:00', $time);
+    }
+
+    /**
+     * Remove time components from strtotime relative strings.
+     *
+     * @param string $time The input expression
+     * @return string The output expression with no time modifiers.
+     */
+    protected function stripRelativeTime($time)
+    {
+        return preg_replace('/([-+]\s*\d+\s(?:minutes|seconds|hours|microseconds))/', '', $time);
     }
 
     /**
@@ -61,6 +76,10 @@ trait FrozenTimeTrait
      */
     public function setTime($hours, $minutes, $seconds = null, $microseconds = null)
     {
+        if (CHRONOS_SUPPORTS_MICROSECONDS) {
+            return parent::setTime(0, 0, 0, 0);
+        }
+
         return parent::setTime(0, 0, 0);
     }
 

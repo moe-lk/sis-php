@@ -17,15 +17,21 @@ use Cake\Core\Configure;
 use Cake\Datasource\ConnectionManager;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
+use Migrations\TableFinderTrait;
 use Migrations\Util\UtilTrait;
 
 /**
  * Task class for generating migration snapshot files.
+ *
+ * @property \Bake\Shell\Task\BakeTemplateTask $BakeTemplate
+ * @property \Bake\Shell\Task\TestTask $Test
  */
 class MigrationSnapshotTask extends SimpleMigrationTask
 {
-    use UtilTrait;
+
     use SnapshotTrait;
+    use TableFinderTrait;
+    use UtilTrait;
 
     /**
      * {@inheritDoc}
@@ -99,6 +105,7 @@ class MigrationSnapshotTask extends SimpleMigrationTask
     public function getCollection($connection)
     {
         $connection = ConnectionManager::get($connection);
+
         return $connection->schemaCollection();
     }
 

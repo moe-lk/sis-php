@@ -21,7 +21,7 @@ Install this plugin using `composer` from your CakePHP V3 Project ROOT directory
 "repositories":[
         {
             "type": "git",
-            "url": "git@bitbucket.org:korditpteltd/kd-cakephp-restful.git"
+            "url": "git@github.com:mohamednizar/kd-cakephp-restful.git"
         }
     ]
 ```
@@ -47,7 +47,7 @@ Install this plugin using `composer` from your CakePHP V3 Project ROOT directory
     "repositories":[
         {
             "type": "git",
-            "url": "git@bitbucket.org:korditpteltd/kd-cakephp-restful.git"
+            "url": "git@github.com:mohamednizar/kd-cakephp-restful.git"
         }
     ]
 }

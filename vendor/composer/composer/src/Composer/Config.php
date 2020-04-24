@@ -16,6 +16,7 @@ use Composer\Config\ConfigSourceInterface;
 use Composer\Downloader\TransportException;
 use Composer\IO\IOInterface;
 use Composer\Util\Platform;
+use Composer\Util\ProcessExecutor;
 
 /**
  * @author Jordi Boggiano <j.boggiano@seld.be>
@@ -60,18 +61,22 @@ class Config
         'platform' => array(),
         'archive-format' => 'tar',
         'archive-dir' => '.',
+        'htaccess-protect' => true,
+        'use-github-api' => true,
+        'lock' => true,
         // valid keys without defaults (auth config stuff):
         // bitbucket-oauth
         // github-oauth
         // gitlab-oauth
         // gitlab-token
         // http-basic
+        // bearer
     );
 
     public static $defaultRepositories = array(
         'packagist.org' => array(
             'type' => 'composer',
-            'url' => 'https?://packagist.org',
+            'url' => 'https?://repo.packagist.org',
             'allow_ssl_downgrade' => true,
         ),
     );
@@ -129,7 +134,7 @@ class Config
         // override defaults with given config
         if (!empty($config['config']) && is_array($config['config'])) {
             foreach ($config['config'] as $key => $val) {
-                if (in_array($key, array('bitbucket-oauth', 'github-oauth', 'gitlab-oauth', 'gitlab-token', 'http-basic')) && isset($this->config[$key])) {
+                if (in_array($key, array('bitbucket-oauth', 'github-oauth', 'gitlab-oauth', 'gitlab-token', 'http-basic', 'bearer')) && isset($this->config[$key])) {
                     $this->config[$key] = array_merge($this->config[$key], $val);
                 } elseif ('preferred-install' === $key && isset($this->config[$key])) {
                     if (is_array($val) || is_array($this->config[$key])) {
@@ -228,6 +233,13 @@ class Config
 
                 return (($flags & self::RELATIVE_PATHS) == self::RELATIVE_PATHS) ? $val : $this->realpath($val);
 
+            case 'htaccess-protect':
+                $value = $this->getComposerEnv('COMPOSER_HTACCESS_PROTECT');
+                if (false === $value) {
+                    $value = $this->config[$key];
+                }
+                return $value !== 'false' && (bool) $value;
+
             case 'cache-ttl':
                 return (int) $this->config[$key];
 
@@ -243,9 +255,11 @@ class Config
                         case 'g':
                             $size *= 1024;
                             // intentional fallthrough
+                            // no break
                         case 'm':
                             $size *= 1024;
                             // intentional fallthrough
+                            // no break
                         case 'k':
                             $size *= 1024;
                             break;
@@ -313,10 +327,12 @@ class Config
 
             case 'disable-tls':
                 return $this->config[$key] !== 'false' && (bool) $this->config[$key];
-
             case 'secure-http':
                 return $this->config[$key] !== 'false' && (bool) $this->config[$key];
-
+            case 'use-github-api':
+                return $this->config[$key] !== 'false' && (bool) $this->config[$key];
+            case 'lock':
+                return $this->config[$key] !== 'false' && (bool) $this->config[$key];
             default:
                 if (!isset($this->config[$key])) {
                     return null;
@@ -447,5 +463,21 @@ class Config
                 $this->warnedHosts[$host] = true;
             }
         }
+    }
+
+    /**
+     * Used by long-running custom scripts in composer.json
+     *
+     * "scripts": {
+     *   "watch": [
+     *     "Composer\\Config::disableProcessTimeout",
+     *     "vendor/bin/long-running-script --watch"
+     *   ]
+     * }
+     */
+    public static function disableProcessTimeout()
+    {
+        // Override global timeout set earlier by environment or config
+        ProcessExecutor::setTimeout(0);
     }
 }

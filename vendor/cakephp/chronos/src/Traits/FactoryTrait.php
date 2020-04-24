@@ -49,7 +49,7 @@ trait FactoryTrait
      * ChronosInterface::parse('Monday next week')->fn() rather than
      * (new Chronos('Monday next week'))->fn()
      *
-     * @param string $time The strtotime compatible string to parse
+     * @param \DateTimeInterface|string $time The strtotime compatible string to parse
      * @param \DateTimeZone|string|null $tz The DateTimeZone object or timezone name.
      * @return static
      */
@@ -109,7 +109,7 @@ trait FactoryTrait
      */
     public static function maxValue()
     {
-        return static::createFromTimestamp(PHP_INT_MAX);
+        return static::createFromTimestampUTC(PHP_INT_MAX);
     }
 
     /**
@@ -121,7 +121,7 @@ trait FactoryTrait
     {
         $max = PHP_INT_SIZE === 4 ? PHP_INT_MAX : PHP_INT_MAX / 10;
 
-        return static::createFromTimestamp(~$max);
+        return static::createFromTimestampUTC(~$max);
     }
 
     /**
@@ -218,6 +218,61 @@ trait FactoryTrait
         static::$_lastErrors = $errors;
 
         return $dt;
+    }
+
+    /**
+     * Creates a ChronosInterface instance from an array of date and time values.
+     *
+     * The 'year', 'month' and 'day' values must all be set for a date. The time
+     * values all default to 0.
+     *
+     * The 'timezone' value can be any format supported by `\DateTimeZone`.
+     *
+     * Allowed values:
+     *  - year
+     *  - month
+     *  - day
+     *  - hour
+     *  - minute
+     *  - second
+     *  - microsecond
+     *  - meridian ('am' or 'pm')
+     *  - timezone
+     *
+     * @param (int|string)[] $values Array of date and time values.
+     * @return static
+     */
+    public static function createFromArray($values)
+    {
+        $values += ['hour' => 0, 'minute' => 0, 'second' => 0, 'microsecond' => 0, 'timezone' => null];
+
+        $formatted = '';
+        if (
+            isset($values['year'], $values['month'], $values['day']) &&
+            (
+                is_numeric($values['year']) &&
+                is_numeric($values['month']) &&
+                is_numeric($values['day'])
+            )
+        ) {
+            $formatted .= sprintf('%04d-%02d-%02d ', $values['year'], $values['month'], $values['day']);
+        }
+
+        if (isset($values['meridian']) && (int)$values['hour'] === 12) {
+            $values['hour'] = 0;
+        }
+        if (isset($values['meridian'])) {
+            $values['hour'] = strtolower($values['meridian']) === 'am' ? $values['hour'] : $values['hour'] + 12;
+        }
+        $formatted .= sprintf(
+            '%02d:%02d:%02d.%06d',
+            $values['hour'],
+            $values['minute'],
+            $values['second'],
+            $values['microsecond']
+        );
+
+        return static::parse($formatted, $values['timezone']);
     }
 
     /**

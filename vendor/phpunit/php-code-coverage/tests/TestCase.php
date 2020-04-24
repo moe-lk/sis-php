@@ -1,27 +1,21 @@
-<?php
+<?php declare(strict_types=1);
 /*
- * This file is part of the php-code-coverage package.
+ * This file is part of phpunit/php-code-coverage.
  *
  * (c) Sebastian Bergmann <sebastian@phpunit.de>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 namespace SebastianBergmann\CodeCoverage;
 
-use SebastianBergmann\CodeCoverage\Driver\Xdebug;
+use SebastianBergmann\CodeCoverage\Driver\Driver;
 
-/**
- * Abstract base class for test case classes.
- *
- * @since Class available since Release 1.0.0
- */
-abstract class TestCase extends \PHPUnit_Framework_TestCase
+abstract class TestCase extends \PHPUnit\Framework\TestCase
 {
     protected static $TEST_TMP_PATH;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         self::$TEST_TMP_PATH = TEST_FILES_PATH . 'tmp';
     }
@@ -43,8 +37,8 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
                     25 => -2,
                     29 => -1,
                     31 => -1,
-                    32 => -2
-                ]
+                    32 => -2,
+                ],
             ],
             [
                 TEST_FILES_PATH . 'BankAccount.php' => [
@@ -52,7 +46,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
                     13 => 1,
                     16 => 1,
                     29 => 1,
-                ]
+                ],
             ],
             [
                 TEST_FILES_PATH . 'BankAccount.php' => [
@@ -60,7 +54,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
                     13 => 1,
                     16 => 1,
                     22 => 1,
-                ]
+                ],
             ],
             [
                 TEST_FILES_PATH . 'BankAccount.php' => [
@@ -73,17 +67,16 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
                     24 => 1,
                     29 => 1,
                     31 => 1,
-                ]
-            ]
+                ],
+            ],
         ];
     }
 
-    protected function getCoverageForBankAccount()
+    protected function getCoverageForBankAccount(): CodeCoverage
     {
         $data = $this->getXdebugDataForBankAccount();
-        require_once TEST_FILES_PATH . '/BankAccountTest.php';
 
-        $stub = $this->createMock(Xdebug::class);
+        $stub = $this->createMock(Driver::class);
 
         $stub->expects($this->any())
             ->method('stop')
@@ -106,7 +99,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
 
         $coverage->stop(
             true,
-            [TEST_FILES_PATH . 'BankAccount.php' => range(6, 9)]
+            [TEST_FILES_PATH . 'BankAccount.php' => \range(6, 9)]
         );
 
         $coverage->start(
@@ -115,7 +108,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
 
         $coverage->stop(
             true,
-            [TEST_FILES_PATH . 'BankAccount.php' => range(27, 32)]
+            [TEST_FILES_PATH . 'BankAccount.php' => \range(27, 32)]
         );
 
         $coverage->start(
@@ -124,7 +117,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
 
         $coverage->stop(
             true,
-            [TEST_FILES_PATH . 'BankAccount.php' => range(20, 25)]
+            [TEST_FILES_PATH . 'BankAccount.php' => \range(20, 25)]
         );
 
         $coverage->start(
@@ -134,22 +127,22 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
         $coverage->stop(
             true,
             [
-                TEST_FILES_PATH . 'BankAccount.php' => array_merge(
-                    range(6, 9),
-                    range(20, 25),
-                    range(27, 32)
-                )
+                TEST_FILES_PATH . 'BankAccount.php' => \array_merge(
+                    \range(6, 9),
+                    \range(20, 25),
+                    \range(27, 32)
+                ),
             ]
         );
 
         return $coverage;
     }
 
-    protected function getCoverageForBankAccountForFirstTwoTests()
+    protected function getCoverageForBankAccountForFirstTwoTests(): CodeCoverage
     {
         $data = $this->getXdebugDataForBankAccount();
 
-        $stub = $this->createMock(Xdebug::class);
+        $stub = $this->createMock(Driver::class);
 
         $stub->expects($this->any())
             ->method('stop')
@@ -170,7 +163,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
 
         $coverage->stop(
             true,
-            [TEST_FILES_PATH . 'BankAccount.php' => range(6, 9)]
+            [TEST_FILES_PATH . 'BankAccount.php' => \range(6, 9)]
         );
 
         $coverage->start(
@@ -179,7 +172,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
 
         $coverage->stop(
             true,
-            [TEST_FILES_PATH . 'BankAccount.php' => range(27, 32)]
+            [TEST_FILES_PATH . 'BankAccount.php' => \range(27, 32)]
         );
 
         return $coverage;
@@ -189,7 +182,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
     {
         $data = $this->getXdebugDataForBankAccount();
 
-        $stub = $this->createMock(Xdebug::class);
+        $stub = $this->createMock(Driver::class);
 
         $stub->expects($this->any())
             ->method('stop')
@@ -209,7 +202,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
 
         $coverage->stop(
             true,
-            [TEST_FILES_PATH . 'BankAccount.php' => range(20, 25)]
+            [TEST_FILES_PATH . 'BankAccount.php' => \range(20, 25)]
         );
 
         $coverage->start(
@@ -219,24 +212,24 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
         $coverage->stop(
             true,
             [
-                TEST_FILES_PATH . 'BankAccount.php' => array_merge(
-                    range(6, 9),
-                    range(20, 25),
-                    range(27, 32)
-                )
+                TEST_FILES_PATH . 'BankAccount.php' => \array_merge(
+                    \range(6, 9),
+                    \range(20, 25),
+                    \range(27, 32)
+                ),
             ]
         );
 
         return $coverage;
     }
 
-    protected function getExpectedDataArrayForBankAccount()
+    protected function getExpectedDataArrayForBankAccount(): array
     {
         return [
             TEST_FILES_PATH . 'BankAccount.php' => [
                 8 => [
                     0 => 'BankAccountTest::testBalanceIsInitiallyZero',
-                    1 => 'BankAccountTest::testDepositWithdrawMoney'
+                    1 => 'BankAccountTest::testDepositWithdrawMoney',
                 ],
                 9  => null,
                 13 => [],
@@ -246,7 +239,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
                 18 => [],
                 22 => [
                     0 => 'BankAccountTest::testBalanceCannotBecomeNegative2',
-                    1 => 'BankAccountTest::testDepositWithdrawMoney'
+                    1 => 'BankAccountTest::testDepositWithdrawMoney',
                 ],
                 24 => [
                     0 => 'BankAccountTest::testDepositWithdrawMoney',
@@ -254,17 +247,51 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
                 25 => null,
                 29 => [
                     0 => 'BankAccountTest::testBalanceCannotBecomeNegative',
-                    1 => 'BankAccountTest::testDepositWithdrawMoney'
+                    1 => 'BankAccountTest::testDepositWithdrawMoney',
                 ],
                 31 => [
-                    0 => 'BankAccountTest::testDepositWithdrawMoney'
+                    0 => 'BankAccountTest::testDepositWithdrawMoney',
                 ],
-                32 => null
-            ]
+                32 => null,
+            ],
         ];
     }
 
-    protected function getCoverageForFileWithIgnoredLines()
+    protected function getExpectedDataArrayForBankAccountInReverseOrder(): array
+    {
+        return [
+            TEST_FILES_PATH . 'BankAccount.php' => [
+                8 => [
+                    0 => 'BankAccountTest::testDepositWithdrawMoney',
+                    1 => 'BankAccountTest::testBalanceIsInitiallyZero',
+                ],
+                9  => null,
+                13 => [],
+                14 => [],
+                15 => [],
+                16 => [],
+                18 => [],
+                22 => [
+                    0 => 'BankAccountTest::testBalanceCannotBecomeNegative2',
+                    1 => 'BankAccountTest::testDepositWithdrawMoney',
+                ],
+                24 => [
+                    0 => 'BankAccountTest::testDepositWithdrawMoney',
+                ],
+                25 => null,
+                29 => [
+                    0 => 'BankAccountTest::testDepositWithdrawMoney',
+                    1 => 'BankAccountTest::testBalanceCannotBecomeNegative',
+                ],
+                31 => [
+                    0 => 'BankAccountTest::testDepositWithdrawMoney',
+                ],
+                32 => null,
+            ],
+        ];
+    }
+
+    protected function getCoverageForFileWithIgnoredLines(): CodeCoverage
     {
         $filter = new Filter;
         $filter->addFileToWhitelist(TEST_FILES_PATH . 'source_with_ignore.php');
@@ -280,9 +307,9 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
         return $coverage;
     }
 
-    protected function setUpXdebugStubForFileWithIgnoredLines()
+    protected function setUpXdebugStubForFileWithIgnoredLines(): Driver
     {
-        $stub = $this->createMock(Xdebug::class);
+        $stub = $this->createMock(Driver::class);
 
         $stub->expects($this->any())
             ->method('stop')
@@ -292,15 +319,15 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
                         2 => 1,
                         4 => -1,
                         6 => -1,
-                        7 => 1
-                    ]
+                        7 => 1,
+                    ],
                 ]
             ));
 
         return $stub;
     }
 
-    protected function getCoverageForClassWithAnonymousFunction()
+    protected function getCoverageForClassWithAnonymousFunction(): CodeCoverage
     {
         $filter = new Filter;
         $filter->addFileToWhitelist(TEST_FILES_PATH . 'source_with_class_and_anonymous_function.php');
@@ -316,9 +343,9 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
         return $coverage;
     }
 
-    protected function setUpXdebugStubForClassWithAnonymousFunction()
+    protected function setUpXdebugStubForClassWithAnonymousFunction(): Driver
     {
-        $stub = $this->createMock(Xdebug::class);
+        $stub = $this->createMock(Driver::class);
 
         $stub->expects($this->any())
             ->method('stop')
@@ -333,10 +360,33 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
                         13 => 1,
                         14 => 1,
                         17 => 1,
-                        18 => 1
-                    ]
+                        18 => 1,
+                    ],
                 ]
             ));
+
+        return $stub;
+    }
+
+    protected function getCoverageForCrashParsing(): CodeCoverage
+    {
+        $filter = new Filter;
+        $filter->addFileToWhitelist(TEST_FILES_PATH . 'Crash.php');
+
+        // This is a file with invalid syntax, so it isn't executed.
+        return new CodeCoverage(
+            $this->setUpXdebugStubForCrashParsing(),
+            $filter
+        );
+    }
+
+    protected function setUpXdebugStubForCrashParsing(): Driver
+    {
+        $stub = $this->createMock(Driver::class);
+
+        $stub->expects($this->any())
+            ->method('stop')
+            ->will($this->returnValue([]));
 
         return $stub;
     }

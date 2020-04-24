@@ -191,8 +191,8 @@ with [`Composer\Composer`][4]'s internal state, by providing explicit extension 
 for common plugin requirements.
 
 Capable Plugins classes must implement the [`Composer\Plugin\Capable`][8] interface
-and declare their capabilities in the `getCapabilities()` method. 
-This method must return an array, with the _key_ as a Composer Capability class name, 
+and declare their capabilities in the `getCapabilities()` method.
+This method must return an array, with the _key_ as a Composer Capability class name,
 and the _value_ as the Plugin's own implementation class name of said Capability:
 
 ```php
@@ -261,6 +261,11 @@ Now the `custom-plugin-command` is available alongside Composer commands.
 
 > _Composer commands are based on the [Symfony Console Component][10]._
 
+## Running plugins manually
+
+Plugins for an event can be run manually by the `run-script` command. This works the same way as 
+[running scripts manually](scripts.md#running-scripts-manually).
+
 ## Using Plugins
 
 Plugin packages are automatically loaded as soon as they are installed and will
@@ -282,4 +287,4 @@ local project plugins are loaded.
 [7]: ../01-basic-usage.md#package-versions
 [8]: https://github.com/composer/composer/blob/master/src/Composer/Plugin/Capable.php
 [9]: https://github.com/composer/composer/blob/master/src/Composer/Plugin/Capability/CommandProvider.php
-[10]: http://symfony.com/doc/current/components/console/introduction.html
+[10]: https://symfony.com/doc/current/components/console.html

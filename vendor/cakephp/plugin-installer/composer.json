@@ -6,22 +6,22 @@
     "authors": [
         {
             "name": "CakePHP Community",
-            "homepage": "http://cakephp.org"
+            "homepage": "https://cakephp.org"
         }
     ],
     "require-dev": {
-        "composer/composer": "1.0.*@dev",
+        "composer/composer": "^1.0",
         "phpunit/phpunit": "^4.8|^5.7|^6.0",
         "cakephp/cakephp-codesniffer": "dev-master"
     },
     "autoload": {
         "psr-4": {
-            "Cake\\Composer\\": "src"
+            "Cake\\Composer\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Cake\\Test\\Composer\\": "tests"
+            "Cake\\Test\\Composer\\": "tests/"
         }
     },
     "extra": {

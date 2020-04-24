@@ -54,10 +54,10 @@ class Git
         }
 
         if (!$initialClone) {
-            // capture username/password from URL if there is one
+            // capture username/password from URL if there is one and we have no auth configured yet
             $this->process->execute('git remote -v', $output, $cwd);
-            if (preg_match('{^(?:composer|origin)\s+https?://(.+):(.+)@([^/]+)}im', $output, $match)) {
-                $this->io->setAuthentication($match[3], urldecode($match[1]), urldecode($match[2]));
+            if (preg_match('{^(?:composer|origin)\s+https?://(.+):(.+)@([^/]+)}im', $output, $match) && !$this->io->hasAuthentication($match[3])) {
+                $this->io->setAuthentication($match[3], rawurldecode($match[1]), rawurldecode($match[2]));
             }
         }
 
@@ -85,7 +85,9 @@ class Git
             }
 
             // failed to checkout, first check git accessibility
-            $this->throwException('Failed to clone ' . $url . ' via ' . implode(', ', $protocols) . ' protocols, aborting.' . "\n\n" . implode("\n", $messages), $url);
+            if (!$this->io->hasAuthentication($match[1]) && !$this->io->isInteractive()) {
+                $this->throwException('Failed to clone ' . $url . ' via ' . implode(', ', $protocols) . ' protocols, aborting.' . "\n\n" . implode("\n", $messages), $url);
+            }
         }
 
         // if we have a private github url and the ssh protocol is disabled then we skip it and directly fallback to https
@@ -95,8 +97,11 @@ class Git
 
         $auth = null;
         if ($bypassSshForGitHub || 0 !== $this->process->execute($command, $ignoredOutput, $cwd)) {
-            // private github repository without git access, try https with auth
-            if (preg_match('{^git@' . self::getGitHubDomainsRegex($this->config) . ':(.+?)\.git$}i', $url, $match)) {
+            $errorMsg = $this->process->getErrorOutput();
+            // private github repository without ssh key access, try https with auth
+            if (preg_match('{^git@' . self::getGitHubDomainsRegex($this->config) . ':(.+?)\.git$}i', $url, $match)
+                || preg_match('{^https?://' . self::getGitHubDomainsRegex($this->config) . '/(.*)}', $url, $match)
+            ) {
                 if (!$this->io->hasAuthentication($match[1])) {
                     $gitHubUtil = new GitHub($this->io, $this->config, $this->process);
                     $message = 'Cloning failed using an ssh key for authentication, enter your GitHub credentials to access private repos';
@@ -113,6 +118,8 @@ class Git
                     if (0 === $this->process->execute($command, $ignoredOutput, $cwd)) {
                         return;
                     }
+
+                    $errorMsg = $this->process->getErrorOutput();
                 }
             } elseif (preg_match('{^https://(bitbucket\.org)/(.*)(\.git)?$}U', $url, $match)) { //bitbucket oauth
                 $bitbucketUtil = new Bitbucket($this->io, $this->config, $this->process);
@@ -145,6 +152,8 @@ class Git
                     if (0 === $this->process->execute($command, $ignoredOutput, $cwd)) {
                         return;
                     }
+
+                    $errorMsg = $this->process->getErrorOutput();
                 } else { // Falling back to ssh
                     $sshUrl = 'git@bitbucket.org:' . $match[2] . '.git';
                     $this->io->writeError('    No bitbucket authentication configured. Falling back to ssh.');
@@ -152,8 +161,42 @@ class Git
                     if (0 === $this->process->execute($command, $ignoredOutput, $cwd)) {
                         return;
                     }
+
+                    $errorMsg = $this->process->getErrorOutput();
                 }
-            } elseif ($this->isAuthenticationFailure($url, $match)) { // private non-github repo that failed to authenticate
+            } elseif (
+                preg_match('{^(git)@' . self::getGitLabDomainsRegex($this->config) . ':(.+?)\.git$}i', $url, $match)
+                || preg_match('{^(https?)://' . self::getGitLabDomainsRegex($this->config) . '/(.*)}', $url, $match)
+            ) {
+                if ($match[1] === 'git') {
+                    $match[1] = 'https';
+                }
+
+                if (!$this->io->hasAuthentication($match[2])) {
+                    $gitLabUtil = new GitLab($this->io, $this->config, $this->process);
+                    $message = 'Cloning failed, enter your GitLab credentials to access private repos';
+
+                    if (!$gitLabUtil->authorizeOAuth($match[2]) && $this->io->isInteractive()) {
+                        $gitLabUtil->authorizeOAuthInteractively($match[1], $match[2], $message);
+                    }
+                }
+
+                if ($this->io->hasAuthentication($match[2])) {
+                    $auth = $this->io->getAuthentication($match[2]);
+                    if ($auth['password'] === 'private-token' || $auth['password'] === 'oauth2' || $auth['password'] === 'gitlab-ci-token') {
+                        $authUrl = $match[1] . '://' . rawurlencode($auth['password']) . ':' . rawurlencode($auth['username']) . '@' . $match[2] . '/' . $match[3]; // swap username and password
+                    } else {
+                        $authUrl = $match[1] . '://' . rawurlencode($auth['username']) . ':' . rawurlencode($auth['password']) . '@' . $match[2] . '/' . $match[3];
+                    }
+
+                    $command = call_user_func($commandCallable, $authUrl);
+                    if (0 === $this->process->execute($command, $ignoredOutput, $cwd)) {
+                        return;
+                    }
+
+                    $errorMsg = $this->process->getErrorOutput();
+                }
+            } elseif ($this->isAuthenticationFailure($url, $match)) { // private non-github/gitlab/bitbucket repo that failed to authenticate
                 if (strpos($match[2], '@')) {
                     list($authParts, $match[2]) = explode('@', $match[2], 2);
                 }
@@ -171,7 +214,7 @@ class Git
                         }
                     }
 
-                    $this->io->writeError('    Authentication required (<info>' . parse_url($url, PHP_URL_HOST) . '</info>):');
+                    $this->io->writeError('    Authentication required (<info>' . $match[2] . '</info>):');
                     $auth = array(
                         'username' => $this->io->ask('      Username: ', $defaultUsername),
                         'password' => $this->io->askAndHideAnswer('      Password: '),
@@ -190,13 +233,16 @@ class Git
 
                         return;
                     }
+
+                    $errorMsg = $this->process->getErrorOutput();
                 }
             }
 
             if ($initialClone) {
                 $this->filesystem->removeDirectory($origCwd);
             }
-            $this->throwException('Failed to execute ' . $command . "\n\n" . $this->process->getErrorOutput(), $url);
+
+            $this->throwException('Failed to execute ' . $command . "\n\n" . $errorMsg, $url);
         }
     }
 
@@ -206,10 +252,14 @@ class Git
         if (is_dir($dir) && 0 === $this->process->execute('git rev-parse --git-dir', $output, $dir) && trim($output) === '.') {
             try {
                 $commandCallable = function ($url) {
-                    return sprintf('git remote set-url origin %s && git remote update --prune origin', ProcessExecutor::escape($url));
+                    $sanitizedUrl = preg_replace('{://([^@]+?):(.+?)@}', '://', $url);
+
+                    return sprintf('git remote set-url origin %s && git remote update --prune origin && git remote set-url origin %s', ProcessExecutor::escape($url), ProcessExecutor::escape($sanitizedUrl));
                 };
                 $this->runCommand($commandCallable, $url, $dir);
             } catch (\Exception $e) {
+                $this->io->writeError('<error>Sync mirror failed: ' . $e->getMessage() . '</error>', true, IOInterface::DEBUG);
+
                 return false;
             }
 
@@ -228,9 +278,35 @@ class Git
         return true;
     }
 
+    public function fetchRefOrSyncMirror($url, $dir, $ref)
+    {
+        if ($this->checkRefIsInMirror($url, $dir, $ref)) {
+            return true;
+        }
+
+        if ($this->syncMirror($url, $dir)) {
+            return $this->checkRefIsInMirror($url, $dir, $ref);
+        }
+
+        return false;
+    }
+
+    private function checkRefIsInMirror($url, $dir, $ref)
+    {
+        if (is_dir($dir) && 0 === $this->process->execute('git rev-parse --git-dir', $output, $dir) && trim($output) === '.') {
+            $escapedRef = ProcessExecutor::escape($ref.'^{commit}');
+            $exitCode = $this->process->execute(sprintf('git rev-parse --quiet --verify %s', $escapedRef), $ignoredOutput, $dir);
+            if ($exitCode === 0) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private function isAuthenticationFailure($url, &$match)
     {
-        if (!preg_match('{(https?://)([^/]+)(.*)$}i', $url, $match)) {
+        if (!preg_match('{^(https?://)([^/]+)(.*)$}i', $url, $match)) {
             return false;
         }
 
@@ -239,10 +315,12 @@ class Git
             'remote error: Invalid username or password.',
             'error: 401 Unauthorized',
             'fatal: unable to access',
+            'fatal: could not read Username',
         );
 
+        $errorOutput = $this->process->getErrorOutput();
         foreach ($authFailures as $authFailure) {
-            if (strpos($this->process->getErrorOutput(), $authFailure) !== false) {
+            if (strpos($errorOutput, $authFailure) !== false) {
                 return true;
             }
         }
@@ -252,7 +330,7 @@ class Git
 
     public static function cleanEnv()
     {
-        if (ini_get('safe_mode') && false === strpos(ini_get('safe_mode_allowed_env_vars'), 'GIT_ASKPASS')) {
+        if (PHP_VERSION_ID < 50400 && ini_get('safe_mode') && false === strpos(ini_get('safe_mode_allowed_env_vars'), 'GIT_ASKPASS')) {
             throw new \RuntimeException('safe_mode is enabled and safe_mode_allowed_env_vars does not contain GIT_ASKPASS, can not set env var. You can disable safe_mode with "-dsafe_mode=0" when running composer');
         }
 
@@ -285,6 +363,11 @@ class Git
     public static function getGitHubDomainsRegex(Config $config)
     {
         return '(' . implode('|', array_map('preg_quote', $config->get('github-domains'))) . ')';
+    }
+
+    public static function getGitLabDomainsRegex(Config $config)
+    {
+        return '(' . implode('|', array_map('preg_quote', $config->get('gitlab-domains'))) . ')';
     }
 
     public static function sanitizeUrl($message)

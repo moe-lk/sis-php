@@ -11,7 +11,7 @@ use Cake\Network\Request;
 use Ramsey\Uuid\Uuid;
 use User\Model\Entity\User;
 use Cake\I18n\I18n;
-use Cake\Utility\Text;
+use Mohamednizar\MoeUuid\MoeUuid;
 
 class UserBehavior extends Behavior
 {
@@ -478,18 +478,8 @@ class UserBehavior extends Behavior
 
     public function getUniqueOpenemisId($options = [])
     {
-        $openemis_no = str_split(Text::uuid(),8);
-              $openemis_no = $openemis_no[0];
-               $latest = $this->_table->find()
-                   ->order($this->aliasField('id') . ' DESC')
-                   ->where([$this->aliasField('openemis_no') => $openemis_no])
-                   ->first();
-
-               if (!is_null($latest)) {
-                   $this->getUniqueOpenemisId();
-               } else {
-                  return $openemis_no;
-               }
+        $openemis_no = MoeUuid::getUniqueAlphanumeric();
+        return $openemis_no;
     }
 
     public function getImage($id)

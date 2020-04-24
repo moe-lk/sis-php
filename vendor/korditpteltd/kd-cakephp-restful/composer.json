@@ -8,14 +8,14 @@
     "authors": [
         {
             "name": "KORDIT PHP DEVELOPERS",
-            "homepage": "https://bitbucket.org/korditpteltd/kd-cakephp-restful/commits/all"
+            "homepage": "https://github.com/mohamednizar/kd-cakephp-restful/commits/all"
         }
     ],
     "support": {
-        "source": "https://bitbucket.org/korditpteltd/kd-cakephp-restful/src"
+        "source": "https://github.com/mohamednizar/kd-cakephp-restful/src"
     },
     "require": {
-        "cakephp/cakephp": ">=3.3.0 <3.4",
+        "cakephp/cakephp": ">=3.3.0",
         "admad/cakephp-jwt-auth": "^2.0"
     },
     "require-dev": {
@@ -32,11 +32,6 @@
         "psr-4": {
             "Cake\\Test\\": "vendor/cakephp/cakephp/tests",
             "Restful\\Test\\": "tests"
-        }
-    },
-    "extra": {
-        "branch-alias": {
-            "master": "1.0.2"
         }
     },
     "minimum-stability": "beta"
