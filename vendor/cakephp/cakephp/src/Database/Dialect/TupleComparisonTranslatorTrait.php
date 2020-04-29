@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         3.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Database\Dialect;
 
@@ -26,11 +26,12 @@ use Cake\Database\Query;
  */
 trait TupleComparisonTranslatorTrait
 {
+
     /**
      * Receives a TupleExpression and changes it so that it conforms to this
      * SQL dialect.
      *
-     * It transforms expressions looking like '(a, b) IN ((c, d), (e, f))' into an
+     * It transforms expressions looking like '(a, b) IN ((c, d), (e, f)' into an
      * equivalent expression of the form '((a = c) AND (b = d)) OR ((a = e) AND (b = f))'.
      *
      * It can also transform transform expressions where the right hand side is a query
@@ -69,7 +70,7 @@ trait TupleComparisonTranslatorTrait
             return;
         }
 
-        $surrogate = $query->getConnection()
+        $surrogate = $query->connection()
             ->newQuery()
             ->select($true);
 
@@ -77,15 +78,15 @@ trait TupleComparisonTranslatorTrait
             $value = [$value];
         }
 
-        $conditions = ['OR' => []];
         foreach ($value as $tuple) {
-            $item = [];
-            foreach (array_values($tuple) as $i => $value) {
-                $item[] = [$fields[$i] => $value];
-            }
-            $conditions['OR'][] = $item;
+            $surrogate->orWhere(function ($exp) use ($fields, $tuple) {
+                foreach (array_values($tuple) as $i => $value) {
+                    $exp->add([$fields[$i] => $value]);
+                }
+
+                return $exp;
+            });
         }
-        $surrogate->where($conditions);
 
         $expression->setField($true);
         $expression->setValue($surrogate);

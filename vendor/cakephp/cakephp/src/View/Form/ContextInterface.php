@@ -1,27 +1,25 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         3.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\View\Form;
 
 /**
  * Interface for FormHelper context implementations.
- *
- * @method string|null getRequiredMessage($field) Gets the default "required" error message for a field
- * @method int|null getMaxLength($field) Get maximum length of a field from model validation
  */
 interface ContextInterface
 {
+
     /**
      * Get the fields used in the context as a primary key.
      *
@@ -75,7 +73,7 @@ interface ContextInterface
     /**
      * Get the fieldnames of the top level object in this context.
      *
-     * @return string[] A list of the field names in the context.
+     * @return array A list of the field names in the context.
      */
     public function fieldNames();
 
@@ -83,7 +81,7 @@ interface ContextInterface
      * Get the abstract field type for a given field name.
      *
      * @param string $field A dot separated path to get a schema type for.
-     * @return string|null An abstract data type or null.
+     * @return null|string An abstract data type or null.
      * @see \Cake\Database\Type
      */
     public function type($field);

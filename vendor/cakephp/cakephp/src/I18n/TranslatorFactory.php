@@ -1,21 +1,20 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         3.3.12
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\I18n;
 
 use Aura\Intl\FormatterInterface;
-use Aura\Intl\Package;
 use Aura\Intl\TranslatorFactory as BaseTranslatorFactory;
 use Aura\Intl\TranslatorInterface;
 use RuntimeException;
@@ -38,7 +37,7 @@ class TranslatorFactory extends BaseTranslatorFactory
      * Returns a new Translator.
      *
      * @param string $locale The locale code for the translator.
-     * @param \Aura\Intl\Package $package The Package containing keys and translations.
+     * @param array $messages The localized messages for the translator.
      * @param \Aura\Intl\FormatterInterface $formatter The formatter to use for interpolating token values.
      * @param \Aura\Intl\TranslatorInterface $fallback A fallback translator to use, if any.
      * @throws \Cake\Core\Exception\Exception If fallback class does not match Cake\I18n\Translator
@@ -46,7 +45,7 @@ class TranslatorFactory extends BaseTranslatorFactory
      */
     public function newInstance(
         $locale,
-        Package $package,
+        array $messages,
         FormatterInterface $formatter,
         TranslatorInterface $fallback = null
     ) {
@@ -58,6 +57,6 @@ class TranslatorFactory extends BaseTranslatorFactory
             ));
         }
 
-        return new $class($locale, $package, $formatter, $fallback);
+        return new $class($locale, $messages, $formatter, $fallback);
     }
 }

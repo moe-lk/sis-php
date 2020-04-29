@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         3.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Database\Expression;
 
@@ -23,9 +23,12 @@ use Cake\Database\ValueBinder;
  * A Comparison is a type of query expression that represents an operation
  * involving a field an operator and a value. In its most common form the
  * string representation of a comparison is `field = value`
+ *
+ * @internal
  */
 class Comparison implements ExpressionInterface, FieldInterface
 {
+
     use ExpressionTypeCasterTrait;
     use FieldTrait;
 
@@ -39,7 +42,7 @@ class Comparison implements ExpressionInterface, FieldInterface
     /**
      * The type to be used for casting the value to a database representation
      *
-     * @var string|array
+     * @var string
      */
     protected $_type;
 
@@ -61,7 +64,7 @@ class Comparison implements ExpressionInterface, FieldInterface
      * A cached list of ExpressionInterface objects that were
      * found in the value for this expression.
      *
-     * @var \Cake\Database\ExpressionInterface[]
+     * @var array
      */
     protected $_valueExpressions = [];
 
@@ -194,7 +197,7 @@ class Comparison implements ExpressionInterface, FieldInterface
     public function __clone()
     {
         foreach (['_value', '_field'] as $prop) {
-            if ($this->{$prop} instanceof ExpressionInterface) {
+            if ($prop instanceof ExpressionInterface) {
                 $this->{$prop} = clone $this->{$prop};
             }
         }

@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         0.2.9
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\View;
 
@@ -40,6 +40,7 @@ use Cake\Event\EventListenerInterface;
  */
 class Helper implements EventListenerInterface
 {
+
     use InstanceConfigTrait;
 
     /**
@@ -47,7 +48,7 @@ class Helper implements EventListenerInterface
      *
      * @var array
      */
-    protected $helpers = [];
+    public $helpers = [];
 
     /**
      * Default config for this helper.
@@ -64,18 +65,38 @@ class Helper implements EventListenerInterface
     protected $_helperMap = [];
 
     /**
-     * Unused.
+     * The current theme name if any.
+     *
+     * @var string
+     */
+    public $theme = null;
+
+    /**
+     * Request object
+     *
+     * @var \Cake\Network\Request
+     */
+    public $request = null;
+
+    /**
+     * Plugin path
+     *
+     * @var string
+     */
+    public $plugin = null;
+
+    /**
+     * Holds the fields ['field_name' => ['type' => 'string', 'length' => 100]],
+     * primaryKey and validates ['field_name']
      *
      * @var array
-     * @deprecated 3.7.0 This property is unused and will be removed in 4.0.0.
      */
     public $fieldset = [];
 
     /**
-     * Unused.
+     * Holds tag templates.
      *
      * @var array
-     * @deprecated 3.7.0 This property is unused and will be removed in 4.0.0.
      */
     public $tags = [];
 
@@ -95,7 +116,9 @@ class Helper implements EventListenerInterface
     public function __construct(View $View, array $config = [])
     {
         $this->_View = $View;
-        $this->setConfig($config);
+        $this->request = $View->request;
+
+        $this->config($config);
 
         if (!empty($this->helpers)) {
             $this->_helperMap = $View->helpers()->normalizeArray($this->helpers);
@@ -109,7 +132,7 @@ class Helper implements EventListenerInterface
      *
      * @param string $method Method to invoke
      * @param array $params Array of params for the method.
-     * @return mixed|void
+     * @return void
      */
     public function __call($method, $params)
     {
@@ -130,91 +153,6 @@ class Helper implements EventListenerInterface
 
             return $this->{$name};
         }
-
-        $removed = [
-            'theme' => 'getTheme',
-            'plugin' => 'getPlugin',
-        ];
-        if (isset($removed[$name])) {
-            $method = $removed[$name];
-            deprecationWarning(sprintf(
-                'Helper::$%s is deprecated. Use $view->%s() instead.',
-                $name,
-                $method
-            ));
-
-            return $this->_View->{$method}();
-        }
-
-        if ($name === 'request') {
-            deprecationWarning(
-                'Helper::$request is deprecated. Use $helper->getView()->getRequest() instead.'
-            );
-
-            return $this->_View->getRequest();
-        }
-
-        if ($name === 'helpers') {
-            deprecationWarning(
-                'Helper::$helpers is now protected and should not be accessed from outside a helper class.'
-            );
-
-            return $this->helpers;
-        }
-    }
-
-    /**
-     * Magic setter for removed properties.
-     *
-     * @param string $name Property name.
-     * @param mixed $value Value to set.
-     * @return void
-     */
-    public function __set($name, $value)
-    {
-        $removed = [
-            'theme' => 'setTheme',
-            'plugin' => 'setPlugin',
-        ];
-        if (isset($removed[$name])) {
-            $method = $removed[$name];
-            deprecationWarning(sprintf(
-                'Helper::$%s is deprecated. Use $view->%s() instead.',
-                $name,
-                $method
-            ));
-            $this->_View->{$method}($value);
-
-            return;
-        }
-
-        if ($name === 'request') {
-            deprecationWarning(
-                'Helper::$request is deprecated. Use $helper->getView()->setRequest() instead.'
-            );
-
-            $this->_View->setRequest($value);
-
-            return;
-        }
-
-        if ($name === 'helpers') {
-            deprecationWarning(
-                'Helper::$helpers is now protected and should not be accessed from outside a helper class.'
-            );
-        }
-
-        $this->{$name} = $value;
-    }
-
-    /**
-     * Get the view instance this helper is bound to.
-     *
-     * @return \Cake\View\View The bound view instance.
-     */
-    public function getView()
-    {
-        return $this->_View;
     }
 
     /**
@@ -228,12 +166,11 @@ class Helper implements EventListenerInterface
      */
     protected function _confirm($message, $okCode, $cancelCode = '', $options = [])
     {
-        $message = $this->_cleanConfirmMessage($message);
+        $message = str_replace('\n', "\n", json_encode($message));
         $confirm = "if (confirm({$message})) { {$okCode} } {$cancelCode}";
         // We cannot change the key here in 3.x, but the behavior is inverted in this case
         $escape = isset($options['escape']) && $options['escape'] === false;
         if ($escape) {
-            /** @var string $confirm */
             $confirm = h($confirm);
         }
 
@@ -241,29 +178,16 @@ class Helper implements EventListenerInterface
     }
 
     /**
-     * Returns a string read to be used in confirm()
-     *
-     * @param string $message The message to clean
-     * @return mixed
-     */
-    protected function _cleanConfirmMessage($message)
-    {
-        return str_replace('\\\n', '\n', json_encode($message));
-    }
-
-    /**
      * Adds the given class to the element options
      *
      * @param array $options Array options/attributes to add a class to
      * @param string|null $class The class name being added.
-     * @param string $key the key to use for class. Defaults to `'class'`.
+     * @param string $key the key to use for class.
      * @return array Array of options with $key set.
      */
     public function addClass(array $options = [], $class = null, $key = 'class')
     {
-        if (isset($options[$key]) && is_array($options[$key])) {
-            $options[$key][] = $class;
-        } elseif (isset($options[$key]) && trim($options[$key])) {
+        if (isset($options[$key]) && trim($options[$key])) {
             $options[$key] .= ' ' . $class;
         } else {
             $options[$key] = $class;
@@ -291,7 +215,7 @@ class Helper implements EventListenerInterface
             'View.beforeRender' => 'beforeRender',
             'View.afterRender' => 'afterRender',
             'View.beforeLayout' => 'beforeLayout',
-            'View.afterLayout' => 'afterLayout',
+            'View.afterLayout' => 'afterLayout'
         ];
         $events = [];
         foreach ($eventMap as $event => $method) {
@@ -325,8 +249,12 @@ class Helper implements EventListenerInterface
     {
         return [
             'helpers' => $this->helpers,
+            'theme' => $this->theme,
+            'plugin' => $this->plugin,
+            'fieldset' => $this->fieldset,
+            'tags' => $this->tags,
             'implementedEvents' => $this->implementedEvents(),
-            '_config' => $this->getConfig(),
+            '_config' => $this->config(),
         ];
     }
 }

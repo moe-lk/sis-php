@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         3.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\View;
 
@@ -23,6 +23,7 @@ use Cake\View\Exception\MissingCellException;
  */
 trait CellTrait
 {
+
     /**
      * Renders the given cell.
      *
@@ -54,7 +55,7 @@ trait CellTrait
      * @throws \Cake\View\Exception\MissingCellException If Cell class was not found.
      * @throws \BadMethodCallException If Cell class does not specified cell action.
      */
-    protected function cell($cell, array $data = [], array $options = [])
+    public function cell($cell, array $data = [], array $options = [])
     {
         $parts = explode('::', $cell);
 
@@ -87,41 +88,40 @@ trait CellTrait
      * @param string $action The action name.
      * @param string $plugin The plugin name.
      * @param array $options The constructor options for the cell.
-     * @return \Cake\View\Cell
+     * @return \Cake\View\Cell;
      */
     protected function _createCell($className, $action, $plugin, $options)
     {
-        /** @var \Cake\View\Cell $instance */
-        $instance = new $className($this->request, $this->response, $this->getEventManager(), $options);
+        $instance = new $className($this->request, $this->response, $this->eventManager(), $options);
+        $instance->template = Inflector::underscore($action);
 
         $builder = $instance->viewBuilder();
-        $builder->setTemplate(Inflector::underscore($action));
-
         if (!empty($plugin)) {
-            $builder->setPlugin($plugin);
+            $builder->plugin($plugin);
         }
         if (!empty($this->helpers)) {
-            $builder->setHelpers($this->helpers);
+            $builder->helpers($this->helpers);
+            $instance->helpers = $this->helpers;
         }
 
         if ($this instanceof View) {
             if (!empty($this->theme)) {
-                $builder->setTheme($this->theme);
+                $builder->theme($this->theme);
             }
 
             $class = get_class($this);
-            $builder->setClassName($class);
+            $builder->className($class);
             $instance->viewClass = $class;
 
             return $instance;
         }
 
         if (method_exists($this, 'viewBuilder')) {
-            $builder->setTheme($this->viewBuilder()->getTheme());
+            $builder->theme($this->viewBuilder()->theme());
         }
 
         if (isset($this->viewClass)) {
-            $builder->setClassName($this->viewClass);
+            $builder->className($this->viewClass);
             $instance->viewClass = $this->viewClass;
         }
 

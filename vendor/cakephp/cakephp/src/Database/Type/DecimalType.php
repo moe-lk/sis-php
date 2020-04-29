@@ -1,23 +1,22 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         3.3.4
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Database\Type;
 
 use Cake\Database\Driver;
 use Cake\Database\Type;
 use Cake\Database\TypeInterface;
-use Cake\Database\Type\BatchCastingInterface;
 use InvalidArgumentException;
 use PDO;
 use RuntimeException;
@@ -27,23 +26,18 @@ use RuntimeException;
  *
  * Use to convert decimal data between PHP and the database types.
  */
-class DecimalType extends Type implements TypeInterface, BatchCastingInterface
+class DecimalType extends Type implements TypeInterface
 {
+
     /**
-     * Identifier name for this type.
-     *
-     * (This property is declared here again so that the inheritance from
-     * Cake\Database\Type can be removed in the future.)
+     * Identifier name for this type
      *
      * @var string|null
      */
-    protected $_name;
+    protected $_name = null;
 
     /**
-     * Constructor.
-     *
-     * (This method is declared here again so that the inheritance from
-     * Cake\Database\Type can be removed in the future.)
+     * Constructor
      *
      * @param string|null $name The name identifying this type
      */
@@ -70,7 +64,7 @@ class DecimalType extends Type implements TypeInterface, BatchCastingInterface
     /**
      * Convert integer data into the database format.
      *
-     * @param mixed $value The value to convert.
+     * @param string|int|float $value The value to convert.
      * @param \Cake\Database\Driver $driver The driver instance to convert with.
      * @return string|null
      * @throws \InvalidArgumentException
@@ -81,10 +75,7 @@ class DecimalType extends Type implements TypeInterface, BatchCastingInterface
             return null;
         }
         if (!is_scalar($value)) {
-            throw new InvalidArgumentException(sprintf(
-                'Cannot convert value of type `%s` to a decimal',
-                getTypeName($value)
-            ));
+            throw new InvalidArgumentException('Cannot convert value to a decimal.');
         }
         if (is_string($value) && is_numeric($value)) {
             return $value;
@@ -94,37 +85,20 @@ class DecimalType extends Type implements TypeInterface, BatchCastingInterface
     }
 
     /**
-     * Convert float values to PHP floats
+     * Convert float values to PHP integers
      *
-     * @param mixed $value The value to convert.
+     * @param null|string|resource $value The value to convert.
      * @param \Cake\Database\Driver $driver The driver instance to convert with.
-     * @return float|null
+     * @return resource
+     * @throws \Cake\Core\Exception\Exception
      */
     public function toPHP($value, Driver $driver)
     {
         if ($value === null) {
-            return $value;
+            return null;
         }
 
         return (float)$value;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @return float[]
-     */
-    public function manyToPHP(array $values, array $fields, Driver $driver)
-    {
-        foreach ($fields as $field) {
-            if (!isset($values[$field])) {
-                continue;
-            }
-
-            $values[$field] = (float)$values[$field];
-        }
-
-        return $values;
     }
 
     /**
@@ -140,27 +114,27 @@ class DecimalType extends Type implements TypeInterface, BatchCastingInterface
     }
 
     /**
-     * Marshals request data into PHP floats.
+     * Marshalls request data into PHP floats.
      *
      * @param mixed $value The value to convert.
-     * @return float|string|null Converted value.
+     * @return mixed Converted value.
      */
     public function marshal($value)
     {
         if ($value === null || $value === '') {
             return null;
         }
-        if (is_string($value) && $this->_useLocaleParser) {
-            return $this->_parseValue($value);
-        }
         if (is_numeric($value)) {
             return (float)$value;
         }
-        if (is_string($value) && preg_match('/^[0-9,. ]+$/', $value)) {
-            return $value;
+        if (is_string($value) && $this->_useLocaleParser) {
+            return $this->_parseValue($value);
+        }
+        if (is_array($value)) {
+            return 1;
         }
 
-        return null;
+        return $value;
     }
 
     /**
@@ -169,7 +143,6 @@ class DecimalType extends Type implements TypeInterface, BatchCastingInterface
      *
      * @param bool $enable Whether or not to enable
      * @return $this
-     * @throws \RuntimeException
      */
     public function useLocaleParser($enable = true)
     {
@@ -178,8 +151,7 @@ class DecimalType extends Type implements TypeInterface, BatchCastingInterface
 
             return $this;
         }
-        if (
-            static::$numberClass === 'Cake\I18n\Number' ||
+        if (static::$numberClass === 'Cake\I18n\Number' ||
             is_subclass_of(static::$numberClass, 'Cake\I18n\Number')
         ) {
             $this->_useLocaleParser = $enable;
@@ -200,7 +172,6 @@ class DecimalType extends Type implements TypeInterface, BatchCastingInterface
      */
     protected function _parseValue($value)
     {
-        /** @var \Cake\I18n\Number $class */
         $class = static::$numberClass;
 
         return $class::parseFloat($value);

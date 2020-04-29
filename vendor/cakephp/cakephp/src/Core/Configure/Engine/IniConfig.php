@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         2.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Core\Configure\Engine;
 
@@ -42,17 +42,18 @@ use Cake\Utility\Hash;
  *
  * `Configure::read('section.key');
  *
- * You can also use `.` separated values in section names to create more deeply
+ * You can combine `.` separated values with sections to create more deeply
  * nested structures.
  *
  * IniConfig also manipulates how the special ini values of
  * 'yes', 'no', 'on', 'off', 'null' are handled. These values will be
  * converted to their boolean equivalents.
  *
- * @see https://secure.php.net/parse_ini_file
+ * @see http://php.net/parse_ini_file
  */
 class IniConfig implements ConfigEngineInterface
 {
+
     use FileConfigTrait;
 
     /**
@@ -65,7 +66,7 @@ class IniConfig implements ConfigEngineInterface
     /**
      * The section to read, if null all sections will be read.
      *
-     * @var string|null
+     * @var string
      */
     protected $_section;
 
@@ -100,7 +101,7 @@ class IniConfig implements ConfigEngineInterface
         $file = $this->_getFilePath($key, true);
 
         $contents = parse_ini_file($file, true);
-        if ($this->_section && isset($contents[$this->_section])) {
+        if (!empty($this->_section) && isset($contents[$this->_section])) {
             $values = $this->_parseNestedValues($contents[$this->_section]);
         } else {
             $values = [];

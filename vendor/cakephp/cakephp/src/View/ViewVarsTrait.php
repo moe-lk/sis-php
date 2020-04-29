@@ -1,15 +1,15 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c), Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c), Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         3.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\View;
 
@@ -20,25 +20,20 @@ use Cake\Event\EventDispatcherInterface;
  *
  * Once collected context data can be passed to another object.
  * This is done in Controller, TemplateTask and View for example.
- *
- * @property array $_validViewOptions
  */
 trait ViewVarsTrait
 {
+
     /**
      * The name of default View class.
      *
-     * @var string|null
-     * @deprecated 3.1.0 Use `$this->viewBuilder()->getClassName()`/`$this->viewBuilder()->setClassName()` instead.
+     * @var string
+     * @deprecated 3.1.0 Use `$this->viewBuilder()->className()` instead.
      */
-    public $viewClass;
+    public $viewClass = null;
 
     /**
-     * Variables for the view.
-     *
-     * Deprecated: This property will be removed in 4.x.
-     * Inside controller context use `$this->set()` instead, also see `$this->viewBuilder()->getVar()`.
-     * In view context it will be a protected property `View::$viewVars`.
+     * Variables for the view
      *
      * @var array
      */
@@ -75,15 +70,14 @@ trait ViewVarsTrait
     public function createView($viewClass = null)
     {
         $builder = $this->viewBuilder();
-        if ($viewClass === null && $builder->getClassName() === null) {
-            $builder->setClassName($this->viewClass);
-            $this->viewClass = null;
+        if ($viewClass === null && $builder->className() === null) {
+            $builder->className($this->viewClass);
         }
         if ($viewClass) {
-            $builder->setClassName($viewClass);
+            $builder->className($viewClass);
         }
 
-        $validViewOptions = isset($this->_validViewOptions) ? $this->_validViewOptions : [];
+        $validViewOptions = $this->viewOptions();
         $viewOptions = [];
         foreach ($validViewOptions as $option) {
             if (property_exists($this, $option)) {
@@ -92,38 +86,36 @@ trait ViewVarsTrait
         }
 
         $deprecatedOptions = [
-            'layout' => 'setLayout',
-            'view' => 'setTemplate',
-            'theme' => 'setTheme',
-            'autoLayout' => 'enableAutoLayout',
-            'viewPath' => 'setTemplatePath',
-            'layoutPath' => 'setLayoutPath',
+            'layout' => 'layout',
+            'view' => 'template',
+            'theme' => 'theme',
+            'autoLayout' => 'autoLayout',
+            'viewPath' => 'templatePath',
+            'layoutPath' => 'layoutPath',
         ];
         foreach ($deprecatedOptions as $old => $new) {
             if (property_exists($this, $old)) {
                 $builder->{$new}($this->{$old});
-                $message = sprintf(
+                trigger_error(sprintf(
                     'Property $%s is deprecated. Use $this->viewBuilder()->%s() instead in beforeRender().',
                     $old,
                     $new
-                );
-                deprecationWarning($message);
+                ), E_USER_DEPRECATED);
             }
         }
 
         foreach (['name', 'helpers', 'plugin'] as $prop) {
             if (isset($this->{$prop})) {
-                $method = 'set' . ucfirst($prop);
-                $builder->{$method}($this->{$prop});
+                $builder->{$prop}($this->{$prop});
             }
         }
-        $builder->setOptions($viewOptions);
+        $builder->options($viewOptions);
 
         return $builder->build(
             $this->viewVars,
             isset($this->request) ? $this->request : null,
             isset($this->response) ? $this->response : null,
-            $this instanceof EventDispatcherInterface ? $this->getEventManager() : null
+            $this instanceof EventDispatcherInterface ? $this->eventManager() : null
         );
     }
 
@@ -160,14 +152,9 @@ trait ViewVarsTrait
      * @param bool $merge Whether to merge with or override existing valid View options.
      *   Defaults to `true`.
      * @return array The updated view options as an array.
-     * @deprecated 3.7.0 Use ViewBuilder::setOptions() or any one of it's setter methods instead.
      */
     public function viewOptions($options = null, $merge = true)
     {
-        deprecationWarning(
-            'ViewVarsTrait::viewOptions() is deprecated, used ViewBuilder::setOptions() instead.'
-        );
-
         if (!isset($this->_validViewOptions)) {
             $this->_validViewOptions = [];
         }

@@ -1,22 +1,21 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         2.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Console;
 
-use Cake\Console\Exception\ConsoleException;
 use Cake\Utility\Text;
-use SimpleXMLElement;
+use SimpleXmlElement;
 
 /**
  * HelpFormatter formats help for console shells. Can format to either
@@ -29,6 +28,7 @@ use SimpleXMLElement;
  */
 class HelpFormatter
 {
+
     /**
      * The maximum number of arguments shown when generating usage.
      *
@@ -51,13 +51,6 @@ class HelpFormatter
     protected $_parser;
 
     /**
-     * Alias to display in the output.
-     *
-     * @var string
-     */
-    protected $_alias = 'cake';
-
-    /**
      * Build the help formatter for an OptionParser
      *
      * @param \Cake\Console\ConsoleOptionParser $parser The option parser help is being generated for.
@@ -65,22 +58,6 @@ class HelpFormatter
     public function __construct(ConsoleOptionParser $parser)
     {
         $this->_parser = $parser;
-    }
-
-    /**
-     * Set the alias
-     *
-     * @param string $alias The alias
-     * @return void
-     * @throws \Cake\Console\Exception\ConsoleException When alias is not a string.
-     */
-    public function setAlias($alias)
-    {
-        if (is_string($alias)) {
-            $this->_alias = $alias;
-        } else {
-            throw new ConsoleException('Alias must be of type string.');
-        }
     }
 
     /**
@@ -93,7 +70,7 @@ class HelpFormatter
     {
         $parser = $this->_parser;
         $out = [];
-        $description = $parser->getDescription();
+        $description = $parser->description();
         if (!empty($description)) {
             $out[] = Text::wrap($description, $width);
             $out[] = '';
@@ -110,11 +87,11 @@ class HelpFormatter
                 $out[] = Text::wrapBlock($command->help($max), [
                     'width' => $width,
                     'indent' => str_repeat(' ', $max),
-                    'indentAt' => 1,
+                    'indentAt' => 1
                 ]);
             }
             $out[] = '';
-            $out[] = sprintf('To see help on a subcommand use <info>`' . $this->_alias . ' %s [subcommand] --help`</info>', $parser->getCommand());
+            $out[] = sprintf('To see help on a subcommand use <info>`cake %s [subcommand] --help`</info>', $parser->command());
             $out[] = '';
         }
 
@@ -127,7 +104,7 @@ class HelpFormatter
                 $out[] = Text::wrapBlock($option->help($max), [
                     'width' => $width,
                     'indent' => str_repeat(' ', $max),
-                    'indentAt' => 1,
+                    'indentAt' => 1
                 ]);
             }
             $out[] = '';
@@ -142,12 +119,12 @@ class HelpFormatter
                 $out[] = Text::wrapBlock($argument->help($max), [
                     'width' => $width,
                     'indent' => str_repeat(' ', $max),
-                    'indentAt' => 1,
+                    'indentAt' => 1
                 ]);
             }
             $out[] = '';
         }
-        $epilog = $parser->getEpilog();
+        $epilog = $parser->epilog();
         if (!empty($epilog)) {
             $out[] = Text::wrap($epilog, $width);
             $out[] = '';
@@ -165,7 +142,7 @@ class HelpFormatter
      */
     protected function _generateUsage()
     {
-        $usage = [$this->_alias . ' ' . $this->_parser->getCommand()];
+        $usage = ['cake ' . $this->_parser->command()];
         $subcommands = $this->_parser->subcommands();
         if (!empty($subcommands)) {
             $usage[] = '[subcommand]';
@@ -210,15 +187,16 @@ class HelpFormatter
      * Get the help as an xml string.
      *
      * @param bool $string Return the SimpleXml object or a string. Defaults to true.
-     * @return string|\SimpleXMLElement See $string
+     * @return string|\SimpleXmlElement See $string
      */
     public function xml($string = true)
     {
         $parser = $this->_parser;
-        $xml = new SimpleXMLElement('<shell></shell>');
-        $xml->addChild('command', $parser->getCommand());
-        $xml->addChild('description', $parser->getDescription());
+        $xml = new SimpleXmlElement('<shell></shell>');
+        $xml->addChild('command', $parser->command());
+        $xml->addChild('description', $parser->description());
 
+        $xml->addChild('epilog', $parser->epilog());
         $subcommands = $xml->addChild('subcommands');
         foreach ($parser->subcommands() as $command) {
             $command->xml($subcommands);
@@ -231,8 +209,7 @@ class HelpFormatter
         foreach ($parser->arguments() as $argument) {
             $argument->xml($arguments);
         }
-        $xml->addChild('epilog', $parser->getEpilog());
 
-        return $string ? $xml->asXML() : $xml;
+        return $string ? $xml->asXml() : $xml;
     }
 }

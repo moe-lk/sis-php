@@ -1,20 +1,18 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         3.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\I18n\Parser;
-
-use Cake\I18n\Translator;
 
 /**
  * Parses file in PO format
@@ -25,10 +23,11 @@ use Cake\I18n\Translator;
  */
 class PoFileParser
 {
+
     /**
      * Parses portable object (PO) format.
      *
-     * From https://www.gnu.org/software/gettext/manual/gettext.html#PO-Files
+     * From http://www.gnu.org/software/gettext/manual/gettext.html#PO-Files
      * we should be able to parse files having:
      *
      * white-space
@@ -60,6 +59,7 @@ class PoFileParser
      *
      * This parser sacrifices some features of the reference implementation the
      * differences to that implementation are as follows.
+     * - No support for comments spanning multiple lines.
      * - Translator and extracted comments are treated as being the same type.
      * - Message IDs are allowed to have other encodings as just US-ASCII.
      *
@@ -71,16 +71,15 @@ class PoFileParser
      */
     public function parse($resource)
     {
-        $stream = fopen($resource, 'rb');
+        $stream = fopen($resource, 'r');
 
         $defaults = [
             'ids' => [],
-            'translated' => null,
+            'translated' => null
         ];
 
         $messages = [];
         $item = $defaults;
-        $stage = null;
 
         while ($line = fgets($stream)) {
             $line = trim($line);
@@ -89,36 +88,28 @@ class PoFileParser
                 // Whitespace indicated current item is done
                 $this->_addMessage($messages, $item);
                 $item = $defaults;
-                $stage = null;
             } elseif (substr($line, 0, 7) === 'msgid "') {
                 // We start a new msg so save previous
                 $this->_addMessage($messages, $item);
                 $item['ids']['singular'] = substr($line, 7, -1);
-                $stage = ['ids', 'singular'];
             } elseif (substr($line, 0, 8) === 'msgstr "') {
                 $item['translated'] = substr($line, 8, -1);
-                $stage = ['translated'];
             } elseif (substr($line, 0, 9) === 'msgctxt "') {
                 $item['context'] = substr($line, 9, -1);
-                $stage = ['context'];
             } elseif ($line[0] === '"') {
-                switch (count($stage)) {
-                    case 2:
-                        $item[$stage[0]][$stage[1]] .= substr($line, 1, -1);
-                        break;
+                $continues = isset($item['translated']) ? 'translated' : 'ids';
 
-                    case 1:
-                        $item[$stage[0]] .= substr($line, 1, -1);
-                        break;
+                if (is_array($item[$continues])) {
+                    end($item[$continues]);
+                    $item[$continues][key($item[$continues])] .= substr($line, 1, -1);
+                } else {
+                    $item[$continues] .= substr($line, 1, -1);
                 }
             } elseif (substr($line, 0, 14) === 'msgid_plural "') {
                 $item['ids']['plural'] = substr($line, 14, -1);
-                $stage = ['ids', 'plural'];
             } elseif (substr($line, 0, 7) === 'msgstr[') {
                 $size = strpos($line, ']');
-                $row = (int)substr($line, 7, 1);
-                $item['translated'][$row] = substr($line, $size + 3, -1);
-                $stage = ['translated', $row];
+                $item['translated'][(int)substr($line, 7, 1)] = substr($line, $size + 3, -1);
             }
         }
         // save last item
@@ -151,10 +142,11 @@ class PoFileParser
 
         $translation = stripcslashes($translation);
 
-        if ($context !== null && !isset($messages[$singular]['_context'][$context])) {
+        if ($context && (!isset($messages[$singular]) || is_array($messages[$singular]))) {
             $messages[$singular]['_context'][$context] = $translation;
-        } elseif (!isset($messages[$singular]['_context'][''])) {
-            $messages[$singular]['_context'][''] = $translation;
+        }
+        if ($context === null) {
+            $messages[$singular] = $translation;
         }
 
         if (isset($item['ids']['plural'])) {
@@ -174,10 +166,10 @@ class PoFileParser
             $plurals = array_map('stripcslashes', $plurals);
             $key = stripcslashes($item['ids']['plural']);
 
-            if ($context !== null) {
-                $messages[Translator::PLURAL_PREFIX . $key]['_context'][$context] = $plurals;
+            if ($context) {
+                $messages[$key]['_context'][$context] = $plurals;
             } else {
-                $messages[Translator::PLURAL_PREFIX . $key]['_context'][''] = $plurals;
+                $messages[$key] = $plurals;
             }
         }
     }

@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         2.2.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Validation;
 
@@ -25,17 +25,18 @@ use IteratorAggregate;
  */
 class ValidationSet implements ArrayAccess, IteratorAggregate, Countable
 {
+
     /**
      * Holds the ValidationRule objects
      *
-     * @var \Cake\Validation\ValidationRule[]
+     * @var array
      */
     protected $_rules = [];
 
     /**
      * Denotes whether the fieldname key must be present in data array
      *
-     * @var bool|string|callable
+     * @var bool|string
      */
     protected $_validatePresent = false;
 
@@ -51,9 +52,8 @@ class ValidationSet implements ArrayAccess, IteratorAggregate, Countable
      *
      * If no argument is passed the currently set `validatePresent` value will be returned.
      *
-     * @param bool|string|callable|null $validatePresent Deprecated since 3.6.0 ValidationSet::isPresenceRequired() is deprecated as a setter
-     * Use ValidationSet::requirePresence() instead.
-     * @return bool|string|callable
+     * @param bool|string|null $validatePresent Valid values are true, false, 'create', 'update'
+     * @return bool|string
      */
     public function isPresenceRequired($validatePresent = null)
     {
@@ -61,34 +61,16 @@ class ValidationSet implements ArrayAccess, IteratorAggregate, Countable
             return $this->_validatePresent;
         }
 
-        deprecationWarning(
-            'ValidationSet::isPresenceRequired() is deprecated as a setter. ' .
-            'Use ValidationSet::requirePresence() instead.'
-        );
-
-        return $this->requirePresence($validatePresent);
+        return $this->_validatePresent = $validatePresent;
     }
 
     /**
-     * Sets whether a field is required to be present in data array.
-     *
-     * @param bool|string|callable $validatePresent Valid values are true, false, 'create', 'update' or a callable.
-     * @return $this
-     */
-    public function requirePresence($validatePresent)
-    {
-        $this->_validatePresent = $validatePresent;
-
-        return $this;
-    }
-
-    /**
-     * Sets whether a field value is allowed to be empty.
+     * Sets whether a field value is allowed to be empty
      *
      * If no argument is passed the currently set `allowEmpty` value will be returned.
      *
-     * @param bool|string|callable|null $allowEmpty Deprecated since 3.6.0 ValidationSet::isEmptyAllowed() is deprecated as a setter.
-     * Use ValidationSet::allowEmpty() instead.
+     * @param bool|string|callable|null $allowEmpty Valid values are true, false,
+     * 'create', 'update'
      * @return bool|string|callable
      */
     public function isEmptyAllowed($allowEmpty = null)
@@ -97,33 +79,14 @@ class ValidationSet implements ArrayAccess, IteratorAggregate, Countable
             return $this->_allowEmpty;
         }
 
-        deprecationWarning(
-            'ValidationSet::isEmptyAllowed() is deprecated as a setter. ' .
-            'Use ValidationSet::allowEmpty() instead.'
-        );
-
-        return $this->allowEmpty($allowEmpty);
-    }
-
-    /**
-     * Sets whether a field value is allowed to be empty.
-     *
-     * @param bool|string|callable $allowEmpty Valid values are true, false,
-     * 'create', 'update' or a callable.
-     * @return $this
-     */
-    public function allowEmpty($allowEmpty)
-    {
-        $this->_allowEmpty = $allowEmpty;
-
-        return $this;
+        return $this->_allowEmpty = $allowEmpty;
     }
 
     /**
      * Gets a rule for a given name if exists
      *
      * @param string $name The name under which the rule is set.
-     * @return \Cake\Validation\ValidationRule|null
+     * @return \Cake\Validation\ValidationRule
      */
     public function rule($name)
     {
@@ -135,7 +98,7 @@ class ValidationSet implements ArrayAccess, IteratorAggregate, Countable
     /**
      * Returns all rules for this validation set
      *
-     * @return \Cake\Validation\ValidationRule[]
+     * @return array
      */
     public function rules()
     {

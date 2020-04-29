@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         2.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Cache\Engine;
 
@@ -23,6 +23,7 @@ use Cake\Cache\CacheEngine;
  */
 class WincacheEngine extends CacheEngine
 {
+
     /**
      * Contains the compiled group names
      * (prefixed with the global configuration prefix)
@@ -60,9 +61,17 @@ class WincacheEngine extends CacheEngine
     public function write($key, $value)
     {
         $key = $this->_key($key);
-        $duration = $this->_config['duration'];
 
-        return wincache_ucache_set($key, $value, $duration);
+        $duration = $this->_config['duration'];
+        $expires = time() + $duration;
+
+        $data = [
+            $key . '_expires' => $expires,
+            $key => $value
+        ];
+        $result = wincache_ucache_set($data, null, $duration);
+
+        return empty($result);
     }
 
     /**
@@ -76,6 +85,12 @@ class WincacheEngine extends CacheEngine
     {
         $key = $this->_key($key);
 
+        $time = time();
+        $cachetime = (int)wincache_ucache_get($key . '_expires');
+        if ($cachetime < $time || ($time + $this->_config['duration']) < $cachetime) {
+            return false;
+        }
+
         return wincache_ucache_get($key);
     }
 
@@ -84,7 +99,7 @@ class WincacheEngine extends CacheEngine
      *
      * @param string $key Identifier for the data
      * @param int $offset How much to increment
-     * @return int|false New incremented value, false otherwise
+     * @return bool|int New incremented value, false otherwise
      */
     public function increment($key, $offset = 1)
     {
@@ -98,7 +113,7 @@ class WincacheEngine extends CacheEngine
      *
      * @param string $key Identifier for the data
      * @param int $offset How much to subtract
-     * @return int|false New decremented value, false otherwise
+     * @return bool|int New decremented value, false otherwise
      */
     public function decrement($key, $offset = 1)
     {
@@ -150,7 +165,7 @@ class WincacheEngine extends CacheEngine
      * If the group initial value was not found, then it initializes
      * the group accordingly.
      *
-     * @return string[]
+     * @return array
      */
     public function groups()
     {
@@ -189,7 +204,7 @@ class WincacheEngine extends CacheEngine
      */
     public function clearGroup($group)
     {
-        $success = false;
+        $success = null;
         wincache_ucache_inc($this->_config['prefix'] . $group, 1, $success);
 
         return $success;

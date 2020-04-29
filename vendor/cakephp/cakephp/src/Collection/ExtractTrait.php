@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         3.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Collection;
 
@@ -22,6 +22,7 @@ use Traversable;
  */
 trait ExtractTrait
 {
+
     /**
      * Returns a callable that can be used to extract a property or column from
      * an array or object based on a dot separated path.
@@ -56,7 +57,7 @@ trait ExtractTrait
      * It will return arrays for elements in represented with `{*}`
      *
      * @param array|\ArrayAccess $data Data.
-     * @param string[] $path Path to extract from.
+     * @param array $path Path to extract from.
      * @return mixed
      */
     protected function _extract($data, $path)
@@ -70,10 +71,8 @@ trait ExtractTrait
                 continue;
             }
 
-            if (
-                $collectionTransform &&
-                !($data instanceof Traversable || is_array($data))
-            ) {
+            if ($collectionTransform &&
+                !($data instanceof Traversable || is_array($data))) {
                 return null;
             }
 
@@ -99,7 +98,7 @@ trait ExtractTrait
      * by iterating over the column names contained in $path
      *
      * @param array|\ArrayAccess $data Data.
-     * @param string[] $path Path to extract from.
+     * @param array $path Path to extract from.
      * @return mixed
      */
     protected function _simpleExtract($data, $path)
@@ -123,7 +122,7 @@ trait ExtractTrait
      * @param array $conditions A key-value list of conditions to match where the
      * key is the property path to get from the current item and the value is the
      * value to be compared the item with.
-     * @return \Closure
+     * @return callable
      */
     protected function _createMatcherFilter(array $conditions)
     {

@@ -1,41 +1,39 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         0.2.9
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Routing;
 
 use Cake\Event\EventDispatcherTrait;
 use Cake\Event\EventListenerInterface;
 use Cake\Http\ActionDispatcher;
-use Cake\Http\Response;
-use Cake\Http\ServerRequest;
+use Cake\Network\Request;
+use Cake\Network\Response;
 
 /**
  * Dispatcher converts Requests into controller actions. It uses the dispatched Request
  * to locate and load the correct controller. If found, the requested action is called on
  * the controller
- *
- * @deprecated 3.6.0 Dispatcher is deprecated. You should update your application to use
- *   the Http\Server implementation instead.
  */
 class Dispatcher
 {
+
     use EventDispatcherTrait;
 
     /**
      * Connected filter objects
      *
-     * @var \Cake\Event\EventListenerInterface[]
+     * @var array
      */
     protected $_filters = [];
 
@@ -51,20 +49,16 @@ class Dispatcher
      * If no controller of given name can be found, invoke() will throw an exception.
      * If the controller is found, and the action is not found an exception will be thrown.
      *
-     * @param \Cake\Http\ServerRequest $request Request object to dispatch.
-     * @param \Cake\Http\Response $response Response object to put the results of the dispatch into.
+     * @param \Cake\Network\Request $request Request object to dispatch.
+     * @param \Cake\Network\Response $response Response object to put the results of the dispatch into.
      * @return string|null if `$request['return']` is set then it returns response body, null otherwise
      * @throws \LogicException When the controller did not get created in the Dispatcher.beforeDispatch event.
      */
-    public function dispatch(ServerRequest $request, Response $response)
+    public function dispatch(Request $request, Response $response)
     {
-        deprecationWarning(
-            'Dispatcher is deprecated. You should update your application to use ' .
-            'the Http\Server implementation instead.'
-        );
-        $actionDispatcher = new ActionDispatcher(null, $this->getEventManager(), $this->_filters);
+        $actionDispatcher = new ActionDispatcher(null, $this->eventManager(), $this->_filters);
         $response = $actionDispatcher->dispatch($request, $response);
-        if ($request->getParam('return', null) !== null) {
+        if (isset($request->params['return'])) {
             return $response->body();
         }
 
@@ -89,7 +83,7 @@ class Dispatcher
     /**
      * Get the list of connected filters.
      *
-     * @return \Cake\Event\EventListenerInterface[]
+     * @return array
      */
     public function filters()
     {

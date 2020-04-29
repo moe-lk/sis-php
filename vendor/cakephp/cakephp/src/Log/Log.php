@@ -1,15 +1,15 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         0.2.9
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Log;
 
@@ -18,8 +18,8 @@ use Cake\Log\Engine\BaseLog;
 use InvalidArgumentException;
 
 /**
- * Logs messages to configured Log adapters. One or more adapters
- * can be configured using Cake Logs's methods. If you don't
+ * Logs messages to configured Log adapters.  One or more adapters
+ * can be configured using Cake Logs's methods.  If you don't
  * configure any adapters, and write to Log, the messages will be
  * ignored.
  *
@@ -29,7 +29,7 @@ use InvalidArgumentException;
  * A sample configuration would look like:
  *
  * ```
- * Log::setConfig('my_log', ['className' => 'FileLog']);
+ * Log::config('my_log', ['className' => 'FileLog']);
  * ```
  *
  * You can define the className as any fully namespaced classname or use a short hand
@@ -48,7 +48,7 @@ use InvalidArgumentException;
  * This allows you to disable debug messages in production for example:
  *
  * ```
- * Log::setConfig('default', [
+ * Log::config('default', [
  *     'className' => 'File',
  *     'path' => LOGS,
  *     'levels' => ['error', 'critical', 'alert', 'emergency']
@@ -66,7 +66,7 @@ use InvalidArgumentException;
  * all scopes that match the handled levels.
  *
  * ```
- * Log::setConfig('payments', [
+ * Log::config('payments', [
  *     'className' => 'File',
  *     'scopes' => ['payment', 'order']
  * ]);
@@ -78,7 +78,7 @@ use InvalidArgumentException;
  *
  * ### Writing to the log
  *
- * You write to the logs using Log::write(). See its documentation for more information.
+ * You write to the logs using Log::write().  See its documentation for more information.
  *
  * ### Logging Levels
  *
@@ -94,23 +94,24 @@ use InvalidArgumentException;
  * ### Logging scopes
  *
  * When logging messages and configuring log adapters, you can specify
- * 'scopes' that the logger will handle. You can think of scopes as subsystems
- * in your application that may require different logging setups. For
+ * 'scopes' that the logger will handle.  You can think of scopes as subsystems
+ * in your application that may require different logging setups.  For
  * example in an e-commerce application you may want to handle logged errors
  * in the cart and ordering subsystems differently than the rest of the
- * application. By using scopes you can control logging for each part
+ * application.  By using scopes you can control logging for each part
  * of your application and also use standard log levels.
  */
 class Log
 {
+
     use StaticConfigTrait {
-        setConfig as protected _setConfig;
+        config as protected _config;
     }
 
     /**
      * An array mapping url schemes to fully qualified Log engine class names
      *
-     * @var string[]
+     * @var array
      */
     protected static $_dsnClassMap = [
         'console' => 'Cake\Log\Engine\ConsoleLog',
@@ -128,14 +129,14 @@ class Log
     /**
      * LogEngineRegistry class
      *
-     * @var \Cake\Log\LogEngineRegistry|null
+     * @var \Cake\Log\LogEngineRegistry
      */
     protected static $_registry;
 
     /**
      * Handled log levels
      *
-     * @var string[]
+     * @var array
      */
     protected static $_levels = [
         'emergency',
@@ -145,12 +146,12 @@ class Log
         'warning',
         'notice',
         'info',
-        'debug',
+        'debug'
     ];
 
     /**
      * Log levels as detailed in RFC 5424
-     * https://tools.ietf.org/html/rfc5424
+     * http://tools.ietf.org/html/rfc5424
      *
      * @var array
      */
@@ -200,7 +201,7 @@ class Log
     }
 
     /**
-     * Reset all the connected loggers. This is useful to do when changing the logging
+     * Reset all the connected loggers.  This is useful to do when changing the logging
      * configuration or during testing when you want to reset the internal state of the
      * Log class.
      *
@@ -222,7 +223,7 @@ class Log
      * Call this method to obtain current
      * level configuration.
      *
-     * @return string[] active log levels
+     * @return array active log levels
      */
     public static function levels()
     {
@@ -240,38 +241,47 @@ class Log
      *
      * ### Usage
      *
+     * Reading config data back:
+     *
+     * ```
+     * Log::config('default');
+     * ```
+     *
      * Setting a cache engine up.
      *
      * ```
-     * Log::setConfig('default', $settings);
+     * Log::config('default', $settings);
      * ```
      *
      * Injecting a constructed adapter in:
      *
      * ```
-     * Log::setConfig('default', $instance);
+     * Log::config('default', $instance);
      * ```
      *
      * Using a factory function to get an adapter:
      *
      * ```
-     * Log::setConfig('default', function () { return new FileLog(); });
+     * Log::config('default', function () { return new FileLog(); });
      * ```
      *
      * Configure multiple adapters at once:
      *
      * ```
-     * Log::setConfig($arrayOfConfig);
+     * Log::config($arrayOfConfig);
      * ```
      *
      * @param string|array $key The name of the logger config, or an array of multiple configs.
      * @param array|null $config An array of name => config data for adapter.
-     * @return void
+     * @return array|null Null when adding configuration and an array of configuration data when reading.
      * @throws \BadMethodCallException When trying to modify an existing config.
      */
-    public static function setConfig($key, $config = null)
+    public static function config($key, $config = null)
     {
-        static::_setConfig($key, $config);
+        $return = static::_config($key, $config);
+        if ($return !== null) {
+            return $return;
+        }
         static::$_dirtyConfig = true;
     }
 
@@ -341,7 +351,7 @@ class Log
      *  The special `scope` key can be passed to be used for further filtering of the
      *  log engines to be used. If a string or a numerically index array is passed, it
      *  will be treated as the `scope` key.
-     *  See Cake\Log\Log::setConfig() for more information on logging scopes.
+     *  See Cake\Log\Log::config() for more information on logging scopes.
      * @return bool Success
      * @throws \InvalidArgumentException If invalid level is passed.
      */
@@ -377,7 +387,7 @@ class Log
 
             $correctLevel = empty($levels) || in_array($level, $levels);
             $inScope = $scopes === false && empty($context['scope']) || $scopes === [] ||
-                is_array($scopes) && array_intersect((array)$context['scope'], $scopes);
+                is_array($scopes) && array_intersect($context['scope'], $scopes);
 
             if ($correctLevel && $inScope) {
                 $logger->log($level, $message, $context);
@@ -396,12 +406,12 @@ class Log
      *  The special `scope` key can be passed to be used for further filtering of the
      *  log engines to be used. If a string or a numerically index array is passed, it
      *  will be treated as the `scope` key.
-     *  See Cake\Log\Log::setConfig() for more information on logging scopes.
+     *  See Cake\Log\Log::config() for more information on logging scopes.
      * @return bool Success
      */
     public static function emergency($message, $context = [])
     {
-        return static::write(__FUNCTION__, $message, $context);
+        return static::write('emergency', $message, $context);
     }
 
     /**
@@ -412,12 +422,12 @@ class Log
      *  The special `scope` key can be passed to be used for further filtering of the
      *  log engines to be used. If a string or a numerically index array is passed, it
      *  will be treated as the `scope` key.
-     *  See Cake\Log\Log::setConfig() for more information on logging scopes.
+     *  See Cake\Log\Log::config() for more information on logging scopes.
      * @return bool Success
      */
     public static function alert($message, $context = [])
     {
-        return static::write(__FUNCTION__, $message, $context);
+        return static::write('alert', $message, $context);
     }
 
     /**
@@ -428,12 +438,12 @@ class Log
      *  The special `scope` key can be passed to be used for further filtering of the
      *  log engines to be used. If a string or a numerically index array is passed, it
      *  will be treated as the `scope` key.
-     *  See Cake\Log\Log::setConfig() for more information on logging scopes.
+     *  See Cake\Log\Log::config() for more information on logging scopes.
      * @return bool Success
      */
     public static function critical($message, $context = [])
     {
-        return static::write(__FUNCTION__, $message, $context);
+        return static::write('critical', $message, $context);
     }
 
     /**
@@ -444,12 +454,12 @@ class Log
      *  The special `scope` key can be passed to be used for further filtering of the
      *  log engines to be used. If a string or a numerically index array is passed, it
      *  will be treated as the `scope` key.
-     *  See Cake\Log\Log::setConfig() for more information on logging scopes.
+     *  See Cake\Log\Log::config() for more information on logging scopes.
      * @return bool Success
      */
     public static function error($message, $context = [])
     {
-        return static::write(__FUNCTION__, $message, $context);
+        return static::write('error', $message, $context);
     }
 
     /**
@@ -460,12 +470,12 @@ class Log
      *  The special `scope` key can be passed to be used for further filtering of the
      *  log engines to be used. If a string or a numerically index array is passed, it
      *  will be treated as the `scope` key.
-     *  See Cake\Log\Log::setConfig() for more information on logging scopes.
+     *  See Cake\Log\Log::config() for more information on logging scopes.
      * @return bool Success
      */
     public static function warning($message, $context = [])
     {
-        return static::write(__FUNCTION__, $message, $context);
+        return static::write('warning', $message, $context);
     }
 
     /**
@@ -476,12 +486,12 @@ class Log
      *  The special `scope` key can be passed to be used for further filtering of the
      *  log engines to be used. If a string or a numerically index array is passed, it
      *  will be treated as the `scope` key.
-     *  See Cake\Log\Log::setConfig() for more information on logging scopes.
+     *  See Cake\Log\Log::config() for more information on logging scopes.
      * @return bool Success
      */
     public static function notice($message, $context = [])
     {
-        return static::write(__FUNCTION__, $message, $context);
+        return static::write('notice', $message, $context);
     }
 
     /**
@@ -492,12 +502,12 @@ class Log
      *  The special `scope` key can be passed to be used for further filtering of the
      *  log engines to be used. If a string or a numerically index array is passed, it
      *  will be treated as the `scope` key.
-     *  See Cake\Log\Log::setConfig() for more information on logging scopes.
+     *  See Cake\Log\Log::config() for more information on logging scopes.
      * @return bool Success
      */
     public static function debug($message, $context = [])
     {
-        return static::write(__FUNCTION__, $message, $context);
+        return static::write('debug', $message, $context);
     }
 
     /**
@@ -508,11 +518,11 @@ class Log
      *  The special `scope` key can be passed to be used for further filtering of the
      *  log engines to be used. If a string or a numerically index array is passed, it
      *  will be treated as the `scope` key.
-     *  See Cake\Log\Log::setConfig() for more information on logging scopes.
+     *  See Cake\Log\Log::config() for more information on logging scopes.
      * @return bool Success
      */
     public static function info($message, $context = [])
     {
-        return static::write(__FUNCTION__, $message, $context);
+        return static::write('info', $message, $context);
     }
 }

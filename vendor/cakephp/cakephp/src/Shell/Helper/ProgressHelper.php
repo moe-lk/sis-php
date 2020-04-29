@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP Project
  * @since         3.1.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Shell\Helper;
 
@@ -19,24 +19,14 @@ use RuntimeException;
 
 /**
  * Create a progress bar using a supplied callback.
- *
- * ## Usage
- *
- * The ProgressHelper can be accessed from shells using the helper() method
- *
- * ```
- * $this->helper('Progress')->output(['callback' => function ($progress) {
- *     // Do work
- *     $progress->increment();
- * });
- * ```
  */
 class ProgressHelper extends Helper
 {
+
     /**
      * The current progress.
      *
-     * @var int|float
+     * @var int
      */
     protected $_progress = 0;
 
@@ -96,7 +86,7 @@ class ProgressHelper extends Helper
      * - `width` The width of the progress bar. Defaults to 80.
      *
      * @param array $args The initialization data.
-     * @return $this
+     * @return void
      */
     public function init(array $args = [])
     {
@@ -104,27 +94,23 @@ class ProgressHelper extends Helper
         $this->_progress = 0;
         $this->_width = $args['width'];
         $this->_total = $args['total'];
-
-        return $this;
     }
 
     /**
      * Increment the progress bar.
      *
-     * @param int|float $num The amount of progress to advance by.
-     * @return $this
+     * @param int $num The amount of progress to advance by.
+     * @return void
      */
     public function increment($num = 1)
     {
         $this->_progress = min(max(0, $this->_progress + $num), $this->_total);
-
-        return $this;
     }
 
     /**
      * Render the progress bar based on the current state.
      *
-     * @return $this
+     * @return void
      */
     public function draw()
     {
@@ -144,7 +130,5 @@ class ProgressHelper extends Helper
         $bar .= str_pad($percent, $numberLen, ' ', STR_PAD_LEFT);
 
         $this->_io->overwrite($bar, 0);
-
-        return $this;
     }
 }

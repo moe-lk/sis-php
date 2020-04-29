@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         3.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Routing;
 
@@ -20,16 +20,14 @@ use Cake\Routing\Exception\MissingDispatcherFilterException;
 /**
  * A factory for creating dispatchers with all the desired middleware
  * connected.
- *
- * @deprecated 3.6.0 This class is part of the deprecated dispatcher system.
- *   Use Http\Server instead.
  */
 class DispatcherFactory
 {
+
     /**
      * Stack of middleware to apply to dispatchers.
      *
-     * @var \Cake\Routing\DispatcherFilter[]
+     * @var array
      */
     protected static $_stack = [];
 
@@ -93,7 +91,7 @@ class DispatcherFactory
     /**
      * Get the connected dispatcher filters.
      *
-     * @return \Cake\Routing\DispatcherFilter[]
+     * @return array
      */
     public static function filters()
     {

@@ -29,12 +29,12 @@ class Orders
 		$event = new Event('Orders.afterPlace', $this, [
 			'order' => $order
 		]);
-		$this->getEventManager()->dispatch($event);
+		$this->eventManager()->dispatch($event);
 	}
 }
 
 $orders = new Orders();
-$orders->getEventManager()->on(function ($event) {
+$orders->eventManager()->on(function ($event) {
 	// Do something after the order was placed
 	...
 }, 'Orders.afterPlace');
@@ -48,4 +48,4 @@ in separate objects that focus on those concerns.
 
 ## Documentation
 
-Please make sure you check the [official documentation](https://book.cakephp.org/3/en/core-libraries/events.html)
+Please make sure you check the [official documentation](http://book.cakephp.org/3.0/en/core-libraries/events.html)

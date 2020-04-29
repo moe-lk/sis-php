@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         2.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Controller;
 
@@ -24,19 +24,18 @@ use Cake\Event\EventDispatcherTrait;
  * ComponentRegistry is a registry for loaded components
  *
  * Handles loading, constructing and binding events for component class objects.
- *
- * @extends \Cake\Core\ObjectRegistry<\Cake\Controller\Component>
  */
 class ComponentRegistry extends ObjectRegistry implements EventDispatcherInterface
 {
+
     use EventDispatcherTrait;
 
     /**
      * The controller that this collection was initialized with.
      *
-     * @var \Cake\Controller\Controller|null
+     * @var \Cake\Controller\Controller
      */
-    protected $_Controller;
+    protected $_Controller = null;
 
     /**
      * Constructor.
@@ -53,7 +52,7 @@ class ComponentRegistry extends ObjectRegistry implements EventDispatcherInterfa
     /**
      * Get the controller associated with the collection.
      *
-     * @return \Cake\Controller\Controller|null Controller instance or null if not set.
+     * @return \Cake\Controller\Controller Controller instance
      */
     public function getController()
     {
@@ -69,7 +68,7 @@ class ComponentRegistry extends ObjectRegistry implements EventDispatcherInterfa
     public function setController(Controller $controller)
     {
         $this->_Controller = $controller;
-        $this->setEventManager($controller->getEventManager());
+        $this->eventManager($controller->eventManager());
     }
 
     /**
@@ -89,7 +88,6 @@ class ComponentRegistry extends ObjectRegistry implements EventDispatcherInterfa
      * Throws an exception when a component is missing.
      *
      * Part of the template method for Cake\Core\ObjectRegistry::load()
-     * and Cake\Core\ObjectRegistry::unload()
      *
      * @param string $class The classname that is missing.
      * @param string $plugin The plugin the component is missing in.
@@ -100,7 +98,7 @@ class ComponentRegistry extends ObjectRegistry implements EventDispatcherInterfa
     {
         throw new MissingComponentException([
             'class' => $class . 'Component',
-            'plugin' => $plugin,
+            'plugin' => $plugin
         ]);
     }
 
@@ -120,7 +118,7 @@ class ComponentRegistry extends ObjectRegistry implements EventDispatcherInterfa
         $instance = new $class($this, $config);
         $enable = isset($config['enabled']) ? $config['enabled'] : true;
         if ($enable) {
-            $this->getEventManager()->on($instance);
+            $this->eventManager()->on($instance);
         }
 
         return $instance;

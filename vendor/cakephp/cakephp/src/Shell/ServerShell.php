@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         2.3.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 
 namespace Cake\Shell;
@@ -23,6 +23,7 @@ use Cake\Core\Configure;
  */
 class ServerShell extends Shell
 {
+
     /**
      * Default ServerHost
      *
@@ -42,28 +43,33 @@ class ServerShell extends Shell
      *
      * @var string
      */
-    protected $_host = self::DEFAULT_HOST;
+    protected $_host = null;
 
     /**
      * listen port
      *
-     * @var int
+     * @var string
      */
-    protected $_port = self::DEFAULT_PORT;
+    protected $_port = null;
 
     /**
      * document root
      *
      * @var string
      */
-    protected $_documentRoot = WWW_ROOT;
+    protected $_documentRoot = null;
 
     /**
-     * ini path
+     * Override initialize of the Shell
      *
-     * @var string
+     * @return void
      */
-    protected $_iniPath = '';
+    public function initialize()
+    {
+        $this->_host = self::DEFAULT_HOST;
+        $this->_port = self::DEFAULT_PORT;
+        $this->_documentRoot = WWW_ROOT;
+    }
 
     /**
      * Starts up the Shell and displays the welcome message.
@@ -73,21 +79,18 @@ class ServerShell extends Shell
      * or otherwise modify the pre-command flow.
      *
      * @return void
-     * @link https://book.cakephp.org/3/en/console-and-shells.html#hook-methods
+     * @link http://book.cakephp.org/3.0/en/console-and-shells.html#hook-methods
      */
     public function startup()
     {
-        if ($this->param('host')) {
-            $this->_host = $this->param('host');
+        if (!empty($this->params['host'])) {
+            $this->_host = $this->params['host'];
         }
-        if ($this->param('port')) {
-            $this->_port = (int)$this->param('port');
+        if (!empty($this->params['port'])) {
+            $this->_port = $this->params['port'];
         }
-        if ($this->param('document_root')) {
-            $this->_documentRoot = $this->param('document_root');
-        }
-        if ($this->param('ini_path')) {
-            $this->_iniPath = $this->param('ini_path');
+        if (!empty($this->params['document_root'])) {
+            $this->_documentRoot = $this->params['document_root'];
         }
 
         // For Windows
@@ -96,11 +99,6 @@ class ServerShell extends Shell
         }
         if (preg_match("/^([a-z]:)[\\\]+(.+)$/i", $this->_documentRoot, $m)) {
             $this->_documentRoot = $m[1] . '\\' . $m[2];
-        }
-
-        $this->_iniPath = rtrim($this->_iniPath, DIRECTORY_SEPARATOR);
-        if (preg_match("/^([a-z]:)[\\\]+(.+)$/i", $this->_iniPath, $m)) {
-            $this->_iniPath = $m[1] . '\\' . $m[2];
         }
 
         parent::startup();
@@ -119,7 +117,6 @@ class ServerShell extends Shell
         $this->out(sprintf('App : %s', APP_DIR));
         $this->out(sprintf('Path: %s', APP));
         $this->out(sprintf('DocumentRoot: %s', $this->_documentRoot));
-        $this->out(sprintf('Ini Path: %s', $this->_iniPath));
         $this->hr();
     }
 
@@ -131,17 +128,12 @@ class ServerShell extends Shell
     public function main()
     {
         $command = sprintf(
-            'php -S %s:%d -t %s',
+            "php -S %s:%d -t %s %s",
             $this->_host,
             $this->_port,
-            escapeshellarg($this->_documentRoot)
+            escapeshellarg($this->_documentRoot),
+            escapeshellarg($this->_documentRoot . '/index.php')
         );
-
-        if (!empty($this->_iniPath)) {
-            $command = sprintf('%s -c %s', $command, $this->_iniPath);
-        }
-
-        $command = sprintf('%s %s', $command, escapeshellarg($this->_documentRoot . '/index.php'));
 
         $port = ':' . $this->_port;
         $this->out(sprintf('built-in server is running in http://%s%s/', $this->_host, $port));
@@ -158,21 +150,18 @@ class ServerShell extends Shell
     {
         $parser = parent::getOptionParser();
 
-        $parser->setDescription([
+        $parser->description([
             'PHP Built-in Server for CakePHP',
             '<warning>[WARN] Don\'t use this in a production environment</warning>',
         ])->addOption('host', [
             'short' => 'H',
-            'help' => 'ServerHost',
+            'help' => 'ServerHost'
         ])->addOption('port', [
             'short' => 'p',
-            'help' => 'ListenPort',
-        ])->addOption('ini_path', [
-            'short' => 'I',
-            'help' => 'php.ini path',
+            'help' => 'ListenPort'
         ])->addOption('document_root', [
             'short' => 'd',
-            'help' => 'DocumentRoot',
+            'help' => 'DocumentRoot'
         ]);
 
         return $parser;

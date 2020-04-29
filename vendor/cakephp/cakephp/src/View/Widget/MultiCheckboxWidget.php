@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         3.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\View\Widget;
 
@@ -22,6 +22,7 @@ use Cake\View\Helper\IdGeneratorTrait;
  */
 class MultiCheckboxWidget implements WidgetInterface
 {
+
     use IdGeneratorTrait;
 
     /**
@@ -112,7 +113,7 @@ class MultiCheckboxWidget implements WidgetInterface
             'val' => null,
             'idPrefix' => null,
             'templateVars' => [],
-            'label' => true,
+            'label' => true
         ];
         $this->_idPrefix = $data['idPrefix'];
         $this->_clearIds();
@@ -136,7 +137,7 @@ class MultiCheckboxWidget implements WidgetInterface
                 $inputs = $this->_renderInputs(['options' => $val] + $data, $context);
                 $title = $this->_templates->format('multicheckboxTitle', ['text' => $key]);
                 $out[] = $this->_templates->format('multicheckboxWrapper', [
-                    'content' => $title . implode('', $inputs),
+                    'content' => $title . implode('', $inputs)
                 ]);
                 continue;
             }
@@ -163,14 +164,7 @@ class MultiCheckboxWidget implements WidgetInterface
             $checkbox['checked'] = $this->_isSelected($checkbox['value'], $data['val']);
             $checkbox['disabled'] = $this->_isDisabled($checkbox['value'], $data['disabled']);
             if (empty($checkbox['id'])) {
-                if (isset($data['id'])) {
-                    $checkbox['id'] = $data['id'] . '-' . trim(
-                        $this->_idSuffix($checkbox['value']),
-                        '-'
-                    );
-                } else {
-                    $checkbox['id'] = $this->_id($checkbox['name'], $checkbox['value']);
-                }
+                $checkbox['id'] = $this->_id($checkbox['name'], $checkbox['value']);
             }
             $out[] = $this->_renderInput($checkbox + $data, $context);
         }
@@ -194,20 +188,23 @@ class MultiCheckboxWidget implements WidgetInterface
             'attrs' => $this->_templates->formatAttributes(
                 $checkbox,
                 ['name', 'value', 'text', 'options', 'label', 'val', 'type']
-            ),
+            )
         ]);
 
-        if ($checkbox['label'] === false && strpos($this->_templates->get('checkboxWrapper'), '{{input}}') === false) {
+        if ($checkbox['label'] === false && strpos($this->_templates->get('radioWrapper'), '{{input}}') === false) {
             $label = $input;
         } else {
-            $labelAttrs = is_array($checkbox['label']) ? $checkbox['label'] : [];
-            $labelAttrs += [
+            $labelAttrs = [
                 'for' => $checkbox['id'],
                 'escape' => $checkbox['escape'],
                 'text' => $checkbox['text'],
                 'templateVars' => $checkbox['templateVars'],
-                'input' => $input,
+                'input' => $input
             ];
+
+            if (is_array($checkbox['label'])) {
+                $labelAttrs += $checkbox['label'];
+            }
 
             if ($checkbox['checked']) {
                 $labelAttrs = $this->_templates->addClass($labelAttrs, 'selected');
@@ -219,7 +216,7 @@ class MultiCheckboxWidget implements WidgetInterface
         return $this->_templates->format('checkboxWrapper', [
             'templateVars' => $checkbox['templateVars'],
             'label' => $label,
-            'input' => $input,
+            'input' => $input
         ]);
     }
 
@@ -248,7 +245,7 @@ class MultiCheckboxWidget implements WidgetInterface
      * Helper method for deciding what options are disabled.
      *
      * @param string $key The key to test.
-     * @param array|bool|null $disabled The disabled values.
+     * @param array|null $disabled The disabled values.
      * @return bool
      */
     protected function _isDisabled($key, $disabled)

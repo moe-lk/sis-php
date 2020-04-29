@@ -1,15 +1,15 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         3.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Utility;
 
@@ -19,6 +19,7 @@ namespace Cake\Utility;
  */
 trait MergeVariablesTrait
 {
+
     /**
      * Merge the list of $properties with all parent classes of the current class.
      *
@@ -27,7 +28,7 @@ trait MergeVariablesTrait
      * - `associative` - A list of properties that should be treated as associative arrays.
      *   Properties in this list will be passed through Hash::normalize() before merging.
      *
-     * @param string[] $properties An array of properties and the merge strategy for them.
+     * @param array $properties An array of properties and the merge strategy for them.
      * @param array $options The options to use when merging properties.
      * @return void
      */
@@ -67,8 +68,7 @@ trait MergeVariablesTrait
     {
         $thisValue = $this->{$property};
         $isAssoc = false;
-        if (
-            isset($options['associative']) &&
+        if (isset($options['associative']) &&
             in_array($property, (array)$options['associative'])
         ) {
             $isAssoc = true;

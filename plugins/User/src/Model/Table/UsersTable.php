@@ -122,6 +122,7 @@ class UsersTable extends AppTable
     public function createAuthorisedUser(Event $event, $userName, array $userInfo)
     {
         $openemisNo = $this->getUniqueOpenemisId();
+        $userName = str_replace('-','',$userName);
 
         $GenderTable = TableRegistry::get('User.Genders');
         $genderList = $GenderTable->find('list')->toArray();

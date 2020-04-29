@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         2.1.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\View;
 
@@ -24,6 +24,7 @@ use Cake\Core\Exception\Exception;
  */
 class ViewBlock
 {
+
     /**
      * Override content
      *
@@ -48,7 +49,7 @@ class ViewBlock
     /**
      * Block content. An array of blocks indexed by name.
      *
-     * @var string[]
+     * @var array
      */
     protected $_blocks = [];
 
@@ -85,7 +86,7 @@ class ViewBlock
      */
     public function start($name, $mode = ViewBlock::OVERRIDE)
     {
-        if (array_key_exists($name, $this->_active)) {
+        if (in_array($name, array_keys($this->_active))) {
             throw new Exception(sprintf("A view block with the name '%s' is already/still open.", $name));
         }
         $this->_active[$name] = $mode;
@@ -106,12 +107,12 @@ class ViewBlock
 
             return;
         }
-        if ($this->_active) {
+        if (!empty($this->_active)) {
             $mode = end($this->_active);
             $active = key($this->_active);
             $content = ob_get_clean();
             if ($mode === ViewBlock::OVERRIDE) {
-                $this->_blocks[$active] = (string)$content;
+                $this->_blocks[$active] = $content;
             } else {
                 $this->concat($active, $content, $mode);
             }
@@ -196,7 +197,7 @@ class ViewBlock
     /**
      * Get the names of all the existing blocks.
      *
-     * @return string[] An array containing the blocks.
+     * @return array An array containing the blocks.
      */
     public function keys()
     {

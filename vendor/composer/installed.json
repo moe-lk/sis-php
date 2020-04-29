@@ -47,221 +47,118 @@
         ]
     },
     {
-        "name": "ajgl/breakpoint-twig-extension",
-        "version": "0.3.4",
-        "version_normalized": "0.3.4.0",
+        "name": "aura/installer-default",
+        "version": "1.0.0",
+        "version_normalized": "1.0.0.0",
         "source": {
             "type": "git",
-            "url": "https://github.com/ajgarlag/AjglBreakpointTwigExtension.git",
-            "reference": "13ee39406dc3d959c5704b462a3dbc3cbf088f16"
+            "url": "https://github.com/auraphp/installer-default.git",
+            "reference": "52f8de3670cc1ef45a916f40f732937436d028c8"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/ajgarlag/AjglBreakpointTwigExtension/zipball/13ee39406dc3d959c5704b462a3dbc3cbf088f16",
-            "reference": "13ee39406dc3d959c5704b462a3dbc3cbf088f16",
+            "url": "https://api.github.com/repos/auraphp/installer-default/zipball/52f8de3670cc1ef45a916f40f732937436d028c8",
+            "reference": "52f8de3670cc1ef45a916f40f732937436d028c8",
             "shasum": ""
         },
-        "require": {
-            "php": ">=5.6",
-            "twig/twig": "^1.14|^2.0"
-        },
-        "require-dev": {
-            "symfony/framework-bundle": "^2.7|^3.2|^4.1",
-            "symfony/phpunit-bridge": "^3.4|^4.1",
-            "symfony/twig-bundle": "^2.7|^3.2|^4.1"
-        },
-        "suggest": {
-            "ext-xdebug": "The Xdebug extension is required for the breakpoint to work",
-            "symfony/framework-bundle": "The framework bundle to integrate the extension into Symfony",
-            "symfony/twig-bundle": "The twig bundle to integrate the extension into Symfony"
-        },
-        "time": "2019-04-10T11:41:26+00:00",
-        "type": "library",
+        "time": "2012-11-26T21:35:57+00:00",
+        "type": "composer-installer",
         "extra": {
-            "branch-alias": {
-                "dev-master": "0.3.x-dev"
-            }
+            "class": "Aura\\Composer\\DefaultInstaller"
         },
-        "installation-source": "dist",
-        "autoload": {
-            "psr-4": {
-                "Ajgl\\Twig\\Extension\\": "src/"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Antonio J. García Lagar",
-                "email": "aj@garcialagar.es",
-                "homepage": "http://aj.garcialagar.es",
-                "role": "developer"
-            }
-        ],
-        "description": "Twig extension to set breakpoints",
-        "homepage": "https://github.com/ajgarlag/AjglBreakpointTwigExtension",
-        "keywords": [
-            "Xdebug",
-            "breakpoint",
-            "twig"
-        ]
-    },
-    {
-        "name": "aptoma/twig-markdown",
-        "version": "2.0.0",
-        "version_normalized": "2.0.0.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/aptoma/twig-markdown.git",
-            "reference": "64a9c5c7418c08faf91c4410b34bdb65fb25c23d"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/aptoma/twig-markdown/zipball/64a9c5c7418c08faf91c4410b34bdb65fb25c23d",
-            "reference": "64a9c5c7418c08faf91c4410b34bdb65fb25c23d",
-            "shasum": ""
-        },
-        "require": {
-            "twig/twig": "~1.12"
-        },
-        "require-dev": {
-            "codeclimate/php-test-reporter": "dev-master",
-            "erusev/parsedown": "^1.6",
-            "knplabs/github-api": "~1.2",
-            "league/commonmark": "~0.5",
-            "michelf/php-markdown": "~1",
-            "phpunit/phpunit": "~4.0",
-            "satooshi/php-coveralls": "~0.6"
-        },
-        "suggest": {
-            "knplabs/github-api": "Needed for using GitHub's Markdown engine provided through their API.",
-            "michelf/php-markdown": "Original Markdown engine with MarkdownExtra."
-        },
-        "time": "2015-10-23T20:27:08+00:00",
-        "type": "library",
         "installation-source": "dist",
         "autoload": {
             "psr-0": {
-                "Aptoma": "src/"
+                "Aura\\Composer\\": "src/"
             }
         },
         "notification-url": "https://packagist.org/downloads/",
         "license": [
-            "MIT"
+            "BSD-2-Clause"
         ],
         "authors": [
             {
-                "name": "Joris Berthelot",
-                "email": "joris@berthelot.tel"
-            },
-            {
-                "name": "Gunnar Lium",
-                "email": "gunnar@aptoma.com"
+                "name": "Paul M. Jones",
+                "email": "pmjones88@gmail.com",
+                "homepage": "http://paul-m-jones.com"
             }
         ],
-        "description": "Twig extension to work with Markdown content",
+        "description": "Installs Aura packages using the Composer defaults.",
         "keywords": [
-            "markdown",
-            "twig"
-        ]
-    },
-    {
-        "name": "asm89/twig-cache-extension",
-        "version": "1.4.0",
-        "version_normalized": "1.4.0.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/asm89/twig-cache-extension.git",
-            "reference": "13787226956ec766f4770722082288097aebaaf3"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/asm89/twig-cache-extension/zipball/13787226956ec766f4770722082288097aebaaf3",
-            "reference": "13787226956ec766f4770722082288097aebaaf3",
-            "shasum": ""
-        },
-        "require": {
-            "php": ">=5.3.2",
-            "twig/twig": "^1.0|^2.0"
-        },
-        "require-dev": {
-            "doctrine/cache": "~1.0",
-            "phpunit/phpunit": "^5.0 || ^4.8.10"
-        },
-        "suggest": {
-            "psr/cache-implementation": "To make use of PSR-6 cache implementation via PsrCacheAdapter."
-        },
-        "time": "2020-01-01T20:47:37+00:00",
-        "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "1.4-dev"
-            }
-        },
-        "installation-source": "dist",
-        "autoload": {
-            "psr-4": {
-                "": "lib/"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Alexander",
-                "email": "iam.asm89@gmail.com"
-            }
-        ],
-        "description": "Cache fragments of templates directly within Twig.",
-        "homepage": "https://github.com/asm89/twig-cache-extension",
-        "keywords": [
-            "cache",
-            "extension",
-            "twig"
+            "aura",
+            "installer"
         ]
     },
     {
         "name": "aura/intl",
-        "version": "3.0.0",
-        "version_normalized": "3.0.0.0",
+        "version": "1.1.1",
+        "version_normalized": "1.1.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/auraphp/Aura.Intl.git",
-            "reference": "7fce228980b19bf4dee2d7bbd6202a69b0dde926"
+            "reference": "c5fe620167550ad6fa77dd3570fba2efc77a2a21"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/auraphp/Aura.Intl/zipball/7fce228980b19bf4dee2d7bbd6202a69b0dde926",
-            "reference": "7fce228980b19bf4dee2d7bbd6202a69b0dde926",
+            "url": "https://api.github.com/repos/auraphp/Aura.Intl/zipball/c5fe620167550ad6fa77dd3570fba2efc77a2a21",
+            "reference": "c5fe620167550ad6fa77dd3570fba2efc77a2a21",
             "shasum": ""
         },
         "require": {
-            "php": "^5.6|^7.0"
+            "aura/installer-default": "1.0.*",
+            "php": ">=5.4.0"
         },
-        "time": "2017-01-20T05:00:11+00:00",
-        "type": "library",
+        "time": "2014-08-24T00:00:00+00:00",
+        "type": "aura-package",
+        "extra": {
+            "aura": {
+                "type": "library",
+                "config": {
+                    "common": "Aura\\Intl\\_Config\\Common"
+                }
+            },
+            "branch-alias": {
+                "dev-develop": "1.1.x-dev"
+            }
+        },
         "installation-source": "dist",
         "autoload": {
+            "psr-0": {
+                "Aura\\Intl": "src/"
+            },
             "psr-4": {
-                "Aura\\Intl\\": "src/"
+                "Aura\\Intl\\_Config\\": "config/"
             }
         },
         "notification-url": "https://packagist.org/downloads/",
         "license": [
-            "MIT"
+            "BSD-2-Clause"
         ],
         "authors": [
             {
+                "name": "Paul M. Jones",
+                "email": "pmjones88@gmail.com",
+                "homepage": "http://paul-m-jones.com"
+            },
+            {
                 "name": "Aura.Intl Contributors",
                 "homepage": "https://github.com/auraphp/Aura.Intl/contributors"
+            },
+            {
+                "name": "Pascal Borreli",
+                "email": "pascal@borreli.com"
+            },
+            {
+                "name": "Mapthegod",
+                "email": "mapthegod@gmail.com"
+            },
+            {
+                "name": "Jose Lorenzo Rodriguez",
+                "email": "jose.zap@gmail.com"
             }
         ],
-        "description": "The Aura Intl package provides internationalization tools, specifically message translation.",
-        "homepage": "https://github.com/auraphp/Aura.Intl",
+        "description": "The Aura.Intl package provides internationalization (I18N) tools, specifically\npackage-oriented per-locale message translation.",
+        "homepage": "http://auraphp.com/Aura.Intl",
         "keywords": [
             "g11n",
             "globalization",
@@ -274,35 +171,34 @@
     },
     {
         "name": "cakephp/bake",
-        "version": "1.12.0",
-        "version_normalized": "1.12.0.0",
+        "version": "1.2.14",
+        "version_normalized": "1.2.14.0",
         "source": {
             "type": "git",
             "url": "https://github.com/cakephp/bake.git",
-            "reference": "33e8ee8419ba36c13fa4074c208c93352b5530cf"
+            "reference": "24ef0cc781b529a8566cce4ecaf3aeaa1f08efd4"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/cakephp/bake/zipball/33e8ee8419ba36c13fa4074c208c93352b5530cf",
-            "reference": "33e8ee8419ba36c13fa4074c208c93352b5530cf",
+            "url": "https://api.github.com/repos/cakephp/bake/zipball/24ef0cc781b529a8566cce4ecaf3aeaa1f08efd4",
+            "reference": "24ef0cc781b529a8566cce4ecaf3aeaa1f08efd4",
             "shasum": ""
         },
         "require": {
-            "cakephp/cakephp": "^3.8.0",
-            "cakephp/plugin-installer": "^1.0",
-            "php": ">=5.6.0",
-            "wyrihaximus/twig-view": "^4.3.7"
+            "cakephp/cakephp": ">=3.2.0 <4.0.0",
+            "cakephp/plugin-installer": "*",
+            "php": ">=5.5.9"
         },
         "require-dev": {
-            "cakephp/cakephp-codesniffer": "^3.0",
-            "phpunit/phpunit": "^5.7.14|^6.0"
+            "cakephp/cakephp-codesniffer": "^2.1",
+            "phpunit/phpunit": "*"
         },
-        "time": "2019-12-07T20:34:43+00:00",
+        "time": "2017-01-31T00:59:03+00:00",
         "type": "cakephp-plugin",
         "installation-source": "dist",
         "autoload": {
             "psr-4": {
-                "Bake\\": "src/"
+                "Bake\\": "src"
             }
         },
         "notification-url": "https://packagist.org/downloads/",
@@ -315,7 +211,7 @@
                 "homepage": "https://github.com/cakephp/bake/graphs/contributors"
             }
         ],
-        "description": "Bake plugin for CakePHP 3",
+        "description": "Bake plugin for CakePHP 3.0",
         "homepage": "https://github.com/cakephp/bake",
         "keywords": [
             "bake",
@@ -324,31 +220,27 @@
     },
     {
         "name": "cakephp/cakephp",
-        "version": "3.8.11",
-        "version_normalized": "3.8.11.0",
+        "version": "3.3.16",
+        "version_normalized": "3.3.16.0",
         "source": {
             "type": "git",
             "url": "https://github.com/cakephp/cakephp.git",
-            "reference": "74f2083bc612b438f30bb9bff86bea65d6bd19bf"
+            "reference": "11a5ae91ef03e3ff8a9c6d410fdb1cc98e0f57f3"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/cakephp/cakephp/zipball/74f2083bc612b438f30bb9bff86bea65d6bd19bf",
-            "reference": "74f2083bc612b438f30bb9bff86bea65d6bd19bf",
+            "url": "https://api.github.com/repos/cakephp/cakephp/zipball/11a5ae91ef03e3ff8a9c6d410fdb1cc98e0f57f3",
+            "reference": "11a5ae91ef03e3ff8a9c6d410fdb1cc98e0f57f3",
             "shasum": ""
         },
         "require": {
-            "aura/intl": "^3.0.0",
-            "cakephp/chronos": "^1.0.1",
+            "aura/intl": "1.1.*",
+            "cakephp/chronos": "~1.0",
             "ext-intl": "*",
             "ext-mbstring": "*",
-            "php": ">=5.6.0",
-            "psr/log": "^1.0.0",
-            "psr/simple-cache": "^1.0.0",
-            "zendframework/zend-diactoros": "^1.4.0"
-        },
-        "conflict": {
-            "phpunit/phpunit": "<5.7"
+            "php": ">=5.5.9",
+            "psr/log": "^1.0",
+            "zendframework/zend-diactoros": "^1.4"
         },
         "replace": {
             "cakephp/cache": "self.version",
@@ -366,21 +258,18 @@
             "cakephp/validation": "self.version"
         },
         "require-dev": {
-            "cakephp/cakephp-codesniffer": "^3.0",
-            "cakephp/chronos": "^1.2.1",
-            "phpunit/phpunit": "^5.7.14|^6.0"
+            "cakephp/cakephp-codesniffer": "~2.1",
+            "phpunit/phpunit": "<6.0"
         },
         "suggest": {
-            "ext-curl": "To enable more efficient network calls in Http\\Client.",
-            "ext-openssl": "To use Security::encrypt() or have secure CSRF token generation.",
-            "lib-ICU": "The intl PHP library, to use Text::transliterate() or Text::slug()"
+            "ext-openssl": "To use Security::encrypt() or have secure CSRF token generation."
         },
-        "time": "2020-04-05T23:57:53+00:00",
+        "time": "2017-04-07T02:04:27+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
             "psr-4": {
-                "Cake\\": "src/"
+                "Cake\\": "src"
             },
             "files": [
                 "src/Core/functions.php",
@@ -400,17 +289,9 @@
             }
         ],
         "description": "The CakePHP framework",
-        "homepage": "https://cakephp.org",
+        "homepage": "http://cakephp.org",
         "keywords": [
-            "conventions over configuration",
-            "dry",
-            "form",
-            "framework",
-            "mvc",
-            "orm",
-            "psr-7",
-            "rapid-development",
-            "validation"
+            "framework"
         ]
     },
     {
@@ -533,35 +414,35 @@
     },
     {
         "name": "cakephp/migrations",
-        "version": "1.8.1",
-        "version_normalized": "1.8.1.0",
+        "version": "1.7.2",
+        "version_normalized": "1.7.2.0",
         "source": {
             "type": "git",
             "url": "https://github.com/cakephp/migrations.git",
-            "reference": "cd65daa9fae933bc0ccc69d5b5d92460375da9e2"
+            "reference": "a5612adfd2efa8c90d29cb3b0c969de872a99eda"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/cakephp/migrations/zipball/cd65daa9fae933bc0ccc69d5b5d92460375da9e2",
-            "reference": "cd65daa9fae933bc0ccc69d5b5d92460375da9e2",
+            "url": "https://api.github.com/repos/cakephp/migrations/zipball/a5612adfd2efa8c90d29cb3b0c969de872a99eda",
+            "reference": "a5612adfd2efa8c90d29cb3b0c969de872a99eda",
             "shasum": ""
         },
         "require": {
-            "cakephp/cache": "^3.6.0",
-            "cakephp/orm": "^3.6.0",
-            "php": ">=5.6.0",
+            "cakephp/cache": "~3.2",
+            "cakephp/orm": "~3.2",
+            "php": ">=5.5.9",
             "robmorgan/phinx": "0.8.1"
         },
         "require-dev": {
-            "cakephp/bake": "^1.7.0",
-            "cakephp/cakephp": "^3.6.0",
+            "cakephp/bake": "@stable",
+            "cakephp/cakephp": "~3.2",
             "cakephp/cakephp-codesniffer": "^3.0",
-            "phpunit/phpunit": "^5.7.14"
+            "phpunit/phpunit": "~4.1"
         },
         "suggest": {
             "cakephp/bake": "Required if you want to generate migrations."
         },
-        "time": "2018-04-16T01:35:59+00:00",
+        "time": "2017-12-12T21:01:38+00:00",
         "type": "cakephp-plugin",
         "installation-source": "dist",
         "autoload": {
@@ -1103,68 +984,6 @@
         ],
         "description": "A simple library to encode and decode JSON Web Tokens (JWT) in PHP. Should conform to the current spec.",
         "homepage": "https://github.com/firebase/php-jwt"
-    },
-    {
-        "name": "jasny/twig-extensions",
-        "version": "v1.2.0",
-        "version_normalized": "1.2.0.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/jasny/twig-extensions.git",
-            "reference": "30bdf3a3903c021544f36332c9d5d4d563527da4"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/jasny/twig-extensions/zipball/30bdf3a3903c021544f36332c9d5d4d563527da4",
-            "reference": "30bdf3a3903c021544f36332c9d5d4d563527da4",
-            "shasum": ""
-        },
-        "require": {
-            "php": ">=7.0.0 | >=5.6.0",
-            "twig/twig": "^2.0 | ^1.12"
-        },
-        "require-dev": {
-            "ext-intl": "*",
-            "ext-pcre": "*",
-            "jasny/php-code-quality": "^2.1",
-            "phpunit/phpunit": "^5.0"
-        },
-        "suggest": {
-            "ext-intl": "Required for the use of the LocalDate Twig extension",
-            "ext-pcre": "Required for the use of the PCRE Twig extension"
-        },
-        "time": "2017-09-13T07:38:01+00:00",
-        "type": "library",
-        "installation-source": "dist",
-        "autoload": {
-            "psr-4": {
-                "Jasny\\Twig\\": "src/"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Arnold Daniels",
-                "email": "arnold@jasny.net",
-                "homepage": "http://www.jasny.net"
-            }
-        ],
-        "description": "A set of useful Twig filters",
-        "homepage": "http://github.com/jasny/twig-extensions#README",
-        "keywords": [
-            "PCRE",
-            "array",
-            "date",
-            "datetime",
-            "preg",
-            "regex",
-            "templating",
-            "text",
-            "time"
-        ]
     },
     {
         "name": "jdorn/sql-formatter",
@@ -4585,115 +4404,6 @@
         "description": "A small library for converting tokenized PHP source code into XML and potentially other formats"
     },
     {
-        "name": "twig/twig",
-        "version": "v1.42.5",
-        "version_normalized": "1.42.5.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/twigphp/Twig.git",
-            "reference": "87b2ea9d8f6fd014d0621ca089bb1b3769ea3f8e"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/twigphp/Twig/zipball/87b2ea9d8f6fd014d0621ca089bb1b3769ea3f8e",
-            "reference": "87b2ea9d8f6fd014d0621ca089bb1b3769ea3f8e",
-            "shasum": ""
-        },
-        "require": {
-            "php": ">=5.5.0",
-            "symfony/polyfill-ctype": "^1.8"
-        },
-        "require-dev": {
-            "psr/container": "^1.0",
-            "symfony/phpunit-bridge": "^4.4|^5.0"
-        },
-        "time": "2020-02-11T05:59:23+00:00",
-        "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "1.42-dev"
-            }
-        },
-        "installation-source": "dist",
-        "autoload": {
-            "psr-0": {
-                "Twig_": "lib/"
-            },
-            "psr-4": {
-                "Twig\\": "src/"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "BSD-3-Clause"
-        ],
-        "authors": [
-            {
-                "name": "Fabien Potencier",
-                "email": "fabien@symfony.com",
-                "homepage": "http://fabien.potencier.org",
-                "role": "Lead Developer"
-            },
-            {
-                "name": "Twig Team",
-                "role": "Contributors"
-            },
-            {
-                "name": "Armin Ronacher",
-                "email": "armin.ronacher@active-4.com",
-                "role": "Project Founder"
-            }
-        ],
-        "description": "Twig, the flexible, fast, and secure template language for PHP",
-        "homepage": "https://twig.symfony.com",
-        "keywords": [
-            "templating"
-        ]
-    },
-    {
-        "name": "umpirsky/twig-php-function",
-        "version": "v0.1",
-        "version_normalized": "0.1.0.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/umpirsky/twig-php-function.git",
-            "reference": "53b4b1eb0c5eacbd7d66c504b7d809c79b4bedbc"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/umpirsky/twig-php-function/zipball/53b4b1eb0c5eacbd7d66c504b7d809c79b4bedbc",
-            "reference": "53b4b1eb0c5eacbd7d66c504b7d809c79b4bedbc",
-            "shasum": ""
-        },
-        "require": {
-            "php": ">=5.3.3",
-            "twig/twig": "~1.12"
-        },
-        "require-dev": {
-            "phpspec/phpspec": "~2.0",
-            "phpunit/phpunit": "~4.4"
-        },
-        "time": "2016-03-12T16:36:32+00:00",
-        "type": "library",
-        "installation-source": "dist",
-        "autoload": {
-            "psr-0": {
-                "Umpirsky\\": "src/"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Saša Stamenković",
-                "email": "umpirsky@gmail.com"
-            }
-        ],
-        "description": "Call (almost) any PHP function from your Twig templates."
-    },
-    {
         "name": "webmozart/assert",
         "version": "1.8.0",
         "version_normalized": "1.8.0.0",
@@ -4741,66 +4451,6 @@
             "assert",
             "check",
             "validate"
-        ]
-    },
-    {
-        "name": "wyrihaximus/twig-view",
-        "version": "4.3.8",
-        "version_normalized": "4.3.8.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/cakephp/legacy-twig-view.git",
-            "reference": "a5ec66690aa045d6eda17ab1c8a5baf0efdcfa45"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/cakephp/legacy-twig-view/zipball/a5ec66690aa045d6eda17ab1c8a5baf0efdcfa45",
-            "reference": "a5ec66690aa045d6eda17ab1c8a5baf0efdcfa45",
-            "shasum": ""
-        },
-        "require": {
-            "ajgl/breakpoint-twig-extension": "^0.3.0",
-            "aptoma/twig-markdown": "^2.0",
-            "asm89/twig-cache-extension": "^1.0",
-            "cakephp/cakephp": "^3.6",
-            "jasny/twig-extensions": "^1.0",
-            "php": "^5.6 || ^7.0",
-            "twig/twig": "^1.27",
-            "umpirsky/twig-php-function": "0.1"
-        },
-        "require-dev": {
-            "cakephp/bake": "^1.5",
-            "cakephp/debug_kit": "^3.0",
-            "phake/phake": "^1.0.4",
-            "phpunit/phpunit": "^5.7.14",
-            "squizlabs/php_codesniffer": "^1.5.6",
-            "wyrihaximus/phpunit-class-reflection-helpers": "dev-master"
-        },
-        "time": "2018-12-17T21:08:25+00:00",
-        "type": "cakephp-plugin",
-        "installation-source": "dist",
-        "autoload": {
-            "psr-4": {
-                "WyriHaximus\\TwigView\\": "src/"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Cees-Jan Kiewiet",
-                "email": "ceesjank@gmail.com",
-                "homepage": "http://wyrihaximus.net/"
-            }
-        ],
-        "description": "Twig powered View for CakePHP3",
-        "keywords": [
-            "cakephp",
-            "cakephp3",
-            "twig",
-            "view"
         ]
     },
     {

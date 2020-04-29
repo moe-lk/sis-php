@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         3.1.2
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\View\Helper;
 
@@ -28,7 +28,7 @@ trait SecureFieldTokenTrait
      * @param string $url The URL the form is being submitted to.
      * @param array $fields If set specifies the list of fields to use when
      *    generating the hash.
-     * @param string[] $unlockedFields The list of fields that are excluded from
+     * @param array $unlockedFields The list of fields that are excluded from
      *    field validation.
      * @return array The token data.
      */
@@ -50,15 +50,15 @@ trait SecureFieldTokenTrait
         ksort($locked, SORT_STRING);
         $fields += $locked;
 
-        $locked = implode('|', array_keys($locked));
-        $unlocked = implode('|', $unlockedFields);
+        $locked = implode(array_keys($locked), '|');
+        $unlocked = implode($unlockedFields, '|');
         $hashParts = [
             $url,
             serialize($fields),
             $unlocked,
-            session_id(),
+            Security::salt()
         ];
-        $fields = hash_hmac('sha1', implode('', $hashParts), Security::getSalt());
+        $fields = Security::hash(implode('', $hashParts), 'sha1');
 
         return [
             'fields' => urlencode($fields . ':' . $locked),

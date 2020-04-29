@@ -84,7 +84,7 @@ class Dump extends AbstractCommand
         $path = $this->getOperationsPath($input);
         $connectionName = $input->getOption('connection') ?: 'default';
         $connection = ConnectionManager::get($connectionName);
-        $collection = $connection->getSchemaCollection();
+        $collection = $connection->schemaCollection();
 
         $options = [
             'require-table' => false,

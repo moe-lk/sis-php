@@ -1,15 +1,15 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  * @since         3.1.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Shell\Helper;
 
@@ -21,6 +21,7 @@ use Cake\Console\Helper;
  */
 class TableHelper extends Helper
 {
+
     /**
      * Default config for this helper.
      *
@@ -36,14 +37,14 @@ class TableHelper extends Helper
      * Calculate the column widths
      *
      * @param array $rows The rows on which the columns width will be calculated on.
-     * @return int[]
+     * @return array
      */
     protected function _calculateWidths($rows)
     {
         $widths = [];
         foreach ($rows as $line) {
-            foreach (array_values($line) as $k => $v) {
-                $columnLength = $this->_cellWidth($v);
+            foreach ($line as $k => $v) {
+                $columnLength = mb_strwidth($line[$k]);
                 if ($columnLength >= (isset($widths[$k]) ? $widths[$k] : 0)) {
                     $widths[$k] = $columnLength;
                 }
@@ -54,29 +55,9 @@ class TableHelper extends Helper
     }
 
     /**
-     * Get the width of a cell exclusive of style tags.
-     *
-     * @param string $text The text to calculate a width for.
-     * @return int The width of the textual content in visible characters.
-     */
-    protected function _cellWidth($text)
-    {
-        if (strpos($text, '<') === false && strpos($text, '>') === false) {
-            return mb_strwidth($text);
-        }
-
-        /** @var array $styles */
-        $styles = $this->_io->styles();
-        $tags = implode('|', array_keys($styles));
-        $text = preg_replace('#</?(?:' . $tags . ')>#', '', $text);
-
-        return mb_strwidth($text);
-    }
-
-    /**
      * Output a row separator.
      *
-     * @param int[] $widths The widths of each column to output.
+     * @param array $widths The widths of each column to output.
      * @return void
      */
     protected function _rowSeparator($widths)
@@ -93,7 +74,7 @@ class TableHelper extends Helper
      * Output a row.
      *
      * @param array $row The row to output.
-     * @param int[] $widths The widths of each column to output.
+     * @param array $widths The widths of each column to output.
      * @param array $options Options to be passed.
      * @return void
      */
@@ -104,8 +85,8 @@ class TableHelper extends Helper
         }
 
         $out = '';
-        foreach (array_values($row) as $i => $column) {
-            $pad = $widths[$i] - $this->_cellWidth($column);
+        foreach ($row as $i => $column) {
+            $pad = $widths[$i] - mb_strwidth($column);
             if (!empty($options['style'])) {
                 $column = $this->_addStyle($column, $options['style']);
             }
@@ -118,9 +99,6 @@ class TableHelper extends Helper
     /**
      * Output a table.
      *
-     * Data will be output based on the order of the values
-     * in the array. The keys will not be used to align data.
-     *
      * @param array $rows The data to render out.
      * @return void
      */
@@ -130,7 +108,7 @@ class TableHelper extends Helper
             return;
         }
 
-        $config = $this->getConfig();
+        $config = $this->config();
         $widths = $this->_calculateWidths($rows);
 
         $this->_rowSeparator($widths);

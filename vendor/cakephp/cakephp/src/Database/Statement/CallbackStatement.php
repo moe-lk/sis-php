@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         3.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Database\Statement;
 
@@ -22,6 +22,7 @@ namespace Cake\Database\Statement;
  */
 class CallbackStatement extends StatementDecorator
 {
+
     /**
      * A callback function to be applied to results.
      *
@@ -50,7 +51,7 @@ class CallbackStatement extends StatementDecorator
      * @param string $type Either 'num' or 'assoc' to indicate the result format you would like.
      * @return array|false
      */
-    public function fetch($type = parent::FETCH_TYPE_NUM)
+    public function fetch($type = 'num')
     {
         $callback = $this->_callback;
         $row = $this->_statement->fetch($type);
@@ -66,7 +67,7 @@ class CallbackStatement extends StatementDecorator
      * @param string $type Either 'num' or 'assoc' to indicate the result format you would like.
      * @return array
      */
-    public function fetchAll($type = parent::FETCH_TYPE_NUM)
+    public function fetchAll($type = 'num')
     {
         return array_map($this->_callback, $this->_statement->fetchAll($type));
     }

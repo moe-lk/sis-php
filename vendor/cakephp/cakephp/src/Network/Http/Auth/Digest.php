@@ -1,4 +1,3 @@
 <?php
-// @deprecated 3.4.0 Load new class and alias.
-class_exists('Cake\Http\Client\Auth\Digest');
-deprecationWarning('Use Cake\Http\Client\Auth\Digest instead of Cake\Network\Http\Auth\Digest.');
+// @deprecated Backwards compatibility with earlier 3.x versions.
+class_alias('Cake\Http\Client\Auth\Digest', 'Cake\Network\Http\Auth\Digest');

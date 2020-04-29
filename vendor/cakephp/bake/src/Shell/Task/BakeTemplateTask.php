@@ -16,11 +16,12 @@ namespace Bake\Shell\Task;
 
 use Bake\View\BakeView;
 use Cake\Console\Shell;
+use Cake\Core\Configure;
 use Cake\Core\ConventionsTrait;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
-use Cake\Http\Response;
-use Cake\Http\ServerRequest as Request;
+use Cake\Network\Request;
+use Cake\Network\Response;
 use Cake\View\Exception\MissingTemplateException;
 use Cake\View\ViewVarsTrait;
 
@@ -36,7 +37,7 @@ class BakeTemplateTask extends Shell
     /**
      * BakeView instance
      *
-     * @var \Bake\View\BakeView|null
+     * @var Cake\View\BakeView
      */
     public $View;
 
@@ -57,17 +58,14 @@ class BakeTemplateTask extends Shell
         $viewOptions = [
             'helpers' => [
                 'Bake.Bake',
-                'Bake.DocBlock',
+                'Bake.DocBlock'
             ],
-            'theme' => $theme,
+            'theme' => $theme
         ];
-
         $view = new BakeView(new Request(), new Response(), null, $viewOptions);
         $event = new Event('Bake.initialize', $view);
         EventManager::instance()->dispatch($event);
-        /** @var \Bake\View\BakeView $view */
-        $view = $event->getSubject();
-        $this->View = $view;
+        $this->View = $event->subject;
 
         return $this->View;
     }

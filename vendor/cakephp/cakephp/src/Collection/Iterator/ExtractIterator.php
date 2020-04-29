@@ -1,22 +1,20 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         3.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Collection\Iterator;
 
-use ArrayIterator;
 use Cake\Collection\Collection;
-use Cake\Collection\CollectionInterface;
 
 /**
  * Creates an iterator from another iterator that extract the requested column
@@ -24,6 +22,7 @@ use Cake\Collection\CollectionInterface;
  */
 class ExtractIterator extends Collection
 {
+
     /**
      * A callable responsible for extracting a single value for each
      * item in the collection.
@@ -69,39 +68,5 @@ class ExtractIterator extends Collection
         $extractor = $this->_extractor;
 
         return $extractor(parent::current());
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * We perform here some strictness analysis so that the
-     * iterator logic is bypassed entirely.
-     *
-     * @return \Iterator
-     */
-    public function unwrap()
-    {
-        $iterator = $this->getInnerIterator();
-
-        if ($iterator instanceof CollectionInterface) {
-            $iterator = $iterator->unwrap();
-        }
-
-        if (get_class($iterator) !== ArrayIterator::class) {
-            return $this;
-        }
-
-        // ArrayIterator can be traversed strictly.
-        // Let's do that for performance gains
-
-        $callback = $this->_extractor;
-        $res = [];
-
-        /** @var \ArrayObject $iterator */
-        foreach ($iterator->getArrayCopy() as $k => $v) {
-            $res[$k] = $callback($v);
-        }
-
-        return new ArrayIterator($res);
     }
 }

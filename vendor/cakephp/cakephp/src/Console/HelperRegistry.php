@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         3.1.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Console;
 
@@ -21,11 +21,10 @@ use Cake\Core\ObjectRegistry;
 /**
  * Registry for Helpers. Provides features
  * for lazily loading helpers.
- *
- * @extends \Cake\Core\ObjectRegistry<\Cake\Console\Helper>
  */
 class HelperRegistry extends ObjectRegistry
 {
+
     /**
      * Shell to use to set params to tasks.
      *
@@ -47,9 +46,6 @@ class HelperRegistry extends ObjectRegistry
     /**
      * Resolve a helper classname.
      *
-     * Will prefer helpers defined in Command\Helper over those
-     * defined in Shell\Helper.
-     *
      * Part of the template method for Cake\Core\ObjectRegistry::load()
      *
      * @param string $class Partial classname to resolve.
@@ -57,11 +53,6 @@ class HelperRegistry extends ObjectRegistry
      */
     protected function _resolveClassName($class)
     {
-        $name = App::className($class, 'Command/Helper', 'Helper');
-        if ($name) {
-            return $name;
-        }
-
         return App::className($class, 'Shell/Helper', 'Helper');
     }
 
@@ -69,7 +60,6 @@ class HelperRegistry extends ObjectRegistry
      * Throws an exception when a helper is missing.
      *
      * Part of the template method for Cake\Core\ObjectRegistry::load()
-     * and Cake\Core\ObjectRegistry::unload()
      *
      * @param string $class The classname that is missing.
      * @param string $plugin The plugin the helper is missing in.
@@ -80,7 +70,7 @@ class HelperRegistry extends ObjectRegistry
     {
         throw new MissingHelperException([
             'class' => $class,
-            'plugin' => $plugin,
+            'plugin' => $plugin
         ]);
     }
 

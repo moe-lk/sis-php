@@ -1,21 +1,20 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         3.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Database\Expression;
 
 use Cake\Database\ExpressionInterface;
-use Cake\Database\Query;
 use Cake\Database\TypedResultInterface;
 use Cake\Database\TypedResultTrait;
 use Cake\Database\Type\ExpressionTypeCasterTrait;
@@ -26,9 +25,12 @@ use Cake\Database\ValueBinder;
  * constructed by passing the name of the function and a list of params.
  * For security reasons, all params passed are quoted by default unless
  * explicitly told otherwise.
+ *
+ * @internal
  */
 class FunctionExpression extends QueryExpression implements TypedResultInterface
 {
+
     use ExpressionTypeCasterTrait;
     use TypedResultTrait;
 
@@ -49,7 +51,7 @@ class FunctionExpression extends QueryExpression implements TypedResultInterface
      *
      * ### Examples:
      *
-     * `$f = new FunctionExpression('CONCAT', ['CakePHP', ' rules']);`
+     *  `$f = new FunctionExpression('CONCAT', ['CakePHP', ' rules']);`
      *
      * Previous line will generate `CONCAT('CakePHP', ' rules')`
      *
@@ -72,47 +74,20 @@ class FunctionExpression extends QueryExpression implements TypedResultInterface
     }
 
     /**
-     * Sets the name of the SQL function to be invoke in this expression.
-     *
-     * @param string $name The name of the function
-     * @return $this
-     */
-    public function setName($name)
-    {
-        $this->_name = $name;
-
-        return $this;
-    }
-
-    /**
-     * Gets the name of the SQL function to be invoke in this expression.
-     *
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->_name;
-    }
-
-    /**
      * Sets the name of the SQL function to be invoke in this expression,
      * if no value is passed it will return current name
      *
-     * @deprecated 3.4.0 Use setName()/getName() instead.
      * @param string|null $name The name of the function
      * @return string|$this
      */
     public function name($name = null)
     {
-        deprecationWarning(
-            'FunctionExpression::name() is deprecated. ' .
-            'Use FunctionExpression::setName()/getName() instead.'
-        );
-        if ($name !== null) {
-            return $this->setName($name);
+        if ($name === null) {
+            return $this->_name;
         }
+        $this->_name = $name;
 
-        return $this->getName();
+        return $this;
     }
 
     /**
@@ -129,7 +104,7 @@ class FunctionExpression extends QueryExpression implements TypedResultInterface
     public function add($params, $types = [], $prepend = false)
     {
         $put = $prepend ? 'array_unshift' : 'array_push';
-        $typeMap = $this->getTypeMap()->setTypes($types);
+        $typeMap = $this->typeMap()->types($types);
         foreach ($params as $k => $p) {
             if ($p === 'literal') {
                 $put($this->_conditions, $k);
@@ -171,10 +146,8 @@ class FunctionExpression extends QueryExpression implements TypedResultInterface
     {
         $parts = [];
         foreach ($this->_conditions as $condition) {
-            if ($condition instanceof Query) {
+            if ($condition instanceof ExpressionInterface) {
                 $condition = sprintf('(%s)', $condition->sql($generator));
-            } elseif ($condition instanceof ExpressionInterface) {
-                $condition = $condition->sql($generator);
             } elseif (is_array($condition)) {
                 $p = $generator->placeholder('param');
                 $generator->bind($p, $condition['value'], $condition['type']);

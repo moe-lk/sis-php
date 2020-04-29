@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         3.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\ORM;
 
@@ -28,6 +28,7 @@ use Cake\ORM\Rule\ValidCount;
  */
 class RulesChecker extends BaseRulesChecker
 {
+
     /**
      * Returns a callable that can be used as a rule for checking the uniqueness of a value
      * in the table.
@@ -38,7 +39,7 @@ class RulesChecker extends BaseRulesChecker
      * $rules->add($rules->isUnique(['email'], 'The email should be unique'));
      * ```
      *
-     * @param string[] $fields The list of fields to check for uniqueness.
+     * @param array $fields The list of fields to check for uniqueness.
      * @param string|array|null $message The error message to show in case the rule does not pass. Can
      *   also be an array of options. When an array, the 'message' key can be used to provide a message.
      * @return callable
@@ -82,7 +83,7 @@ class RulesChecker extends BaseRulesChecker
      * 'message' sets a custom error message.
      * Set 'allowNullableNulls' to true to accept composite foreign keys where one or more nullable columns are null.
      *
-     * @param string|string[] $field The field or list of fields to check for existence by
+     * @param string|array $field The field or list of fields to check for existence by
      * primary key lookup in the other table.
      * @param object|string $table The table name where the fields existence will be checked.
      * @param string|array|null $message The error message to show in case the rule does not pass. Can
@@ -132,10 +133,6 @@ class RulesChecker extends BaseRulesChecker
 
         $errorField = $field;
 
-        return $this->_addError(
-            new ValidCount($field),
-            '_validCount',
-            compact('count', 'operator', 'errorField', 'message')
-        );
+        return $this->_addError(new ValidCount($field, $count, $operator), '_validCount', compact('count', 'operator', 'errorField', 'message'));
     }
 }

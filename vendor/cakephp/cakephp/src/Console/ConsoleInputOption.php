@@ -1,21 +1,21 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         2.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Console;
 
 use Cake\Console\Exception\ConsoleException;
-use SimpleXMLElement;
+use SimpleXmlElement;
 
 /**
  * An object to represent a single option used in the command line.
@@ -25,6 +25,7 @@ use SimpleXMLElement;
  */
 class ConsoleInputOption
 {
+
     /**
      * Name of the option
      *
@@ -56,7 +57,7 @@ class ConsoleInputOption
     /**
      * Default value for the option
      *
-     * @var string|bool
+     * @var mixed
      */
     protected $_default;
 
@@ -70,7 +71,7 @@ class ConsoleInputOption
     /**
      * An array of choices for the option.
      *
-     * @var string[]
+     * @var array
      */
     protected $_choices;
 
@@ -81,8 +82,8 @@ class ConsoleInputOption
      * @param string $short The short alias for this option
      * @param string $help The help text for this option
      * @param bool $boolean Whether this option is a boolean option. Boolean options don't consume extra tokens
-     * @param string|bool $default The default value for this option.
-     * @param string[] $choices Valid choices for this option.
+     * @param string $default The default value for this option.
+     * @param array $choices Valid choices for this option.
      * @param bool $multiple Whether this option can accept multiple value definition.
      * @throws \Cake\Console\Exception\ConsoleException
      */
@@ -144,13 +145,13 @@ class ConsoleInputOption
     public function help($width = 0)
     {
         $default = $short = '';
-        if ($this->_default && $this->_default !== true) {
+        if (!empty($this->_default) && $this->_default !== true) {
             $default = sprintf(' <comment>(default: %s)</comment>', $this->_default);
         }
-        if ($this->_choices) {
+        if (!empty($this->_choices)) {
             $default .= sprintf(' <comment>(choices: %s)</comment>', implode('|', $this->_choices));
         }
-        if (strlen($this->_short) > 0) {
+        if (!empty($this->_short)) {
             $short = ', -' . $this->_short;
         }
         $name = sprintf('--%s%s', $this->_name, $short);
@@ -173,7 +174,7 @@ class ConsoleInputOption
         if (strlen($this->_default) > 0 && $this->_default !== true) {
             $default = ' ' . $this->_default;
         }
-        if ($this->_choices) {
+        if (!empty($this->_choices)) {
             $default = ' ' . implode('|', $this->_choices);
         }
 
@@ -183,7 +184,7 @@ class ConsoleInputOption
     /**
      * Get the default value for this option
      *
-     * @return string|bool
+     * @return mixed
      */
     public function defaultValue()
     {
@@ -213,8 +214,8 @@ class ConsoleInputOption
     /**
      * Check that a value is a valid choice for this option.
      *
-     * @param string|bool $value The choice to validate.
-     * @return true
+     * @param string $value The choice to validate.
+     * @return bool
      * @throws \Cake\Console\Exception\ConsoleException
      */
     public function validChoice($value)
@@ -222,7 +223,7 @@ class ConsoleInputOption
         if (empty($this->_choices)) {
             return true;
         }
-        if (!in_array($value, $this->_choices, true)) {
+        if (!in_array($value, $this->_choices)) {
             throw new ConsoleException(
                 sprintf(
                     '"%s" is not a valid value for --%s. Please use one of "%s"',
@@ -239,20 +240,19 @@ class ConsoleInputOption
     /**
      * Append the option's xml into the parent.
      *
-     * @param \SimpleXMLElement $parent The parent element.
-     * @return \SimpleXMLElement The parent with this option appended.
+     * @param \SimpleXmlElement $parent The parent element.
+     * @return \SimpleXmlElement The parent with this option appended.
      */
-    public function xml(SimpleXMLElement $parent)
+    public function xml(SimpleXmlElement $parent)
     {
         $option = $parent->addChild('option');
         $option->addAttribute('name', '--' . $this->_name);
         $short = '';
         if (strlen($this->_short) > 0) {
-            $short = '-' . $this->_short;
+            $short = $this->_short;
         }
-        $option->addAttribute('short', $short);
-        $option->addAttribute('help', $this->_help);
-        $option->addAttribute('boolean', (int)$this->_boolean);
+        $option->addAttribute('short', '-' . $short);
+        $option->addAttribute('boolean', $this->_boolean);
         $option->addChild('default', $this->_default);
         $choices = $option->addChild('choices');
         foreach ($this->_choices as $valid) {

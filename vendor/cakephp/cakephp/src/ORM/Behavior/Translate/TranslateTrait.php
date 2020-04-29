@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         3.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\ORM\Behavior\Translate;
 
@@ -22,6 +22,7 @@ use Cake\Datasource\EntityInterface;
  */
 trait TranslateTrait
 {
+
     /**
      * Returns the entity containing the translated fields for this object and for
      * the specified language. If the translation for the passed language is not
@@ -29,7 +30,7 @@ trait TranslateTrait
      * it.
      *
      * @param string $language Language to return entity for.
-     * @return $this|\Cake\Datasource\EntityInterface
+     * @return $this|\Cake\ORM\Entity
      */
     public function translation($language)
     {
@@ -57,7 +58,7 @@ trait TranslateTrait
         }
 
         // Assume the user will modify any of the internal translations, helps with saving
-        $this->setDirty('_translations', true);
+        $this->dirty('_translations', true);
 
         return $i18n[$language];
     }

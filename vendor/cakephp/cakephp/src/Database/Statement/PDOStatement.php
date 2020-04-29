@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         3.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Database\Statement;
 
@@ -23,6 +23,7 @@ use PDOStatement as Statement;
  */
 class PDOStatement extends StatementDecorator
 {
+
     /**
      * Constructor
      *
@@ -31,7 +32,8 @@ class PDOStatement extends StatementDecorator
      */
     public function __construct(Statement $statement = null, $driver = null)
     {
-        parent::__construct($statement, $driver);
+        $this->_statement = $statement;
+        $this->_driver = $driver;
     }
 
     /**
@@ -84,18 +86,18 @@ class PDOStatement extends StatementDecorator
      * ```
      *
      * @param string $type 'num' for positional columns, assoc for named columns
-     * @return array|false Result array containing columns and values or false if no results
+     * @return mixed Result array containing columns and values or false if no results
      * are left
      */
-    public function fetch($type = parent::FETCH_TYPE_NUM)
+    public function fetch($type = 'num')
     {
-        if ($type === static::FETCH_TYPE_NUM) {
+        if ($type === 'num') {
             return $this->_statement->fetch(PDO::FETCH_NUM);
         }
-        if ($type === static::FETCH_TYPE_ASSOC) {
+        if ($type === 'assoc') {
             return $this->_statement->fetch(PDO::FETCH_ASSOC);
         }
-        if ($type === static::FETCH_TYPE_OBJ) {
+        if ($type === 'obj') {
             return $this->_statement->fetch(PDO::FETCH_OBJ);
         }
 
@@ -116,15 +118,15 @@ class PDOStatement extends StatementDecorator
      * @param string $type num for fetching columns as positional keys or assoc for column names as keys
      * @return array list of all results from database for this statement
      */
-    public function fetchAll($type = parent::FETCH_TYPE_NUM)
+    public function fetchAll($type = 'num')
     {
-        if ($type === static::FETCH_TYPE_NUM) {
+        if ($type === 'num') {
             return $this->_statement->fetchAll(PDO::FETCH_NUM);
         }
-        if ($type === static::FETCH_TYPE_ASSOC) {
+        if ($type === 'assoc') {
             return $this->_statement->fetchAll(PDO::FETCH_ASSOC);
         }
-        if ($type === static::FETCH_TYPE_OBJ) {
+        if ($type === 'obj') {
             return $this->_statement->fetchAll(PDO::FETCH_OBJ);
         }
 

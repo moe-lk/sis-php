@@ -19,9 +19,6 @@ use Cake\Utility\Inflector;
 
 /**
  * Base class for simple bake tasks code generator.
- *
- * @property \Bake\Shell\Task\BakeTemplateTask $BakeTemplate
- * @property \Bake\Shell\Task\TestTask $Test
  */
 abstract class SimpleBakeTask extends BakeTask
 {
@@ -32,7 +29,7 @@ abstract class SimpleBakeTask extends BakeTask
      */
     public $tasks = [
         'Bake.BakeTemplate',
-        'Bake.Test',
+        'Bake.Test'
     ];
 
     /**
@@ -82,9 +79,7 @@ abstract class SimpleBakeTask extends BakeTask
     {
         parent::main();
         if (empty($name)) {
-            $this->abort('You must provide a name to bake a ' . $this->name());
-
-            return null;
+            return $this->error('You must provide a name to bake a ' . $this->name());
         }
         $name = $this->_getName($name);
         $name = Inflector::camelize($name);
@@ -137,17 +132,17 @@ abstract class SimpleBakeTask extends BakeTask
     {
         $parser = parent::getOptionParser();
         $name = $this->name();
-        $parser->setDescription(
+        $parser->description(
             sprintf('Bake a %s class file.', $name)
         )->addArgument('name', [
             'help' => sprintf(
                 'Name of the %s to bake. Can use Plugin.name to bake %s files into plugins.',
                 $name,
                 $name
-            ),
+            )
         ])->addOption('no-test', [
             'boolean' => true,
-            'help' => 'Do not generate a test skeleton.',
+            'help' => 'Do not generate a test skeleton.'
         ]);
 
         return $parser;

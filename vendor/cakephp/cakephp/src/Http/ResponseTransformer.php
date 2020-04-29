@@ -1,20 +1,20 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         3.3.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Http;
 
-use Cake\Http\Response as CakeResponse;
+use Cake\Network\Response as CakeResponse;
 use Psr\Http\Message\ResponseInterface as PsrResponse;
 use Zend\Diactoros\Response as DiactorosResponse;
 use Zend\Diactoros\Stream;
@@ -26,7 +26,6 @@ use Zend\Diactoros\Stream;
  * can be embedded as PSR7 middleware in a fully compatible way.
  *
  * @internal
- * @deprecated 3.4.0 No longer used. Will be removed in 4.0.0
  */
 class ResponseTransformer
 {
@@ -34,7 +33,7 @@ class ResponseTransformer
      * Convert a PSR7 Response into a CakePHP one.
      *
      * @param \Psr\Http\Message\ResponseInterface $response The response to convert.
-     * @return \Cake\Http\Response The equivalent CakePHP response
+     * @return \Cake\Network\Response The equivalent CakePHP response
      */
     public static function toCake(PsrResponse $response)
     {
@@ -93,9 +92,9 @@ class ResponseTransformer
         $cookies = [];
         foreach ($cookieHeader as $cookie) {
             if (strpos($cookie, '";"') !== false) {
-                $cookie = str_replace('";"', '{__cookie_replace__}', $cookie);
+                $cookie = str_replace('";"', "{__cookie_replace__}", $cookie);
                 $parts = preg_split('/\;[ \t]*/', $cookie);
-                $parts = str_replace('{__cookie_replace__}', '";"', $parts);
+                $parts = str_replace("{__cookie_replace__}", '";"', $parts);
             } else {
                 $parts = preg_split('/\;[ \t]*/', $cookie);
             }
@@ -133,7 +132,7 @@ class ResponseTransformer
      * Convert a PSR7 Response headers into a flat array
      *
      * @param \Psr\Http\Message\ResponseInterface $response The response to convert.
-     * @return array Headers.
+     * @return \Cake\Network\Response The equivalent CakePHP response
      */
     protected static function collapseHeaders(PsrResponse $response)
     {
@@ -152,7 +151,7 @@ class ResponseTransformer
     /**
      * Convert a CakePHP response into a PSR7 one.
      *
-     * @param \Cake\Http\Response $response The CakePHP response to convert
+     * @param \Cake\Network\Response $response The CakePHP response to convert
      * @return \Psr\Http\Message\ResponseInterface $response The equivalent PSR7 response.
      */
     public static function toPsr(CakeResponse $response)
@@ -175,7 +174,7 @@ class ResponseTransformer
      * Add in the Content-Type header if necessary.
      *
      * @param array $headers The headers to update
-     * @param \Cake\Http\Response $response The CakePHP response to convert
+     * @param \Cake\Network\Response $response The CakePHP response to convert
      * @return array The updated headers.
      */
     protected static function setContentType($headers, $response)
@@ -188,7 +187,7 @@ class ResponseTransformer
         }
 
         $whitelist = [
-            'application/javascript', 'application/json', 'application/xml', 'application/rss+xml',
+            'application/javascript', 'application/json', 'application/xml', 'application/rss+xml'
         ];
 
         $type = $response->type();
@@ -219,7 +218,7 @@ class ResponseTransformer
         $headers = [];
         foreach ($cookies as $cookie) {
             $parts = [
-                sprintf('%s=%s', urlencode($cookie['name']), urlencode($cookie['value'])),
+                sprintf('%s=%s', urlencode($cookie['name']), urlencode($cookie['value']))
             ];
             if ($cookie['expire']) {
                 $cookie['expire'] = gmdate('D, d M Y H:i:s T', $cookie['expire']);
@@ -245,7 +244,7 @@ class ResponseTransformer
     /**
      * Get the stream for the new response.
      *
-     * @param \Cake\Http\Response $response The cake response to extract the body from.
+     * @param \Cake\Network\Response $response The cake response to extract the body from.
      * @return \Psr\Http\Message\StreamInterface|string The stream.
      */
     protected static function getStream($response)

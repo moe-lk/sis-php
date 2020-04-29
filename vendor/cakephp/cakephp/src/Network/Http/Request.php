@@ -1,4 +1,3 @@
 <?php
-// @deprecated 3.4.0 Load new class and alias.
-class_exists('Cake\Http\Client\Request');
-deprecationWarning('Use Cake\Http\Client\Request instead of Cake\Network\Http\Request.');
+// @deprecated Backwards compatibility with earlier 3.x versions.
+class_alias('Cake\Http\Client\Request', 'Cake\Network\Http\Request');

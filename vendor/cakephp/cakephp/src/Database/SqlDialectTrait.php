@@ -1,27 +1,27 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         3.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Database;
 
 use Cake\Database\Expression\Comparison;
-use Cake\Database\Expression\IdentifierExpression;
 
 /**
  * Sql dialect trait
  */
 trait SqlDialectTrait
 {
+
     /**
      * Quotes a database identifier (a column name, table name, etc..) to
      * be used safely in queries without the risk of using reserved words
@@ -33,46 +33,42 @@ trait SqlDialectTrait
     {
         $identifier = trim($identifier);
 
-        if ($identifier === '*' || $identifier === '') {
-            return $identifier;
+        if ($identifier === '*') {
+            return '*';
+        }
+
+        if ($identifier === '') {
+            return '';
         }
 
         // string
-        if (preg_match('/^[\w-]+$/u', $identifier)) {
+        if (preg_match('/^[\w-]+$/', $identifier)) {
             return $this->_startQuote . $identifier . $this->_endQuote;
         }
 
-        // string.string
-        if (preg_match('/^[\w-]+\.[^ \*]*$/u', $identifier)) {
+        if (preg_match('/^[\w-]+\.[^ \*]*$/', $identifier)) {
+// string.string
             $items = explode('.', $identifier);
 
             return $this->_startQuote . implode($this->_endQuote . '.' . $this->_startQuote, $items) . $this->_endQuote;
         }
 
-        // string.*
-        if (preg_match('/^[\w-]+\.\*$/u', $identifier)) {
+        if (preg_match('/^[\w-]+\.\*$/', $identifier)) {
+// string.*
             return $this->_startQuote . str_replace('.*', $this->_endQuote . '.*', $identifier);
         }
 
-        // Functions
         if (preg_match('/^([\w-]+)\((.*)\)$/', $identifier, $matches)) {
+// Functions
             return $matches[1] . '(' . $this->quoteIdentifier($matches[2]) . ')';
         }
 
         // Alias.field AS thing
-        if (preg_match('/^([\w-]+(\.[\w\s-]+|\(.*\))*)\s+AS\s*([\w-]+)$/ui', $identifier, $matches)) {
+        if (preg_match('/^([\w-]+(\.[\w-]+|\(.*\))*)\s+AS\s*([\w-]+)$/i', $identifier, $matches)) {
             return $this->quoteIdentifier($matches[1]) . ' AS ' . $this->quoteIdentifier($matches[3]);
         }
 
-        // string.string with spaces
-        if (preg_match('/^([\w-]+\.[\w][\w\s\-]*[\w])(.*)/u', $identifier, $matches)) {
-            $items = explode('.', $matches[1]);
-            $field = implode($this->_endQuote . '.' . $this->_startQuote, $items);
-
-            return $this->_startQuote . $field . $this->_endQuote . $matches[2];
-        }
-
-        if (preg_match('/^[\w_\s-]*[\w_-]+/u', $identifier)) {
+        if (preg_match('/^[\w-_\s]*[\w-_]+/', $identifier)) {
             return $this->_startQuote . $identifier . $this->_endQuote;
         }
 
@@ -91,11 +87,10 @@ trait SqlDialectTrait
     public function queryTranslator($type)
     {
         return function ($query) use ($type) {
-            if ($this->isAutoQuotingEnabled()) {
+            if ($this->autoQuoting()) {
                 $query = (new IdentifierQuoter($this))->quote($query);
             }
 
-            /** @var \Cake\ORM\Query $query */
             $query = $this->{'_' . $type . 'QueryTranslator'}($query);
             $translators = $this->_expressionTranslators();
             if (!$translators) {
@@ -222,31 +217,20 @@ trait SqlDialectTrait
 
         $conditions = $query->clause('where');
         if ($conditions) {
-            $conditions->traverse(function ($expression) {
-                if ($expression instanceof Comparison) {
-                    $field = $expression->getField();
-                    if (
-                        is_string($field) &&
-                        strpos($field, '.') !== false
-                    ) {
-                        list(, $unaliasedField) = explode('.', $field, 2);
-                        $expression->setField($unaliasedField);
-                    }
-
-                    return $expression;
+            $conditions->traverse(function ($condition) {
+                if (!($condition instanceof Comparison)) {
+                    return $condition;
                 }
 
-                if ($expression instanceof IdentifierExpression) {
-                    $identifier = $expression->getIdentifier();
-                    if (strpos($identifier, '.') !== false) {
-                        list(, $unaliasedIdentifier) = explode('.', $identifier, 2);
-                        $expression->setIdentifier($unaliasedIdentifier);
-                    }
-
-                    return $expression;
+                $field = $condition->getField();
+                if ($field instanceof ExpressionInterface || strpos($field, '.') === false) {
+                    return $condition;
                 }
 
-                return $expression;
+                list(, $field) = explode('.', $field);
+                $condition->setField($field);
+
+                return $condition;
             });
         }
 

@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         2.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Mailer\Transport;
 
@@ -25,6 +25,7 @@ use Exception;
  */
 class SmtpTransport extends AbstractTransport
 {
+
     /**
      * Default config for this class
      *
@@ -38,22 +39,22 @@ class SmtpTransport extends AbstractTransport
         'password' => null,
         'client' => null,
         'tls' => false,
-        'keepAlive' => false,
+        'keepAlive' => false
     ];
 
     /**
      * Socket to SMTP server
      *
-     * @var \Cake\Network\Socket|null
+     * @var \Cake\Network\Socket
      */
     protected $_socket;
 
     /**
      * Content of email to return
      *
-     * @var array
+     * @var string
      */
-    protected $_content = [];
+    protected $_content;
 
     /**
      * The response of the last sent SMTP command.
@@ -75,18 +76,6 @@ class SmtpTransport extends AbstractTransport
         } catch (Exception $e) {
             // avoid fatal error on script termination
         }
-    }
-
-    /**
-     * Unserialize handler.
-     *
-     * Ensure that the socket property isn't reinitialized in a broken state.
-     *
-     * @return void
-     */
-    public function __wakeup()
-    {
-        $this->_socket = null;
     }
 
     /**
@@ -189,7 +178,7 @@ class SmtpTransport extends AbstractTransport
     /**
      * Parses and stores the response lines in `'code' => 'message'` format.
      *
-     * @param string[] $responseLines Response lines to parse.
+     * @param array $responseLines Response lines to parse.
      * @return void
      */
     protected function _bufferResponseLines(array $responseLines)
@@ -199,7 +188,7 @@ class SmtpTransport extends AbstractTransport
             if (preg_match('/^(\d{3})(?:[ -]+(.*))?$/', $responseLine, $match)) {
                 $response[] = [
                     'code' => $match[1],
-                    'message' => isset($match[2]) ? $match[2] : null,
+                    'message' => isset($match[2]) ? $match[2] : null
                 ];
             }
         }
@@ -233,18 +222,18 @@ class SmtpTransport extends AbstractTransport
         try {
             $this->_smtpSend("EHLO {$host}", '250');
             if ($config['tls']) {
-                $this->_smtpSend('STARTTLS', '220');
+                $this->_smtpSend("STARTTLS", '220');
                 $this->_socket->enableCrypto('tls');
                 $this->_smtpSend("EHLO {$host}", '250');
             }
         } catch (SocketException $e) {
             if ($config['tls']) {
-                throw new SocketException('SMTP server did not accept the connection or trying to connect to non TLS SMTP server using TLS.', null, $e);
+                throw new SocketException('SMTP server did not accept the connection or trying to connect to non TLS SMTP server using TLS.');
             }
             try {
                 $this->_smtpSend("HELO {$host}", '250');
             } catch (SocketException $e2) {
-                throw new SocketException('SMTP server did not accept the connection.', null, $e2);
+                throw new SocketException('SMTP server did not accept the connection.');
             }
         }
     }
@@ -263,12 +252,12 @@ class SmtpTransport extends AbstractTransport
                 try {
                     $this->_smtpSend(base64_encode($this->_config['username']), '334');
                 } catch (SocketException $e) {
-                    throw new SocketException('SMTP server did not accept the username.', null, $e);
+                    throw new SocketException('SMTP server did not accept the username.');
                 }
                 try {
                     $this->_smtpSend(base64_encode($this->_config['password']), '235');
                 } catch (SocketException $e) {
-                    throw new SocketException('SMTP server did not accept the password.', null, $e);
+                    throw new SocketException('SMTP server did not accept the password.');
                 }
             } elseif ($replyCode === '504') {
                 throw new SocketException('SMTP authentication method not allowed, check if SMTP server requires TLS.');
@@ -308,9 +297,9 @@ class SmtpTransport extends AbstractTransport
      */
     protected function _prepareFromAddress($email)
     {
-        $from = $email->getReturnPath();
+        $from = $email->returnPath();
         if (empty($from)) {
-            $from = $email->getFrom();
+            $from = $email->from();
         }
 
         return $from;
@@ -324,9 +313,9 @@ class SmtpTransport extends AbstractTransport
      */
     protected function _prepareRecipientAddresses($email)
     {
-        $to = $email->getTo();
-        $cc = $email->getCc();
-        $bcc = $email->getBcc();
+        $to = $email->to();
+        $cc = $email->cc();
+        $bcc = $email->bcc();
 
         return array_merge(array_keys($to), array_keys($cc), array_keys($bcc));
     }
@@ -353,7 +342,7 @@ class SmtpTransport extends AbstractTransport
         $lines = $email->message();
         $messages = [];
         foreach ($lines as $line) {
-            if (!empty($line) && ($line[0] === '.')) {
+            if ((!empty($line)) && ($line[0] === '.')) {
                 $messages[] = '.' . $line;
             } else {
                 $messages[] = $line;
@@ -426,7 +415,7 @@ class SmtpTransport extends AbstractTransport
      * Protected method for sending data to SMTP connection
      *
      * @param string|null $data Data to be sent to SMTP server
-     * @param string|false $checkCode Code to check for in server response, false to skip
+     * @param string|bool $checkCode Code to check for in server response, false to skip
      * @return string|null The matched code, or null if nothing matched
      * @throws \Cake\Network\Exception\SocketException
      */
@@ -444,11 +433,7 @@ class SmtpTransport extends AbstractTransport
             $response = '';
             $startTime = time();
             while (substr($response, -2) !== "\r\n" && ((time() - $startTime) < $timeout)) {
-                $bytes = $this->_socket->read();
-                if ($bytes === false || $bytes === null) {
-                    break;
-                }
-                $response .= $bytes;
+                $response .= $this->_socket->read();
             }
             if (substr($response, -2) !== "\r\n") {
                 throw new SocketException('SMTP timeout.');

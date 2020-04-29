@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         3.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\View\Widget;
 
@@ -21,6 +21,7 @@ use Cake\View\Form\ContextInterface;
  */
 class CheckboxWidget extends BasicWidget
 {
+
     /**
      * Render a checkbox element.
      *
@@ -45,7 +46,7 @@ class CheckboxWidget extends BasicWidget
             'value' => 1,
             'val' => null,
             'disabled' => false,
-            'templateVars' => [],
+            'templateVars' => []
         ];
         if ($this->_isChecked($data)) {
             $data['checked'] = true;
@@ -61,7 +62,7 @@ class CheckboxWidget extends BasicWidget
             'name' => $data['name'],
             'value' => $data['value'],
             'templateVars' => $data['templateVars'],
-            'attrs' => $attrs,
+            'attrs' => $attrs
         ]);
     }
 

@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         3.2.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\I18n;
 
@@ -29,10 +29,10 @@ class Date extends MutableDate implements JsonSerializable
 
     /**
      * The format to use when formatting a time using `Cake\I18n\Date::i18nFormat()`
-     * and `__toString`. This format is also used by `parseDateTime()`.
+     * and `__toString`
      *
      * The format should be either the formatting constants from IntlDateFormatter as
-     * described in (https://secure.php.net/manual/en/class.intldateformatter.php) or a pattern
+     * described in (http://www.php.net/manual/en/class.intldateformatter.php) or a pattern
      * as specified in (http://www.icu-project.org/apiref/icu4c/classSimpleDateFormat.html#details)
      *
      * It is possible to provide an array of 2 constants. In this case, the first position
@@ -48,7 +48,7 @@ class Date extends MutableDate implements JsonSerializable
      * The format to use when formatting a time using `Cake\I18n\Date::timeAgoInWords()`
      * and the difference is more than `Cake\I18n\Date::$wordEnd`
      *
-     * @var string|array|int
+     * @var string
      * @see \Cake\I18n\DateFormatTrait::parseDate()
      */
     public static $wordFormat = [IntlDateFormatter::SHORT, -1];
@@ -57,7 +57,7 @@ class Date extends MutableDate implements JsonSerializable
      * The format to use when formatting a time using `Cake\I18n\Date::nice()`
      *
      * The format should be either the formatting constants from IntlDateFormatter as
-     * described in (https://secure.php.net/manual/en/class.intldateformatter.php) or a pattern
+     * described in (http://www.php.net/manual/en/class.intldateformatter.php) or a pattern
      * as specified in (http://www.icu-project.org/apiref/icu4c/classSimpleDateFormat.html#details)
      *
      * It is possible to provide an array of 2 constants. In this case, the first position
@@ -73,17 +73,17 @@ class Date extends MutableDate implements JsonSerializable
      * The format to use when formatting a time using `Date::timeAgoInWords()`
      * and the difference is less than `Date::$wordEnd`
      *
-     * @var string[]
+     * @var array
      * @see \Cake\I18n\Date::timeAgoInWords()
      */
     public static $wordAccuracy = [
-        'year' => 'day',
-        'month' => 'day',
-        'week' => 'day',
-        'day' => 'day',
-        'hour' => 'day',
-        'minute' => 'day',
-        'second' => 'day',
+        'year' => "day",
+        'month' => "day",
+        'week' => "day",
+        'day' => "day",
+        'hour' => "day",
+        'minute' => "day",
+        'second' => "day",
     ];
 
     /**
@@ -130,6 +130,6 @@ class Date extends MutableDate implements JsonSerializable
      */
     public function timeAgoInWords(array $options = [])
     {
-        return static::diffFormatter()->dateAgoInWords($this, $options);
+        return $this->diffFormatter()->dateAgoInWords($this, $options);
     }
 }

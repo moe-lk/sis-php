@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         2.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Routing\Route;
 
@@ -27,13 +27,14 @@ use Cake\Routing\Router;
  */
 class RedirectRoute extends Route
 {
+
     /**
      * A Response object
      *
-     * @var \Cake\Http\Response
+     * @var \Cake\Network\Response
      * @deprecated 3.2.0 This property is unused.
      */
-    public $response;
+    public $response = null;
 
     /**
      * The location to redirect to. Either a string or a CakePHP array URL.
@@ -64,7 +65,7 @@ class RedirectRoute extends Route
      *
      * @param string $url The URL to parse.
      * @param string $method The HTTP method being used.
-     * @return bool|null False on failure. An exception is raised on a successful match.
+     * @return false|null False on failure. An exception is raised on a successful match.
      * @throws \Cake\Routing\Exception\RedirectException An exception is raised on successful match.
      *   This is used to halt route matching and signal to the middleware that a redirect should happen.
      */
@@ -87,7 +88,7 @@ class RedirectRoute extends Route
                     }
                 }
             }
-            $redirect = Router::reverseToArray($redirect);
+            $redirect = Router::reverse($redirect);
         }
         $status = 301;
         if (isset($this->options['status']) && ($this->options['status'] >= 300 && $this->options['status'] < 400)) {
@@ -106,18 +107,5 @@ class RedirectRoute extends Route
     public function match(array $url, array $context = [])
     {
         return false;
-    }
-
-    /**
-     * Sets the HTTP status
-     *
-     * @param int $status The status code for this route
-     * @return $this
-     */
-    public function setStatus($status)
-    {
-        $this->options['status'] = $status;
-
-        return $this;
     }
 }

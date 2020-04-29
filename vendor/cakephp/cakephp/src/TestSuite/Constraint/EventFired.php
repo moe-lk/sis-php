@@ -1,27 +1,26 @@
 <?php
 namespace Cake\TestSuite\Constraint;
 
-use PHPUnit\Framework\AssertionFailedError;
-use PHPUnit\Framework\Constraint\Constraint;
+use Cake\Event\EventManager;
+use PHPUnit_Framework_AssertionFailedError;
+use PHPUnit_Framework_Constraint;
 
 /**
  * EventFired constraint
- *
- * @internal
  */
-class EventFired extends Constraint
+class EventFired extends PHPUnit_Framework_Constraint
 {
     /**
      * Array of fired events
      *
-     * @var \Cake\Event\EventManager
+     * @var EventManager
      */
     protected $_eventManager;
 
     /**
      * Constructor
      *
-     * @param \Cake\Event\EventManager $eventManager Event manager to check
+     * @param EventManager $eventManager Event manager to check
      */
     public function __construct($eventManager)
     {
@@ -29,7 +28,7 @@ class EventFired extends Constraint
         $this->_eventManager = $eventManager;
 
         if ($this->_eventManager->getEventList() === null) {
-            throw new AssertionFailedError('The event manager you are asserting against is not configured to track events.');
+            throw new PHPUnit_Framework_AssertionFailedError('The event manager you are asserting against is not configured to track events.');
         }
     }
 

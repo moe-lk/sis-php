@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         3.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\I18n;
 
@@ -23,10 +23,11 @@ use RuntimeException;
  */
 class ChainMessagesLoader
 {
+
     /**
      * The list of callables to execute one after another for loading messages
      *
-     * @var callable[]
+     * @var array
      */
     protected $_loaders = [];
 
@@ -34,7 +35,7 @@ class ChainMessagesLoader
      * Receives a list of callable functions or objects that will be executed
      * one after another until one of them returns a non-empty translations package
      *
-     * @param callable[] $loaders List of callables to execute
+     * @param array $loaders List of callables to execute
      */
     public function __construct(array $loaders)
     {
@@ -70,7 +71,9 @@ class ChainMessagesLoader
                 ));
             }
 
-            return $package;
+            if (count($package->getMessages())) {
+                return $package;
+            }
         }
 
         return new Package();

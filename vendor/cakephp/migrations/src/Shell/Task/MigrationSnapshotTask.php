@@ -40,7 +40,7 @@ class MigrationSnapshotTask extends SimpleMigrationTask
     {
         $collection = $this->getCollection($this->connection);
         EventManager::instance()->on('Bake.initialize', function (Event $event) use ($collection) {
-            $event->getSubject()->loadHelper('Migrations.Migration', [
+            $event->subject->loadHelper('Migrations.Migration', [
                 'collection' => $collection
             ]);
         });
@@ -106,7 +106,7 @@ class MigrationSnapshotTask extends SimpleMigrationTask
     {
         $connection = ConnectionManager::get($connection);
 
-        return $connection->getSchemaCollection();
+        return $connection->schemaCollection();
     }
 
     /**
@@ -131,7 +131,7 @@ class MigrationSnapshotTask extends SimpleMigrationTask
     {
         $parser = parent::getOptionParser();
 
-        $parser->setDescription(
+        $parser->description(
             'Bake migration snapshot class.'
         )->addArgument('name', [
             'help' => 'Name of the migration to bake. Can use Plugin.name to bake migration files into plugins.',

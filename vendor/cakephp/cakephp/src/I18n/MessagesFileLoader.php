@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         3.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\I18n;
 
@@ -29,6 +29,7 @@ use RuntimeException;
  */
 class MessagesFileLoader
 {
+
     /**
      * The package (domain) name.
      *
@@ -69,7 +70,7 @@ class MessagesFileLoader
      * $package = $loader();
      * ```
      *
-     * Load and parse src/Locale/fr_FR/validation.mo
+     * Load and parse  src/Locale/fr_FR/validation.mo
      *
      * ```
      * $loader = new MessagesFileLoader('validation', 'fr_FR', 'mo');
@@ -100,12 +101,13 @@ class MessagesFileLoader
      * Loads the translation file and parses it. Returns an instance of a translations
      * package containing the messages loaded from the file.
      *
-     * @return \Aura\Intl\Package|false
+     * @return \Aura\Intl\Package
      * @throws \RuntimeException if no file parser class could be found for the specified
      * file extension.
      */
     public function __invoke()
     {
+        $package = new Package('default');
         $folders = $this->translationsFolders();
         $ext = $this->_extension;
         $file = false;
@@ -124,18 +126,17 @@ class MessagesFileLoader
         }
 
         if (!$file) {
-            return false;
+            return $package;
         }
 
         $name = ucfirst($ext);
-        $class = App::className($name, 'I18n\Parser', 'FileParser');
+        $class = App::classname($name, 'I18n\Parser', 'FileParser');
 
         if (!$class) {
             throw new RuntimeException(sprintf('Could not find class %s', "{$name}FileParser"));
         }
 
-        $messages = (new $class())->parse($file);
-        $package = new Package('default');
+        $messages = (new $class)->parse($file);
         $package->setMessages($messages);
 
         return $package;
@@ -153,7 +154,7 @@ class MessagesFileLoader
 
         $folders = [
             implode('_', [$locale['language'], $locale['region']]),
-            $locale['language'],
+            $locale['language']
         ];
 
         $searchPaths = [];
@@ -170,7 +171,7 @@ class MessagesFileLoader
 
         // If space is not added after slash, the character after it remains lowercased
         $pluginName = Inflector::camelize(str_replace('/', '/ ', $this->_name));
-        if (Plugin::isLoaded($pluginName)) {
+        if (Plugin::loaded($pluginName)) {
             $basePath = Plugin::classPath($pluginName) . 'Locale' . DIRECTORY_SEPARATOR;
             foreach ($folders as $folder) {
                 $searchPaths[] = $basePath . $folder . DIRECTORY_SEPARATOR;

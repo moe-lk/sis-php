@@ -1,23 +1,23 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         1.2.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Controller\Component;
 
 use Cake\Controller\Component;
-use Cake\Http\Cookie\Cookie;
-use Cake\Http\ServerRequestFactory;
 use Cake\I18n\Time;
+use Cake\Network\Request;
+use Cake\Network\Response;
 use Cake\Utility\CookieCryptTrait;
 use Cake\Utility\Hash;
 use Cake\Utility\Security;
@@ -26,14 +26,13 @@ use Cake\Utility\Security;
  * Cookie Component.
  *
  * Provides enhanced cookie handling features for use in the controller layer.
- * In addition to the basic features offered be Cake\Http\Response, this class lets you:
+ * In addition to the basic features offered be Cake\Network\Response, this class lets you:
  *
  * - Create and read encrypted cookies.
  * - Store non-scalar data.
  * - Use hash compatible syntax to read/write/delete values.
  *
- * @link https://book.cakephp.org/3/en/controllers/components/cookie.html
- * @deprecated 3.5.0 Use Cake\Http\Middleware\EncryptedCookieMiddleware and Cake\Http\Cookie\Cookie methods instead.
+ * @link http://book.cakephp.org/3.0/en/controllers/components/cookie.html
  */
 class CookieComponent extends Component
 {
@@ -86,7 +85,7 @@ class CookieComponent extends Component
      *
      * Accessed in the controller using $this->Cookie->read('Name.key');
      *
-     * @var array
+     * @var string
      */
     protected $_values = [];
 
@@ -102,13 +101,11 @@ class CookieComponent extends Component
     protected $_loaded = [];
 
     /**
-     * A reference to the Controller's Cake\Http\Response object.
-     * Currently unused.
+     * A reference to the Controller's Cake\Network\Response object
      *
-     * @var \Cake\Http\Response|null
-     * @deprecated 3.4.0 Will be removed in 4.0.0
+     * @var \Cake\Network\Response
      */
-    protected $_response;
+    protected $_response = null;
 
     /**
      * Initialize config data and properties.
@@ -119,17 +116,22 @@ class CookieComponent extends Component
     public function initialize(array $config)
     {
         if (!$this->_config['key']) {
-            $this->setConfig('key', Security::getSalt());
+            $this->config('key', Security::salt());
         }
 
         $controller = $this->_registry->getController();
 
+        if ($controller !== null) {
+            $this->_response =& $controller->response;
+        }
+
         if ($controller === null) {
-            $this->request = ServerRequestFactory::fromGlobals();
+            $this->request = Request::createFromGlobals();
+            $this->_response = new Response();
         }
 
         if (empty($this->_config['path'])) {
-            $this->setConfig('path', $this->getController()->getRequest()->getAttribute('webroot'));
+            $this->config('path', $this->request->webroot);
         }
     }
 
@@ -154,7 +156,7 @@ class CookieComponent extends Component
      * ```
      *
      * @param string $keyname The top level keyname to configure.
-     * @param array|string|null $option Either the option name to set, or an array of options to set,
+     * @param null|string|array $option Either the option name to set, or an array of options to set,
      *   or null to read config options for a given key.
      * @param string|null $value Either the value to set, or empty when $option is an array.
      * @return array|null
@@ -247,10 +249,10 @@ class CookieComponent extends Component
         if (isset($this->_loaded[$first])) {
             return;
         }
-        $cookie = $this->getController()->getRequest()->getCookie($first);
-        if ($cookie === null) {
+        if (!isset($this->request->cookies[$first])) {
             return;
         }
+        $cookie = $this->request->cookies[$first];
         $config = $this->configKey($first);
         $this->_loaded[$first] = true;
         $this->_values[$first] = $this->_decrypt($cookie, $config['encryption'], $config['key']);
@@ -310,19 +312,15 @@ class CookieComponent extends Component
         $config = $this->configKey($name);
         $expires = new Time($config['expires']);
 
-        $controller = $this->getController();
-
-        $cookie = new Cookie(
-            $name,
-            $this->_encrypt($value, $config['encryption'], $config['key']),
-            $expires,
-            $config['path'],
-            $config['domain'],
-            (bool)$config['secure'],
-            (bool)$config['httpOnly']
-        );
-
-        $controller->response = $controller->response->withCookie($cookie);
+        $this->_response->cookie([
+            'name' => $name,
+            'value' => $this->_encrypt($value, $config['encryption'], $config['key']),
+            'expire' => $expires->format('U'),
+            'path' => $config['path'],
+            'domain' => $config['domain'],
+            'secure' => $config['secure'],
+            'httpOnly' => $config['httpOnly']
+        ]);
     }
 
     /**
@@ -338,19 +336,16 @@ class CookieComponent extends Component
     {
         $config = $this->configKey($name);
         $expires = new Time('now');
-        $controller = $this->getController();
 
-        $cookie = new Cookie(
-            $name,
-            '',
-            $expires,
-            $config['path'],
-            $config['domain'],
-            (bool)$config['secure'],
-            (bool)$config['httpOnly']
-        );
-
-        $controller->response = $controller->response->withExpiredCookie($cookie);
+        $this->_response->cookie([
+            'name' => $name,
+            'value' => '',
+            'expire' => $expires->format('U') - 42000,
+            'path' => $config['path'],
+            'domain' => $config['domain'],
+            'secure' => $config['secure'],
+            'httpOnly' => $config['httpOnly']
+        ]);
     }
 
     /**

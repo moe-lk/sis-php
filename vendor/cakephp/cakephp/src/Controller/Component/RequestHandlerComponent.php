@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         0.10.4
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Controller\Component;
 
@@ -21,8 +21,7 @@ use Cake\Core\App;
 use Cake\Core\Configure;
 use Cake\Core\Exception\Exception;
 use Cake\Event\Event;
-use Cake\Http\Exception\NotFoundException;
-use Cake\Http\Response;
+use Cake\Network\Response;
 use Cake\Routing\Router;
 use Cake\Utility\Exception\XmlException;
 use Cake\Utility\Inflector;
@@ -36,32 +35,39 @@ use RuntimeException;
  * and the like. These units have no use for AJAX requests, and this Component can tell how Cake
  * should respond to the different needs of a handheld computer and a desktop machine.
  *
- * @link https://book.cakephp.org/3/en/controllers/components/request-handling.html
+ * @link http://book.cakephp.org/3.0/en/controllers/components/request-handling.html
  */
 class RequestHandlerComponent extends Component
 {
+
     /**
+     * Determines whether or not callbacks will be fired on this component
+     *
      * @var bool
-     * @deprecated 3.4.0 Unused. Will be removed in 4.0.0
      */
     public $enabled = true;
 
     /**
+     * Holds the reference to Controller::$response
+     *
+     * @var \Cake\Network\Response
+     */
+    public $response;
+
+    /**
      * Contains the file extension parsed out by the Router
      *
-     * Deprecated as of 3.7.0. This property will be made protected in 4.0.0.
-     *
-     * @var string|null
+     * @var string
      * @see \Cake\Routing\Router::extensions()
      */
-    public $ext;
+    public $ext = null;
 
     /**
      * The template to use when rendering the given content type.
      *
-     * @var string|null
+     * @var string
      */
-    protected $_renderType;
+    protected $_renderType = null;
 
     /**
      * Default config
@@ -82,7 +88,7 @@ class RequestHandlerComponent extends Component
         'checkHttpCache' => true,
         'viewClassMap' => [],
         'inputTypeMap' => [],
-        'enableBeforeRedirect' => true,
+        'enableBeforeRedirect' => true
     ];
 
     /**
@@ -106,12 +112,12 @@ class RequestHandlerComponent extends Component
             'viewClassMap' => [
                 'json' => 'Json',
                 'xml' => 'Xml',
-                'ajax' => 'Ajax',
+                'ajax' => 'Ajax'
             ],
             'inputTypeMap' => [
                 'json' => ['json_decode', true],
                 'xml' => [[$this, 'convertXml']],
-            ],
+            ]
         ];
         parent::__construct($registry, $config);
     }
@@ -131,12 +137,20 @@ class RequestHandlerComponent extends Component
     }
 
     /**
+     * Checks to see if a specific content type has been requested and sets RequestHandler::$ext
+     * accordingly. Checks the following in order: 1. The '_ext' value parsed by the Router. 2. A specific
+     * AJAX type request indicated by the presence of a header. 3. The Accept header. With the exception
+     * of an AJAX request indicated using the second header based method above, the type must have
+     * been configured in {@link Cake\Routing\Router}.
+     *
      * @param array $config The config data.
      * @return void
-     * @deprecated 3.4.0 Unused. To be removed in 4.0.0
+     * @see \Cake\Routing\Router::extensions()
      */
     public function initialize(array $config)
     {
+        $controller = $this->_registry->getController();
+        $this->response =& $controller->response;
     }
 
     /**
@@ -150,8 +164,8 @@ class RequestHandlerComponent extends Component
      * If html is one of the preferred types, no content type will be set, this
      * is to avoid issues with browsers that prefer HTML and several other content types.
      *
-     * @param \Cake\Http\ServerRequest $request The request instance.
-     * @param \Cake\Http\Response $response The response instance.
+     * @param \Cake\Network\Request $request The request instance.
+     * @param \Cake\Network\Response $response The response instance.
      * @return void
      */
     protected function _setExtension($request, $response)
@@ -168,11 +182,11 @@ class RequestHandlerComponent extends Component
         }
 
         $extensions = array_unique(
-            array_merge(Router::extensions(), array_keys($this->getConfig('viewClassMap')))
+            array_merge(Router::extensions(), array_keys($this->config('viewClassMap')))
         );
         foreach ($accepts as $types) {
             $ext = array_intersect($extensions, $types);
-            if ($ext) {
+            if (!empty($ext)) {
                 $this->ext = current($ext);
                 break;
             }
@@ -191,22 +205,19 @@ class RequestHandlerComponent extends Component
      */
     public function startup(Event $event)
     {
-        /** @var \Cake\Controller\Controller $controller */
-        $controller = $event->getSubject();
-        $request = $controller->getRequest();
-        $response = $controller->getResponse();
+        $controller = $event->subject();
+        $request = $controller->request;
 
-        if ($request->getParam('_ext')) {
-            $this->ext = $request->getParam('_ext');
+        if (isset($request->params['_ext'])) {
+            $this->ext = $request->params['_ext'];
         }
-        if (!$this->ext || in_array($this->ext, ['html', 'htm'])) {
-            $this->_setExtension($request, $response);
+        if (empty($this->ext) || in_array($this->ext, ['html', 'htm'])) {
+            $this->_setExtension($request, $this->response);
         }
 
-        $isAjax = $request->is('ajax');
-        $controller->setRequest($request->withParam('isAjax', $isAjax));
+        $request->params['isAjax'] = $request->is('ajax');
 
-        if (!$this->ext && $isAjax) {
+        if (empty($this->ext) && $request->params['isAjax']) {
             $this->ext = 'ajax';
         }
 
@@ -214,16 +225,13 @@ class RequestHandlerComponent extends Component
             return;
         }
 
-        if ($request->getParsedBody() !== []) {
-            return;
-        }
-        foreach ($this->getConfig('inputTypeMap') as $type => $handler) {
+        foreach ($this->config('inputTypeMap') as $type => $handler) {
             if (!is_callable($handler[0])) {
                 throw new RuntimeException(sprintf("Invalid callable for '%s' type.", $type));
             }
             if ($this->requestedWith($type)) {
-                $input = $request->input(...$handler);
-                $controller->setRequest($request->withParsedBody((array)$input));
+                $input = call_user_func_array([$request, 'input'], $handler);
+                $request->data = (array)$input;
             }
         }
     }
@@ -238,13 +246,12 @@ class RequestHandlerComponent extends Component
     public function convertXml($xml)
     {
         try {
-            $xml = Xml::build($xml, ['return' => 'domdocument', 'readFile' => false]);
-            // We might not get child nodes if there are nested inline entities.
-            if ((int)$xml->childNodes->length > 0) {
-                return Xml::toArray($xml);
+            $xml = Xml::build($xml, ['readFile' => false]);
+            if (isset($xml->data)) {
+                return Xml::toArray($xml->data);
             }
 
-            return [];
+            return Xml::toArray($xml);
         } catch (XmlException $e) {
             return [];
         }
@@ -255,22 +262,17 @@ class RequestHandlerComponent extends Component
      *
      * @param \Cake\Event\Event $event The Controller.beforeRedirect event.
      * @param string|array $url A string or array containing the redirect location
-     * @param \Cake\Http\Response $response The response object.
-     * @return \Cake\Http\Response|null The response object if the redirect is caught.
+     * @param \Cake\Network\Response $response The response object.
+     * @return \Cake\Network\Response|null The response object if the redirect is caught.
      * @deprecated 3.3.5 This functionality will be removed in 4.0.0. You can disable this function
      *   now by setting the `enableBeforeRedirect` config option to false.
      */
     public function beforeRedirect(Event $event, $url, Response $response)
     {
-        if (!$this->getConfig('enableBeforeRedirect')) {
+        if (!$this->config('enableBeforeRedirect')) {
             return null;
         }
-        deprecationWarning(
-            'RequestHandlerComponent::beforeRedirect() is deprecated. ' .
-            'This functionality will be removed in 4.0.0. Set the `enableBeforeRedirect` ' .
-            'option to `false` to disable this warning.'
-        );
-        $request = $this->getController()->getRequest();
+        $request = $this->request;
         if (!$request->is('ajax')) {
             return null;
         }
@@ -285,19 +287,19 @@ class RequestHandlerComponent extends Component
             list($url, $querystr) = explode('?', $url, 2);
             parse_str($querystr, $query);
         }
-        /** @var \Cake\Controller\Controller $controller */
-        $controller = $event->getSubject();
+        $controller = $event->subject();
         $response->body($controller->requestAction($url, [
             'return',
             'bare' => false,
             'environment' => [
-                'REQUEST_METHOD' => 'GET',
+                'REQUEST_METHOD' => 'GET'
             ],
             'query' => $query,
-            'cookies' => $request->getCookieParams(),
+            'cookies' => $request->cookies
         ]));
+        $response->statusCode(200);
 
-        return $response->withStatus(200);
+        return $response;
     }
 
     /**
@@ -312,9 +314,9 @@ class RequestHandlerComponent extends Component
      *   `app/View/Controller/xml/action.ctp`. Also if `controller/action` is
      *   requested with `Accept: application/xml` in the headers the view
      *   path will become `app/View/Controller/xml/action.ctp`. Layout and template
-     *   types will only switch to mime-types recognized by Cake\Http\Response.
+     *   types will only switch to mime-types recognized by Cake\Network\Response.
      *   If you need to declare additional mime-types, you can do so using
-     *   Cake\Http\Response::type() in your controller's beforeFilter() method.
+     *   Cake\Network\Response::type() in your controller's beforeFilter() method.
      * - If a helper with the same name as the extension exists, it is added to
      *   the controller.
      * - If the extension is of a type that RequestHandler understands, it will
@@ -322,49 +324,34 @@ class RequestHandlerComponent extends Component
      *
      * @param \Cake\Event\Event $event The Controller.beforeRender event.
      * @return bool false if the render process should be aborted
-     * @throws \Cake\Http\Exception\NotFoundException If invoked extension is not configured.
      */
     public function beforeRender(Event $event)
     {
-        /** @var \Cake\Controller\Controller $controller */
-        $controller = $event->getSubject();
-        $response = $controller->getResponse();
-        $request = $controller->getRequest();
+        $isRecognized = (
+            !in_array($this->ext, ['html', 'htm']) &&
+            $this->response->getMimeType($this->ext)
+        );
 
-        if ($this->ext && !in_array($this->ext, ['html', 'htm'])) {
-            if (!$response->getMimeType($this->ext)) {
-                throw new NotFoundException('Invoked extension not recognized/configured: ' . $this->ext);
-            }
-
-            $this->renderAs($controller, $this->ext);
-            $response = $controller->response;
+        if (!empty($this->ext) && $isRecognized) {
+            $this->renderAs($event->subject(), $this->ext);
         } else {
-            $response = $response->withCharset(Configure::read('App.encoding'));
+            $this->response->charset(Configure::read('App.encoding'));
         }
 
-        if (
-            $this->_config['checkHttpCache'] &&
-            $response->checkNotModified($request)
+        if ($this->_config['checkHttpCache'] &&
+            $this->response->checkNotModified($this->request)
         ) {
-            $controller->setResponse($response);
-
             return false;
         }
-        $controller->setResponse($response);
     }
 
     /**
      * Returns true if the current call accepts an XML response, false otherwise
      *
      * @return bool True if client accepts an XML response
-     * @deprecated 3.7.0 Use RequestHandler::prefers('xml') instead.
      */
     public function isXml()
     {
-        deprecationWarning(
-            'RequestHandlerComponent::isXml() is deprecated. Use RequestHandlerComponent::prefers(\'xml\') instead.'
-        );
-
         return $this->prefers('xml');
     }
 
@@ -372,29 +359,19 @@ class RequestHandlerComponent extends Component
      * Returns true if the current call accepts an RSS response, false otherwise
      *
      * @return bool True if client accepts an RSS response
-     * @deprecated 3.7.0 Use RequestHandler::prefers('rss') instead.
      */
     public function isRss()
     {
-        deprecationWarning(
-            'RequestHandlerComponent::isRss() is deprecated. Use RequestHandlerComponent::prefers(\'rss\') instead.'
-        );
-
         return $this->prefers('rss');
     }
 
     /**
      * Returns true if the current call accepts an Atom response, false otherwise
      *
-     * @return bool True if client accepts an Atom response
-     * @deprecated 3.7.0 Use RequestHandler::prefers('atom') instead.
+     * @return bool True if client accepts an RSS response
      */
     public function isAtom()
     {
-        deprecationWarning(
-            'RequestHandlerComponent::isAtom() is deprecated. Use RequestHandlerComponent::prefers(\'atom\') instead.'
-        );
-
         return $this->prefers('atom');
     }
 
@@ -403,15 +380,10 @@ class RequestHandlerComponent extends Component
      * client accepts WAP content.
      *
      * @return bool True if user agent is a mobile web browser
-     * @deprecated 3.7.0 Use ServerRequest::is('mobile') instead.
      */
     public function isMobile()
     {
-        deprecationWarning(
-            'RequestHandlerComponent::isMobile() is deprecated. Use ServerRequest::is(\'mobile\') instead.'
-        );
-
-        $request = $this->getController()->getRequest();
+        $request = $this->request;
 
         return $request->is('mobile') || $this->accepts('wap');
     }
@@ -420,21 +392,16 @@ class RequestHandlerComponent extends Component
      * Returns true if the client accepts WAP content
      *
      * @return bool
-     * @deprecated 3.7.0 Use RequestHandler::prefers('wap') instead.
      */
     public function isWap()
     {
-        deprecationWarning(
-            'RequestHandlerComponent::isWap() is deprecated. Use RequestHandlerComponent::prefers(\'wap\') instead.'
-        );
-
         return $this->prefers('wap');
     }
 
     /**
      * Determines which content types the client accepts. Acceptance is based on
      * the file extension parsed by the Router (if present), and by the HTTP_ACCEPT
-     * header. Unlike Cake\Http\ServerRequest::accepts() this method deals entirely with mapped content types.
+     * header. Unlike Cake\Network\Request::accepts() this method deals entirely with mapped content types.
      *
      * Usage:
      *
@@ -459,9 +426,8 @@ class RequestHandlerComponent extends Component
      */
     public function accepts($type = null)
     {
-        $controller = $this->getController();
-        $request = $controller->getRequest();
-        $response = $controller->getResponse();
+        $request = $this->request;
+        $response = $this->response;
         $accepted = $request->accepts();
 
         if (!$type) {
@@ -494,12 +460,8 @@ class RequestHandlerComponent extends Component
      */
     public function requestedWith($type = null)
     {
-        $controller = $this->getController();
-        $request = $controller->getRequest();
-        $response = $controller->getResponse();
-
-        if (
-            !$request->is('post') &&
+        $request = $this->request;
+        if (!$request->is('post') &&
             !$request->is('put') &&
             !$request->is('patch') &&
             !$request->is('delete')
@@ -517,6 +479,7 @@ class RequestHandlerComponent extends Component
         }
 
         list($contentType) = explode(';', $request->contentType());
+        $response = $this->response;
         if ($type === null) {
             return $response->mapType($contentType);
         }
@@ -543,13 +506,12 @@ class RequestHandlerComponent extends Component
      */
     public function prefers($type = null)
     {
-        $controller = $this->getController();
-        $request = $controller->getRequest();
-        $response = $controller->getResponse();
+        $request = $this->request;
+        $response = $this->response;
         $acceptRaw = $request->parseAccept();
 
         if (empty($acceptRaw)) {
-            return $type ? $type === $this->ext : $this->ext;
+            return $this->ext;
         }
         $accepts = $response->mapType(array_shift($acceptRaw));
 
@@ -564,7 +526,7 @@ class RequestHandlerComponent extends Component
         $types = (array)$type;
 
         if (count($types) === 1) {
-            if ($this->ext) {
+            if (!empty($this->ext)) {
                 return in_array($this->ext, $types);
             }
 
@@ -572,7 +534,7 @@ class RequestHandlerComponent extends Component
         }
 
         $intersect = array_values(array_intersect($accepts, $types));
-        if (!$intersect) {
+        if (empty($intersect)) {
             return false;
         }
 
@@ -606,7 +568,7 @@ class RequestHandlerComponent extends Component
     public function renderAs(Controller $controller, $type, array $options = [])
     {
         $defaults = ['charset' => 'UTF-8'];
-        $viewClassMap = $this->getConfig('viewClassMap');
+        $viewClassMap = $this->config('viewClassMap');
 
         if (Configure::read('App.encoding') !== null) {
             $defaults['charset'] = Configure::read('App.encoding');
@@ -621,37 +583,46 @@ class RequestHandlerComponent extends Component
         }
 
         $viewClass = null;
-        if ($builder->getClassName() === null) {
+        if ($builder->className() === null) {
             $viewClass = App::className($view, 'View', 'View');
         }
 
         if ($viewClass) {
             $controller->viewClass = $viewClass;
-            $builder->setClassName($viewClass);
+            $builder->className($viewClass);
         } else {
-            if (!$this->_renderType) {
-                $builder->setTemplatePath($builder->getTemplatePath() . DIRECTORY_SEPARATOR . $type);
+            if (empty($this->_renderType)) {
+                $builder->templatePath($builder->templatePath() . DIRECTORY_SEPARATOR . $type);
             } else {
-                $builder->setTemplatePath(preg_replace(
+                $builder->templatePath(preg_replace(
                     "/([\/\\\\]{$this->_renderType})$/",
                     DIRECTORY_SEPARATOR . $type,
-                    $builder->getTemplatePath()
+                    $builder->templatePath()
                 ));
             }
 
             $this->_renderType = $type;
-            $builder->setLayoutPath($type);
+            $builder->layoutPath($type);
         }
 
-        $response = $controller->response;
+        $response = $this->response;
         if ($response->getMimeType($type)) {
             $this->respondAs($type, $options);
+        }
+
+        $helper = ucfirst($type);
+
+        if (!in_array($helper, $controller->helpers) && empty($controller->helpers[$helper])) {
+            $helperClass = App::className($helper, 'View/Helper', 'Helper');
+            if ($helperClass !== false) {
+                $controller->helpers[] = $helper;
+            }
         }
     }
 
     /**
      * Sets the response header based on type map index name. This wraps several methods
-     * available on Cake\Http\Response. It also allows you to use Content-Type aliases.
+     * available on Cake\Network\Response. It also allows you to use Content-Type aliases.
      *
      * @param string|array $type Friendly type name, i.e. 'html' or 'xml', or a full content-type,
      *    like 'application/x-shockwave'.
@@ -667,10 +638,7 @@ class RequestHandlerComponent extends Component
         $options += $defaults;
 
         $cType = $type;
-        $controller = $this->getController();
-        $response = $controller->getResponse();
-        $request = $controller->getRequest();
-
+        $response = $this->response;
         if (strpos($type, '/') === false) {
             $cType = $response->getMimeType($type);
         }
@@ -689,16 +657,15 @@ class RequestHandlerComponent extends Component
         if (!$type) {
             return false;
         }
-        if (!$request->getParam('requested')) {
-            $response = $response->withType($cType);
+        if (empty($this->request->params['requested'])) {
+            $response->type($cType);
         }
         if (!empty($options['charset'])) {
-            $response = $response->withCharset($options['charset']);
+            $response->charset($options['charset']);
         }
         if (!empty($options['attachment'])) {
-            $response = $response->withDownload($options['attachment']);
+            $response->download($options['attachment']);
         }
-        $controller->setResponse($response);
 
         return true;
     }
@@ -708,24 +675,19 @@ class RequestHandlerComponent extends Component
      *
      * @return mixed A string content type alias, or raw content type if no alias map exists,
      *  otherwise null
-     * @deprecated 3.7.0 Use $response->mapType($response->getType()) instead.
      */
     public function responseType()
     {
-        deprecationWarning(
-            'RequestHandlerComponent::responseType() is deprecated. Use $response->mapType($response->getType()) instead.'
-        );
+        $response = $this->response;
 
-        $response = $this->getController()->response;
-
-        return $response->mapType($response->getType());
+        return $response->mapType($response->type());
     }
 
     /**
      * Maps a content type alias back to its mime-type(s)
      *
      * @param string|array $alias String alias to convert back into a content type. Or an array of aliases to map.
-     * @return string|array|null Null on an undefined alias. String value of the mapped alias type. If an
+     * @return string|null|array Null on an undefined alias. String value of the mapped alias type. If an
      *   alias maps to more than one content type, the first one will be returned. If an array is provided
      *   for $alias, an array of mapped types will be returned.
      */
@@ -734,7 +696,7 @@ class RequestHandlerComponent extends Component
         if (is_array($alias)) {
             return array_map([$this, 'mapAlias'], $alias);
         }
-        $response = $this->getController()->response;
+        $response = $this->response;
         $type = $response->getMimeType($alias);
         if ($type) {
             if (is_array($type)) {
@@ -757,17 +719,18 @@ class RequestHandlerComponent extends Component
      *    for the handler.
      * @return void
      * @throws \Cake\Core\Exception\Exception
-     * @deprecated 3.1.0 Use setConfig('addInputType', ...) instead.
+     * @deprecated 3.1.0 Use config('addInputType', ...) instead.
      */
     public function addInputType($type, $handler)
     {
-        deprecationWarning(
-            'RequestHandlerComponent::addInputType() is deprecated. Use setConfig("inputTypeMap", ...) instead.'
+        trigger_error(
+            'RequestHandlerComponent::addInputType() is deprecated. Use config("inputTypeMap", ...) instead.',
+            E_USER_DEPRECATED
         );
         if (!is_array($handler) || !isset($handler[0]) || !is_callable($handler[0])) {
             throw new Exception('You must give a handler callback.');
         }
-        $this->setConfig('inputTypeMap.' . $type, $handler);
+        $this->config('inputTypeMap.' . $type, $handler);
     }
 
     /**
@@ -776,22 +739,23 @@ class RequestHandlerComponent extends Component
      * @param array|string|null $type The type string or array with format `['type' => 'viewClass']` to map one or more
      * @param array|null $viewClass The viewClass to be used for the type without `View` appended
      * @return array|string Returns viewClass when only string $type is set, else array with viewClassMap
-     * @deprecated 3.1.0 Use setConfig('viewClassMap', ...) instead.
+     * @deprecated 3.1.0 Use config('viewClassMap', ...) instead.
      */
     public function viewClassMap($type = null, $viewClass = null)
     {
-        deprecationWarning(
-            'RequestHandlerComponent::viewClassMap() is deprecated. Use setConfig("viewClassMap", ...) instead.'
+        trigger_error(
+            'RequestHandlerComponent::viewClassMap() is deprecated. Use config("viewClassMap", ...) instead.',
+            E_USER_DEPRECATED
         );
         if (!$viewClass && is_string($type)) {
-            return $this->getConfig('viewClassMap.' . $type);
+            return $this->config('viewClassMap.' . $type);
         }
         if (is_string($type)) {
-            $this->setConfig('viewClassMap.' . $type, $viewClass);
+            $this->config('viewClassMap.' . $type, $viewClass);
         } elseif (is_array($type)) {
-            $this->setConfig('viewClassMap', $type, true);
+            $this->config('viewClassMap', $type, true);
         }
 
-        return $this->getConfig('viewClassMap');
+        return $this->config('viewClassMap');
     }
 }

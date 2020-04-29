@@ -148,7 +148,7 @@ class SeedTask extends SimpleBakeTask
             }
         }
 
-        $parser->setDescription(
+        $parser->description(
             'Bake seed class.'
         )->addOption('plugin', [
             'short' => 'p',

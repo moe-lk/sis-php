@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         3.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Database;
 
@@ -23,6 +23,7 @@ use Cake\Database\Expression\QueryExpression;
  */
 class QueryCompiler
 {
+
     /**
      * List of sprintf templates that will be used for compiling the SQL for
      * this query. There are some clauses that can be built as just as the
@@ -38,7 +39,7 @@ class QueryCompiler
         'order' => ' %s',
         'limit' => ' LIMIT %s',
         'offset' => ' OFFSET %s',
-        'epilog' => ' %s',
+        'epilog' => ' %s'
     ];
 
     /**
@@ -48,7 +49,7 @@ class QueryCompiler
      */
     protected $_selectParts = [
         'select', 'from', 'join', 'where', 'group', 'having', 'order', 'limit',
-        'offset', 'union', 'epilog',
+        'offset', 'union', 'epilog'
     ];
 
     /**
@@ -100,8 +101,8 @@ class QueryCompiler
 
         // Propagate bound parameters from sub-queries if the
         // placeholders can be found in the SQL statement.
-        if ($query->getValueBinder() !== $generator) {
-            foreach ($query->getValueBinder()->bindings() as $binding) {
+        if ($query->valueBinder() !== $generator) {
+            foreach ($query->valueBinder()->bindings() as $binding) {
                 $placeholder = ':' . $binding['placeholder'];
                 if (preg_match('/' . $placeholder . '(?:\W|$)/', $sql) > 0) {
                     $generator->bind($placeholder, $binding['value'], $binding['type']);
@@ -124,10 +125,7 @@ class QueryCompiler
     protected function _sqlCompiler(&$sql, $query, $generator)
     {
         return function ($parts, $name) use (&$sql, $query, $generator) {
-            if (
-                !isset($parts) ||
-                ((is_array($parts) || $parts instanceof \Countable) && !count($parts))
-            ) {
+            if (!count($parts)) {
                 return;
             }
             if ($parts instanceof ExpressionInterface) {
@@ -156,7 +154,7 @@ class QueryCompiler
      */
     protected function _buildSelectPart($parts, $query, $generator)
     {
-        $driver = $query->getConnection()->getDriver();
+        $driver = $query->connection()->driver();
         $select = 'SELECT%s %s%s';
         if ($this->_orderedUnion && $query->clause('union')) {
             $select = '(SELECT%s %s%s';
@@ -235,13 +233,8 @@ class QueryCompiler
             }
 
             $joins .= sprintf(' %s JOIN %s %s', $join['type'], $join['table'], $join['alias']);
-
-            $condition = '';
-            if (isset($join['conditions']) && $join['conditions'] instanceof ExpressionInterface) {
-                $condition = $join['conditions']->sql($generator);
-            }
-            if (strlen($condition)) {
-                $joins .= " ON {$condition}";
+            if (isset($join['conditions']) && count($join['conditions'])) {
+                $joins .= sprintf(' ON %s', $join['conditions']->sql($generator));
             } else {
                 $joins .= ' ON 1 = 1';
             }

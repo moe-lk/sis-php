@@ -1,15 +1,15 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         3.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Http\Client;
 
@@ -18,11 +18,10 @@ namespace Cake\Http\Client;
  *
  * Defines some common helper methods, constants
  * and properties.
- *
- * @property array $headers
  */
 class Message
 {
+
     /**
      * HTTP 200 code
      *
@@ -43,20 +42,6 @@ class Message
      * @var int
      */
     const STATUS_ACCEPTED = 202;
-
-    /**
-     * HTTP 203 code
-     *
-     * @var int
-     */
-    const STATUS_NON_AUTHORITATIVE_INFORMATION = 203;
-
-    /**
-     * HTTP 204 code
-     *
-     * @var int
-     */
-    const STATUS_NO_CONTENT = 204;
 
     /**
      * HTTP 301 code
@@ -150,13 +135,6 @@ class Message
     protected $_cookies = [];
 
     /**
-     * Body for the message.
-     *
-     * @var string|null
-     */
-    protected $_body;
-
-    /**
      * Get all headers
      *
      * @return array
@@ -164,11 +142,6 @@ class Message
      */
     public function headers()
     {
-        deprecationWarning(
-            'Message::headers() is deprecated. ' .
-            'Use getHeaders() instead.'
-        );
-
         return $this->headers;
     }
 
@@ -198,6 +171,3 @@ class Message
         return $this;
     }
 }
-
-// @deprecated 3.4.0 Add backwards compat alias.
-class_alias('Cake\Http\Client\Message', 'Cake\Network\Http\Message');

@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         3.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Database\Log;
 
@@ -22,6 +22,7 @@ namespace Cake\Database\Log;
  */
 class LoggedQuery
 {
+
     /**
      * Query string that was executed
      *
@@ -32,14 +33,14 @@ class LoggedQuery
     /**
      * Number of milliseconds this query took to complete
      *
-     * @var int
+     * @var float
      */
     public $took = 0;
 
     /**
      * Associative array with the params bound to the query string
      *
-     * @var array
+     * @var string
      */
     public $params = [];
 
@@ -53,7 +54,7 @@ class LoggedQuery
     /**
      * The exception that was thrown by the execution of this query
      *
-     * @var \Exception|null
+     * @var \Exception
      */
     public $error;
 

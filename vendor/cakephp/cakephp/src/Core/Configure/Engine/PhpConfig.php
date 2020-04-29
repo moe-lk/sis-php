@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         2.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Core\Configure\Engine;
 
@@ -24,26 +24,10 @@ use Cake\Core\Exception\Exception;
  *
  * Files compatible with PhpConfig should return an array that
  * contains all of the configuration data contained in the file.
- *
- * An example configuration file would look like::
- *
- * ```
- * <?php
- * return [
- *     'debug' => false,
- *     'Security' => [
- *         'salt' => 'its-secret'
- *     ],
- *     'App' => [
- *         'namespace' => 'App'
- *     ]
- * ];
- * ```
- *
- * @see Cake\Core\Configure::load() for how to load custom configuration files.
  */
 class PhpConfig implements ConfigEngineInterface
 {
+
     use FileConfigTrait;
 
     /**
@@ -84,20 +68,14 @@ class PhpConfig implements ConfigEngineInterface
     {
         $file = $this->_getFilePath($key, true);
 
-        $config = null;
-
         $return = include $file;
         if (is_array($return)) {
             return $return;
         }
 
-        if ($config === null) {
+        if (!isset($config)) {
             throw new Exception(sprintf('Config file "%s" did not return an array', $key . '.php'));
         }
-        deprecationWarning(sprintf(
-            'PHP configuration files like "%s" should not set `$config`. Instead return an array.',
-            $key . '.php'
-        ));
 
         return $config;
     }

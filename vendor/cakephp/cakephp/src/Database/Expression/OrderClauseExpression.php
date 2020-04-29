@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         3.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Database\Expression;
 
@@ -19,6 +19,8 @@ use Cake\Database\ValueBinder;
 
 /**
  * An expression object for complex ORDER BY clauses
+ *
+ * @internal
  */
 class OrderClauseExpression implements ExpressionInterface, FieldInterface
 {
@@ -53,7 +55,7 @@ class OrderClauseExpression implements ExpressionInterface, FieldInterface
             $field = $field->sql($generator);
         }
 
-        return sprintf('%s %s', $field, $this->_direction);
+        return sprintf("%s %s", $field, $this->_direction);
     }
 
     /**

@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         3.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\ORM;
 
@@ -112,6 +112,7 @@ use ReflectionMethod;
  */
 class Behavior implements EventListenerInterface
 {
+
     use InstanceConfigTrait;
 
     /**
@@ -161,7 +162,7 @@ class Behavior implements EventListenerInterface
             $config
         );
         $this->_table = $table;
-        $this->setConfig($config);
+        $this->config($config);
         $this->initialize($config);
     }
 
@@ -179,16 +180,6 @@ class Behavior implements EventListenerInterface
     }
 
     /**
-     * Get the table instance this behavior is bound to.
-     *
-     * @return \Cake\ORM\Table The bound table instance.
-     */
-    public function getTable()
-    {
-        return $this->_table;
-    }
-
-    /**
      * Removes aliased methods that would otherwise be duplicated by userland configuration.
      *
      * @param string $key The key to filter.
@@ -202,7 +193,7 @@ class Behavior implements EventListenerInterface
             return $config;
         }
         if (isset($config[$key]) && $config[$key] === []) {
-            $this->setConfig($key, [], false);
+            $this->config($key, [], false);
             unset($config[$key]);
 
             return $config;
@@ -215,7 +206,7 @@ class Behavior implements EventListenerInterface
                 $indexedCustom[$method] = $alias;
             }
         }
-        $this->setConfig($key, array_flip($indexedCustom), false);
+        $this->config($key, array_flip($indexedCustom), false);
         unset($config[$key]);
 
         return $config;
@@ -272,7 +263,7 @@ class Behavior implements EventListenerInterface
             'Model.beforeRules' => 'beforeRules',
             'Model.afterRules' => 'afterRules',
         ];
-        $config = $this->getConfig();
+        $config = $this->config();
         $priority = isset($config['priority']) ? $config['priority'] : null;
         $events = [];
 
@@ -285,7 +276,7 @@ class Behavior implements EventListenerInterface
             } else {
                 $events[$event] = [
                     'callable' => $method,
-                    'priority' => $priority,
+                    'priority' => $priority
                 ];
             }
         }
@@ -313,11 +304,10 @@ class Behavior implements EventListenerInterface
      * method list. See core behaviors for examples
      *
      * @return array
-     * @throws \ReflectionException
      */
     public function implementedFinders()
     {
-        $methods = $this->getConfig('implementedFinders');
+        $methods = $this->config('implementedFinders');
         if (isset($methods)) {
             return $methods;
         }
@@ -345,11 +335,10 @@ class Behavior implements EventListenerInterface
      * method list. See core behaviors for examples
      *
      * @return array
-     * @throws \ReflectionException
      */
     public function implementedMethods()
     {
-        $methods = $this->getConfig('implementedMethods');
+        $methods = $this->config('implementedMethods');
         if (isset($methods)) {
             return $methods;
         }
@@ -365,7 +354,6 @@ class Behavior implements EventListenerInterface
      * declared on Cake\ORM\Behavior
      *
      * @return array
-     * @throws \ReflectionException
      */
     protected function _reflectionCache()
     {
@@ -378,14 +366,14 @@ class Behavior implements EventListenerInterface
         $eventMethods = [];
         foreach ($events as $e => $binding) {
             if (is_array($binding) && isset($binding['callable'])) {
-                /** @var string $callable */
+                /* @var string $callable */
                 $callable = $binding['callable'];
                 $binding = $callable;
             }
             $eventMethods[$binding] = true;
         }
 
-        $baseClass = self::class;
+        $baseClass = 'Cake\ORM\Behavior';
         if (isset(self::$_reflectionCache[$baseClass])) {
             $baseMethods = self::$_reflectionCache[$baseClass];
         } else {
@@ -395,15 +383,14 @@ class Behavior implements EventListenerInterface
 
         $return = [
             'finders' => [],
-            'methods' => [],
+            'methods' => []
         ];
 
         $reflection = new ReflectionClass($class);
 
         foreach ($reflection->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
             $methodName = $method->getName();
-            if (
-                in_array($methodName, $baseMethods, true) ||
+            if (in_array($methodName, $baseMethods) ||
                 isset($eventMethods[$methodName])
             ) {
                 continue;

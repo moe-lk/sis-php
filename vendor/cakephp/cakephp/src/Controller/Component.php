@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         1.2.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Controller;
 
@@ -51,31 +51,28 @@ use Cake\Log\LogTrait;
  *   propagation.
  *
  * While the controller is not an explicit argument for the callback methods it
- * is the subject of each event and can be fetched using Event::getSubject().
+ * is the subject of each event and can be fetched using Event::subject().
  *
- * @link https://book.cakephp.org/3/en/controllers/components.html
+ * @link http://book.cakephp.org/3.0/en/controllers/components.html
  * @see \Cake\Controller\Controller::$components
  */
 class Component implements EventListenerInterface
 {
+
     use InstanceConfigTrait;
     use LogTrait;
 
     /**
      * Request object
      *
-     * @var \Cake\Http\ServerRequest
-     * @deprecated 3.4.0 Storing references to the request is deprecated. Use Component::getController()
-     *   or callback $event->getSubject() to access the controller & request instead.
+     * @var \Cake\Network\Request
      */
     public $request;
 
     /**
      * Response object
      *
-     * @var \Cake\Http\Response
-     * @deprecated 3.4.0 Storing references to the response is deprecated. Use Component::getController()
-     *   or callback $event->getSubject() to access the controller & response instead.
+     * @var \Cake\Network\Response
      */
     public $response;
 
@@ -124,22 +121,12 @@ class Component implements EventListenerInterface
             $this->response =& $controller->response;
         }
 
-        $this->setConfig($config);
+        $this->config($config);
 
-        if ($this->components) {
+        if (!empty($this->components)) {
             $this->_componentMap = $registry->normalizeArray($this->components);
         }
         $this->initialize($config);
-    }
-
-    /**
-     * Get the controller this component is bound to.
-     *
-     * @return \Cake\Controller\Controller The bound controller.
-     */
-    public function getController()
-    {
-        return $this->_registry->getController();
     }
 
     /**
@@ -159,7 +146,7 @@ class Component implements EventListenerInterface
      * Magic method for lazy loading $components.
      *
      * @param string $name Name of component to get.
-     * @return \Cake\Controller\Component|null A Component object or null.
+     * @return mixed A Component object or null.
      */
     public function __get($name)
     {
@@ -216,7 +203,7 @@ class Component implements EventListenerInterface
         return [
             'components' => $this->components,
             'implementedEvents' => $this->implementedEvents(),
-            '_config' => $this->getConfig(),
+            '_config' => $this->config(),
         ];
     }
 }

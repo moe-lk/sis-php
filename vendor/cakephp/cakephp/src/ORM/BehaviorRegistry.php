@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         3.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\ORM;
 
@@ -30,6 +30,7 @@ use LogicException;
  */
 class BehaviorRegistry extends ObjectRegistry implements EventDispatcherInterface
 {
+
     use EventDispatcherTrait;
 
     /**
@@ -74,27 +75,7 @@ class BehaviorRegistry extends ObjectRegistry implements EventDispatcherInterfac
     public function setTable(Table $table)
     {
         $this->_table = $table;
-        $eventManager = $table->getEventManager();
-        if ($eventManager !== null) {
-            $this->setEventManager($eventManager);
-        }
-    }
-
-    /**
-     * Resolve a behavior classname.
-     *
-     * @param string $class Partial classname to resolve.
-     * @return string|null Either the correct classname or null.
-     * @since 3.5.7
-     */
-    public static function className($class)
-    {
-        $result = App::className($class, 'Model/Behavior', 'Behavior');
-        if (!$result) {
-            $result = App::className($class, 'ORM/Behavior', 'Behavior');
-        }
-
-        return $result ?: null;
+        $this->eventManager($table->eventManager());
     }
 
     /**
@@ -107,14 +88,18 @@ class BehaviorRegistry extends ObjectRegistry implements EventDispatcherInterfac
      */
     protected function _resolveClassName($class)
     {
-        return static::className($class) ?: false;
+        $result = App::className($class, 'Model/Behavior', 'Behavior');
+        if (!$result) {
+            $result = App::className($class, 'ORM/Behavior', 'Behavior');
+        }
+
+        return $result;
     }
 
     /**
      * Throws an exception when a behavior is missing.
      *
      * Part of the template method for Cake\Core\ObjectRegistry::load()
-     * and Cake\Core\ObjectRegistry::unload()
      *
      * @param string $class The classname that is missing.
      * @param string $plugin The plugin the behavior is missing in.
@@ -125,7 +110,7 @@ class BehaviorRegistry extends ObjectRegistry implements EventDispatcherInterfac
     {
         throw new MissingBehaviorException([
             'class' => $class . 'Behavior',
-            'plugin' => $plugin,
+            'plugin' => $plugin
         ]);
     }
 
@@ -145,7 +130,7 @@ class BehaviorRegistry extends ObjectRegistry implements EventDispatcherInterfac
         $instance = new $class($this->_table, $config);
         $enable = isset($config['enabled']) ? $config['enabled'] : true;
         if ($enable) {
-            $this->getEventManager()->on($instance);
+            $this->eventManager()->on($instance);
         }
         $methods = $this->_getMethods($instance, $class, $alias);
         $this->_methodMap += $methods['methods'];

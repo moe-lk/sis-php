@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) :  Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) :  Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakefoundation.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
  * @since         1.3.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Log\Engine;
 
@@ -23,6 +23,7 @@ use Cake\Utility\Text;
  */
 class FileLog extends BaseLog
 {
+
     /**
      * Default config for this class
      *
@@ -55,23 +56,23 @@ class FileLog extends BaseLog
     /**
      * Path to save log files on.
      *
-     * @var string|null
+     * @var string
      */
-    protected $_path;
+    protected $_path = null;
 
     /**
      * The name of the file to save logs into.
      *
-     * @var string|null
+     * @var string
      */
-    protected $_file;
+    protected $_file = null;
 
     /**
      * Max file size, used for log file rotation.
      *
-     * @var int|null
+     * @var int
      */
-    protected $_size;
+    protected $_size = null;
 
     /**
      * Sets protected properties based on config provided
@@ -85,8 +86,7 @@ class FileLog extends BaseLog
         if (!empty($this->_config['path'])) {
             $this->_path = $this->_config['path'];
         }
-        if (
-            $this->_path !== null &&
+        if ($this->_path !== null &&
             Configure::read('debug') &&
             !is_dir($this->_path)
         ) {
@@ -123,13 +123,13 @@ class FileLog extends BaseLog
         $message = $this->_format($message, $context);
         $output = date('Y-m-d H:i:s') . ' ' . ucfirst($level) . ': ' . $message . "\n";
         $filename = $this->_getFilename($level);
-        if ($this->_size) {
+        if (!empty($this->_size)) {
             $this->_rotateFile($filename);
         }
 
         $pathname = $this->_path . $filename;
         $mask = $this->_config['mask'];
-        if (!$mask) {
+        if (empty($mask)) {
             return file_put_contents($pathname, $output, FILE_APPEND);
         }
 
@@ -159,7 +159,7 @@ class FileLog extends BaseLog
     {
         $debugTypes = ['notice', 'info', 'debug'];
 
-        if ($this->_file) {
+        if (!empty($this->_file)) {
             $filename = $this->_file;
         } elseif ($level === 'error' || $level === 'warning') {
             $filename = 'error.log';
@@ -182,24 +182,23 @@ class FileLog extends BaseLog
      */
     protected function _rotateFile($filename)
     {
-        $filePath = $this->_path . $filename;
-        clearstatcache(true, $filePath);
+        $filepath = $this->_path . $filename;
+        clearstatcache(true, $filepath);
 
-        if (
-            !file_exists($filePath) ||
-            filesize($filePath) < $this->_size
+        if (!file_exists($filepath) ||
+            filesize($filepath) < $this->_size
         ) {
             return null;
         }
 
         $rotate = $this->_config['rotate'];
         if ($rotate === 0) {
-            $result = unlink($filePath);
+            $result = unlink($filepath);
         } else {
-            $result = rename($filePath, $filePath . '.' . time());
+            $result = rename($filepath, $filepath . '.' . time());
         }
 
-        $files = glob($filePath . '.*');
+        $files = glob($filepath . '.*');
         if ($files) {
             $filesToDelete = count($files) - $rotate;
             while ($filesToDelete > 0) {

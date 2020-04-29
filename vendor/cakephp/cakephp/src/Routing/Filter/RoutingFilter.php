@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         3.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Routing\Filter;
 
@@ -27,6 +27,7 @@ use Cake\Routing\Router;
  */
 class RoutingFilter extends DispatcherFilter
 {
+
     /**
      * Priority setting.
      *
@@ -42,29 +43,25 @@ class RoutingFilter extends DispatcherFilter
      * If Routes have not been loaded they will be loaded, and config/routes.php will be run.
      *
      * @param \Cake\Event\Event $event containing the request, response and additional params
-     * @return \Cake\Http\Response|null A response will be returned when a redirect route is encountered.
+     * @return \Cake\Network\Response|null A response will be returned when a redirect route is encountered.
      */
     public function beforeDispatch(Event $event)
     {
-        /** @var \Cake\Http\ServerRequest $request */
-        $request = $event->getData('request');
+        $request = $event->data['request'];
         if (Router::getRequest(true) !== $request) {
             Router::setRequestInfo($request);
         }
 
         try {
-            if (!$request->getParam('controller')) {
-                $params = Router::parseRequest($request);
+            if (empty($request->params['controller'])) {
+                $params = Router::parse($request->url, $request->method());
                 $request->addParams($params);
             }
-
-            return null;
         } catch (RedirectException $e) {
             $event->stopPropagation();
-            /** @var \Cake\Http\Response $response */
-            $response = $event->getData('response');
-            $response = $response->withStatus($e->getCode())
-                ->withLocation($e->getMessage());
+            $response = $event->data['response'];
+            $response->statusCode($e->getCode());
+            $response->header('Location', $e->getMessage());
 
             return $response;
         }

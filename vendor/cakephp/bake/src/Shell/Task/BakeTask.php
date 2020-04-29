@@ -14,27 +14,20 @@
  */
 namespace Bake\Shell\Task;
 
-use Bake\Utility\CommonOptionsTrait;
 use Cake\Cache\Cache;
 use Cake\Console\Shell;
 use Cake\Core\Configure;
 use Cake\Core\ConventionsTrait;
+use Cake\Core\Plugin;
 use Cake\Filesystem\File;
 
 /**
  * Base class for Bake Tasks.
+ *
  */
 class BakeTask extends Shell
 {
-    use CommonOptionsTrait;
     use ConventionsTrait;
-
-    /**
-     * Table prefix
-     *
-     * @var string|null
-     */
-    public $tablePrefix = null;
 
     /**
      * The pathFragment appended to the plugin/app path.
@@ -125,13 +118,12 @@ class BakeTask extends Shell
      * Base execute method parses some parameters and sets some properties on the bake tasks.
      * call when overriding execute()
      *
-     * @return bool|int|null|void
+     * @return void
      */
     public function main()
     {
         if (isset($this->params['plugin'])) {
-            $parts = explode('/', $this->params['plugin']);
-            $this->plugin = implode('/', array_map([$this, '_camelize'], $parts));
+            $this->plugin = $this->params['plugin'];
             if (strpos($this->plugin, '\\')) {
                 $this->abort('Invalid plugin namespace separator, please use / instead of \ for plugins.');
 
@@ -155,7 +147,7 @@ class BakeTask extends Shell
         $descriptorSpec = [
             0 => ['pipe', 'r'],
             1 => ['pipe', 'w'],
-            2 => ['pipe', 'w'],
+            2 => ['pipe', 'w']
         ];
         $this->_io->verbose('Running ' . $command);
         $process = proc_open(
@@ -226,6 +218,33 @@ class BakeTask extends Shell
      */
     public function getOptionParser()
     {
-        return $this->_setCommonOptions(parent::getOptionParser());
+        $parser = parent::getOptionParser();
+
+        $bakeThemes = [];
+        foreach (Plugin::loaded() as $plugin) {
+            $path = Plugin::classPath($plugin);
+            if (is_dir($path . 'Template' . DS . 'Bake')) {
+                $bakeThemes[] = $plugin;
+            }
+        }
+
+        $parser->addOption('plugin', [
+            'short' => 'p',
+            'help' => 'Plugin to bake into.'
+        ])->addOption('force', [
+            'short' => 'f',
+            'boolean' => true,
+            'help' => 'Force overwriting existing files without prompting.'
+        ])->addOption('connection', [
+            'short' => 'c',
+            'default' => 'default',
+            'help' => 'The datasource connection to get data from.'
+        ])->addOption('theme', [
+            'short' => 't',
+            'help' => 'The theme to use when baking code.',
+            'choices' => $bakeThemes
+        ]);
+
+        return $parser;
     }
 }
