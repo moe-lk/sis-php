@@ -12,7 +12,6 @@
  */
 namespace Debugkit\Test\Fixture;
 
-use Cake\Database\Schema\Table as TableSchema;
 use Cake\TestSuite\Fixture\TestFixture;
 
 /**
@@ -43,7 +42,7 @@ class PanelsFixture extends TestFixture
         'title' => ['type' => 'string'],
         'element' => ['type' => 'string'],
         'summary' => ['type' => 'string'],
-        'content' => ['type' => 'binary', 'length' => TableSchema::LENGTH_LONG],
+        'content' => ['type' => 'binary'],
         '_constraints' => [
             'primary' => ['type' => 'primary', 'columns' => ['id']],
             'unique_panel' => ['type' => 'unique', 'columns' => ['request_id', 'panel']],

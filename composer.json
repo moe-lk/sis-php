@@ -11,17 +11,16 @@
         "phpoffice/phpspreadsheet": "1.5.2",
         "admad/cakephp-jwt-auth": "2.0.1",
         "mk-j/php_xlsxwriter": "^0.32",
+        "mohamednizar/moe-uuid": "^1.2@beta",
         "korditpteltd/kd-cakephp-page": "dev-master",
         "korditpteltd/kd-cakephp-restful": "dev-master",
         "korditpteltd/kd-cakephp-webhooks": "dev-master",
-        "mohamednizar/moe-uuid": "^1.0@beta"
+        "cakephp/debug_kit": "3.7.*"
     },
     "require-dev": {
         "psy/psysh": "@stable",
         "phpunit/phpunit": "*",
-        "cakephp/plugin-installer": "*",
         "cakephp/migrations": "~1.0",
-        "cakephp/debug_kit": "~3.2",
         "cakephp/bake": "~1.1"
     },
     "suggest": {
@@ -55,6 +54,7 @@
         "cs-check": "phpcs --colors -p --standard=vendor/cakephp/cakephp-codesniffer/CakePHP ./src ./tests",
         "cs-fix": "phpcbf --colors --standard=vendor/cakephp/cakephp-codesniffer/CakePHP ./src ./tests",
         "test": "phpunit --colors=always"
+
     },
     "minimum-stability": "dev",
     "prefer-stable": true
