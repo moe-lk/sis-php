@@ -18,11 +18,9 @@ use Cake\TestSuite\Fixture\TestFixture;
 
 /**
  * ProductVersionsFixture
- *
  */
 class ProductVersionsFixture extends TestFixture
 {
-
     /**
      * Fields
      *
@@ -51,7 +49,7 @@ class ProductVersionsFixture extends TestFixture
     public $records = [
         [
             'product_id' => 1,
-            'version' => '2015-12-30 18:11:37'
+            'version' => '2015-12-30 18:11:37',
         ],
     ];
 }

@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          http://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * @link          https://cakephp.org CakePHP(tm) Project
  * @since         3.0.0
- * @license       http://www.opensource.org/licenses/mit-license.php MIT License
+ * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\View\Widget;
 
@@ -25,7 +25,6 @@ use Traversable;
  */
 class SelectBoxWidget extends BasicWidget
 {
-
     /**
      * Render a select box form input.
      *
@@ -110,7 +109,7 @@ class SelectBoxWidget extends BasicWidget
             'options' => [],
             'disabled' => null,
             'val' => null,
-            'templateVars' => []
+            'templateVars' => [],
         ];
 
         $options = $this->_renderContent($data);
@@ -227,7 +226,7 @@ class SelectBoxWidget extends BasicWidget
      * @param array|string|null $selected The options to select.
      * @param array $templateVars Additional template variables.
      * @param bool $escape Toggle HTML escaping.
-     * @return array Option elements.
+     * @return string[] Option elements.
      */
     protected function _renderOptions($options, $disabled, $selected, $templateVars, $escape)
     {
@@ -235,7 +234,8 @@ class SelectBoxWidget extends BasicWidget
         foreach ($options as $key => $val) {
             // Option groups
             $arrayVal = (is_array($val) || $val instanceof Traversable);
-            if ((!is_int($key) && $arrayVal) ||
+            if (
+                (!is_int($key) && $arrayVal) ||
                 (is_int($key) && $arrayVal && (isset($val['options']) || !isset($val['value'])))
             ) {
                 $out[] = $this->_renderOptgroup($key, $val, $disabled, $selected, $templateVars, $escape);
@@ -281,7 +281,7 @@ class SelectBoxWidget extends BasicWidget
      * Helper method for deciding what options are selected.
      *
      * @param string $key The key to test.
-     * @param array|string|null $selected The selected values.
+     * @param string[]|string|null $selected The selected values.
      * @return bool
      */
     protected function _isSelected($key, $selected)
@@ -304,7 +304,7 @@ class SelectBoxWidget extends BasicWidget
      * Helper method for deciding what options are disabled.
      *
      * @param string $key The key to test.
-     * @param array|null $disabled The disabled values.
+     * @param string[]|null $disabled The disabled values.
      * @return bool
      */
     protected function _isDisabled($key, $disabled)

@@ -1,24 +1,26 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          http://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * @link          https://cakephp.org CakePHP(tm) Project
  * @since         2.0.0
- * @license       http://www.opensource.org/licenses/mit-license.php MIT License
+ * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\TestSuite\Fixture;
 
+loadPHPUnitAliases();
+
 use Cake\Core\Configure;
 use Cake\Core\Exception\Exception;
-use Cake\Database\Schema\Table;
+use Cake\Database\Schema\TableSchema;
+use Cake\Database\Schema\TableSchemaAwareInterface;
 use Cake\Datasource\ConnectionManager;
-use Cake\Datasource\TableSchemaInterface;
 use Cake\Utility\Inflector;
 use PDOException;
 use UnexpectedValueException;
@@ -28,7 +30,6 @@ use UnexpectedValueException;
  */
 class FixtureManager
 {
-
     /**
      * Was this instance already initialized?
      *
@@ -186,20 +187,50 @@ class FixtureManager
                     $baseNamespace = Configure::read('App.namespace');
                 } elseif ($type === 'plugin') {
                     list($plugin, $name) = explode('.', $pathName);
-                    $path = implode('\\', explode('/', $plugin));
+                    // Flip vendored plugin separators
+                    $path = str_replace('/', '\\', $plugin);
+                    $uninflected = $path;
                     $baseNamespace = Inflector::camelize(str_replace('\\', '\ ', $path));
+                    if ($baseNamespace !== $uninflected) {
+                        deprecationWarning(sprintf(
+                            'Declaring fixtures in underscored format in TestCase::$fixtures is deprecated.' . "\n" .
+                            'Expected "%s" instead in "%s".',
+                            str_replace('\\', '/', $baseNamespace),
+                            get_class($test)
+                        ));
+                    }
                     $additionalPath = null;
                 } else {
                     $baseNamespace = '';
                     $name = $fixture;
                 }
 
+                $uninflected = $name;
+                // Tweak subdirectory names, so camelize() can make the correct name
+                if (strpos($name, '/') > 0) {
+                    $name = str_replace('/', '\\', $name);
+                    $uninflected = $name;
+                    $name = str_replace('\\', '\ ', $name);
+                }
+
                 $name = Inflector::camelize($name);
+                if ($name !== $uninflected) {
+                    deprecationWarning(sprintf(
+                        'Declaring fixtures in underscored format in TestCase::$fixtures is deprecated.' . "\n" .
+                        'Found "%s.%s" in "%s". Expected "%s.%s" instead.',
+                        $type,
+                        $uninflected,
+                        get_class($test),
+                        $type,
+                        str_replace('\\', '/', $name)
+                    ));
+                }
+
                 $nameSegments = [
                     $baseNamespace,
                     'Test\Fixture',
                     $additionalPath,
-                    $name . 'Fixture'
+                    $name . 'Fixture',
                 ];
                 $className = implode('\\', array_filter($nameSegments));
             } else {
@@ -227,7 +258,7 @@ class FixtureManager
      *
      * @param \Cake\Datasource\FixtureInterface $fixture the fixture object to create
      * @param \Cake\Database\Connection $db The Connection object instance to use
-     * @param array $sources The existing tables in the datasource.
+     * @param string[] $sources The existing tables in the datasource.
      * @param bool $drop whether drop the fixture if it is already created or not
      * @return void
      */
@@ -242,9 +273,9 @@ class FixtureManager
         $table = $fixture->sourceName();
         $exists = in_array($table, $sources);
 
-        if (($drop && $exists) ||
-            ($exists && !$isFixtureSetup && $fixture instanceof TableSchemaInterface && $fixture->schema() instanceof Table)
-        ) {
+        $hasSchema = $fixture instanceof TableSchemaAwareInterface && $fixture->getTableSchema() instanceof TableSchema;
+
+        if (($drop && $exists) || ($exists && !$isFixtureSetup && $hasSchema)) {
             $fixture->drop($db);
             $fixture->create($db);
         } elseif (!$exists) {
@@ -262,6 +293,7 @@ class FixtureManager
      * @param \Cake\TestSuite\TestCase $test The test to inspect for fixture loading.
      * @return void
      * @throws \Cake\Core\Exception\Exception When fixture records cannot be inserted.
+     * @throws \RuntimeException
      */
     public function load($test)
     {
@@ -276,13 +308,13 @@ class FixtureManager
 
         try {
             $createTables = function ($db, $fixtures) use ($test) {
-                $tables = $db->schemaCollection()->listTables();
+                $tables = $db->getSchemaCollection()->listTables();
                 $configName = $db->configName();
                 if (!isset($this->_insertionMap[$configName])) {
                     $this->_insertionMap[$configName] = [];
                 }
 
-                foreach ($fixtures as $name => $fixture) {
+                foreach ($fixtures as $fixture) {
                     if (in_array($fixture->table, $tables)) {
                         try {
                             $fixture->dropConstraints($db);
@@ -293,7 +325,7 @@ class FixtureManager
                                 get_class($test),
                                 $e->getMessage()
                             );
-                            throw new Exception($msg);
+                            throw new Exception($msg, null, $e);
                         }
                     }
                 }
@@ -306,7 +338,7 @@ class FixtureManager
                     }
                 }
 
-                foreach ($fixtures as $name => $fixture) {
+                foreach ($fixtures as $fixture) {
                     try {
                         $fixture->createConstraints($db);
                     } catch (PDOException $e) {
@@ -316,7 +348,7 @@ class FixtureManager
                             get_class($test),
                             $e->getMessage()
                         );
-                        throw new Exception($msg);
+                        throw new Exception($msg, null, $e);
                     }
                 }
             };
@@ -334,7 +366,7 @@ class FixtureManager
                             get_class($test),
                             $e->getMessage()
                         );
-                        throw new Exception($msg);
+                        throw new Exception($msg, null, $e);
                     }
                 }
             };
@@ -345,14 +377,14 @@ class FixtureManager
                 get_class($test),
                 $e->getMessage()
             );
-            throw new Exception($msg);
+            throw new Exception($msg, null, $e);
         }
     }
 
     /**
      * Run a function on each connection and collection of fixtures.
      *
-     * @param array $fixtures A list of fixtures to operate on.
+     * @param string[] $fixtures A list of fixtures to operate on.
      * @param callable $operation The operation to run on each connection + fixture set.
      * @return void
      */
@@ -360,10 +392,20 @@ class FixtureManager
     {
         $dbs = $this->_fixtureConnections($fixtures);
         foreach ($dbs as $connection => $fixtures) {
-            $db = ConnectionManager::get($connection, false);
-            $logQueries = $db->logQueries();
+            $db = ConnectionManager::get($connection);
+            $newMethods = method_exists($db, 'isQueryLoggingEnabled');
+            if ($newMethods) {
+                $logQueries = $db->isQueryLoggingEnabled();
+            } else {
+                $logQueries = $db->logQueries();
+            }
+
             if ($logQueries && !$this->_debug) {
-                $db->logQueries(false);
+                if ($newMethods) {
+                    $db->disableQueryLogging();
+                } else {
+                    $db->logQueries(false);
+                }
             }
             $db->transactional(function ($db) use ($fixtures, $operation) {
                 $db->disableConstraints(function ($db) use ($fixtures, $operation) {
@@ -371,7 +413,11 @@ class FixtureManager
                 });
             });
             if ($logQueries) {
-                $db->logQueries(true);
+                if ($newMethods) {
+                    $db->enableQueryLogging(true);
+                } else {
+                    $db->logQueries(true);
+                }
             }
         }
     }
@@ -379,16 +425,16 @@ class FixtureManager
     /**
      * Get the unique list of connections that a set of fixtures contains.
      *
-     * @param array $fixtures The array of fixtures a list of connections is needed from.
+     * @param string[] $fixtures The array of fixtures a list of connections is needed from.
      * @return array An array of connection names.
      */
     protected function _fixtureConnections($fixtures)
     {
         $dbs = [];
-        foreach ($fixtures as $f) {
-            if (!empty($this->_loaded[$f])) {
-                $fixture = $this->_loaded[$f];
-                $dbs[$fixture->connection()][$f] = $fixture;
+        foreach ($fixtures as $name) {
+            if (!empty($this->_loaded[$name])) {
+                $fixture = $this->_loaded[$name];
+                $dbs[$fixture->connection()][$name] = $fixture;
             }
         }
 
@@ -445,7 +491,7 @@ class FixtureManager
         }
 
         if (!$this->isFixtureSetup($db->configName(), $fixture)) {
-            $sources = $db->schemaCollection()->listTables();
+            $sources = $db->getSchemaCollection()->listTables();
             $this->_setupTable($fixture, $db, $sources, $dropTables);
         }
 

@@ -2,21 +2,20 @@
 namespace Cake\TestSuite\Constraint;
 
 use Cake\Event\Event;
-use Cake\Event\EventManager;
-use PHPUnit_Framework_AssertionFailedError;
-use PHPUnit_Framework_Constraint;
+use PHPUnit\Framework\AssertionFailedError;
+use PHPUnit\Framework\Constraint\Constraint;
 
 /**
  * EventFiredWith constraint
  *
- * Another glorified in_array check
+ * @internal
  */
-class EventFiredWith extends PHPUnit_Framework_Constraint
+class EventFiredWith extends Constraint
 {
     /**
      * Array of fired events
      *
-     * @var EventManager
+     * @var \Cake\Event\EventManager
      */
     protected $_eventManager;
 
@@ -37,7 +36,7 @@ class EventFiredWith extends PHPUnit_Framework_Constraint
     /**
      * Constructor
      *
-     * @param EventManager $eventManager Event manager to check
+     * @param \Cake\Event\EventManager $eventManager Event manager to check
      * @param string $dataKey Data key
      * @param string $dataValue Data value
      */
@@ -49,7 +48,7 @@ class EventFiredWith extends PHPUnit_Framework_Constraint
         $this->_dataValue = $dataValue;
 
         if ($this->_eventManager->getEventList() === null) {
-            throw new PHPUnit_Framework_AssertionFailedError('The event manager you are asserting against is not configured to track events.');
+            throw new AssertionFailedError('The event manager you are asserting against is not configured to track events.');
         }
     }
 
@@ -70,7 +69,7 @@ class EventFiredWith extends PHPUnit_Framework_Constraint
 
         $eventGroup = collection($firedEvents)
             ->groupBy(function (Event $event) {
-                return $event->name();
+                return $event->getName();
             })
             ->toArray();
 
@@ -81,16 +80,17 @@ class EventFiredWith extends PHPUnit_Framework_Constraint
         $events = $eventGroup[$other];
 
         if (count($events) > 1) {
-            throw new PHPUnit_Framework_AssertionFailedError(sprintf('Event "%s" was fired %d times, cannot make data assertion', $other, count($events)));
+            throw new AssertionFailedError(sprintf('Event "%s" was fired %d times, cannot make data assertion', $other, count($events)));
         }
 
+        /** @var \Cake\Event\Event $event */
         $event = $events[0];
 
-        if (array_key_exists($this->_dataKey, $event->data) === false) {
+        if (array_key_exists($this->_dataKey, $event->getData()) === false) {
             return false;
         }
 
-        return $event->data[$this->_dataKey] === $this->_dataValue;
+        return $event->getData($this->_dataKey) === $this->_dataValue;
     }
 
     /**

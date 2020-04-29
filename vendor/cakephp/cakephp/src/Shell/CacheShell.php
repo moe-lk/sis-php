@@ -1,23 +1,24 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          http://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * @link          https://cakephp.org CakePHP(tm) Project
  * @since         3.3.0
- * @license       http://www.opensource.org/licenses/mit-license.php MIT License
+ * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Shell;
 
 use Cake\Cache\Cache;
-use Cake\Cache\Engine\ApcEngine;
+use Cake\Cache\Engine\ApcuEngine;
 use Cake\Cache\Engine\WincacheEngine;
 use Cake\Console\Shell;
+use InvalidArgumentException;
 
 /**
  * Cache Shell.
@@ -28,7 +29,6 @@ use Cake\Console\Shell;
  */
 class CacheShell extends Shell
 {
-
     /**
      * Get the option parser for this shell.
      *
@@ -49,15 +49,15 @@ class CacheShell extends Shell
                 'description' => [
                     'Clear the cache for a particular prefix.',
                     'For example, `cake cache clear _cake_model_` will clear the model cache',
-                    'Use `cake cache list_prefixes` to list available prefixes'
+                    'Use `cake cache list_prefixes` to list available prefixes',
                 ],
                 'arguments' => [
                     'prefix' => [
                         'help' => 'The cache prefix to be cleared.',
-                        'required' => true
-                    ]
-                ]
-            ]
+                        'required' => true,
+                    ],
+                ],
+            ],
         ]);
 
         return $parser;
@@ -75,8 +75,8 @@ class CacheShell extends Shell
         try {
             $engine = Cache::engine($prefix);
             Cache::clear(false, $prefix);
-            if ($engine instanceof ApcEngine) {
-                $this->warn("ApcEngine detected: Cleared $prefix CLI cache successfully " .
+            if ($engine instanceof ApcuEngine) {
+                $this->warn("ApcuEngine detected: Cleared $prefix CLI cache successfully " .
                 "but $prefix web cache must be cleared separately.");
             } elseif ($engine instanceof WincacheEngine) {
                 $this->warn("WincacheEngine detected: Cleared $prefix CLI cache successfully " .
@@ -84,7 +84,7 @@ class CacheShell extends Shell
             } else {
                 $this->out("<success>Cleared $prefix cache</success>");
             }
-        } catch (\InvalidArgumentException $e) {
+        } catch (InvalidArgumentException $e) {
             $this->abort($e->getMessage());
         }
     }

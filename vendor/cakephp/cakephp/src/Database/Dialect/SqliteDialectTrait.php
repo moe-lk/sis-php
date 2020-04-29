@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          http://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * @link          https://cakephp.org CakePHP(tm) Project
  * @since         3.0.0
- * @license       http://www.opensource.org/licenses/mit-license.php MIT License
+ * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Database\Dialect;
 
@@ -26,12 +26,11 @@ use Cake\Database\SqliteCompiler;
  */
 trait SqliteDialectTrait
 {
-
     use SqlDialectTrait;
     use TupleComparisonTranslatorTrait;
 
     /**
-     *  String used to start a database identifier quoting to make it safe
+     * String used to start a database identifier quoting to make it safe
      *
      * @var string
      */
@@ -63,7 +62,7 @@ trait SqliteDialectTrait
         'minute' => 'M',
         'second' => 'S',
         'week' => 'W',
-        'year' => 'Y'
+        'year' => 'Y',
     ];
 
     /**
@@ -78,7 +77,7 @@ trait SqliteDialectTrait
 
         return [
             $namespace . '\FunctionExpression' => '_transformFunctionExpression',
-            $namespace . '\TupleComparison' => '_transformTupleComparison'
+            $namespace . '\TupleComparison' => '_transformTupleComparison',
         ];
     }
 
@@ -92,32 +91,37 @@ trait SqliteDialectTrait
      */
     protected function _transformFunctionExpression(FunctionExpression $expression)
     {
-        switch ($expression->name()) {
+        switch ($expression->getName()) {
             case 'CONCAT':
                 // CONCAT function is expressed as exp1 || exp2
-                $expression->name('')->tieWith(' ||');
+                $expression->setName('')->setConjunction(' ||');
                 break;
             case 'DATEDIFF':
                 $expression
-                    ->name('ROUND')
-                    ->tieWith('-')
+                    ->setName('ROUND')
+                    ->setConjunction('-')
                     ->iterateParts(function ($p) {
                         return new FunctionExpression('JULIANDAY', [$p['value']], [$p['type']]);
                     });
                 break;
             case 'NOW':
-                $expression->name('DATETIME')->add(["'now'" => 'literal']);
+                $expression->setName('DATETIME')->add(["'now'" => 'literal']);
+                break;
+            case 'RAND':
+                $expression
+                    ->setName('ABS')
+                    ->add(["RANDOM() % 1" => 'literal'], [], true);
                 break;
             case 'CURRENT_DATE':
-                $expression->name('DATE')->add(["'now'" => 'literal']);
+                $expression->setName('DATE')->add(["'now'" => 'literal']);
                 break;
             case 'CURRENT_TIME':
-                $expression->name('TIME')->add(["'now'" => 'literal']);
+                $expression->setName('TIME')->add(["'now'" => 'literal']);
                 break;
             case 'EXTRACT':
                 $expression
-                    ->name('STRFTIME')
-                    ->tieWith(' ,')
+                    ->setName('STRFTIME')
+                    ->setConjunction(' ,')
                     ->iterateParts(function ($p, $key) {
                         if ($key === 0) {
                             $value = rtrim(strtolower($p), 's');
@@ -131,8 +135,8 @@ trait SqliteDialectTrait
                 break;
             case 'DATE_ADD':
                 $expression
-                    ->name('DATE')
-                    ->tieWith(',')
+                    ->setName('DATE')
+                    ->setConjunction(',')
                     ->iterateParts(function ($p, $key) {
                         if ($key === 1) {
                             $p = ['value' => $p, 'type' => null];
@@ -143,8 +147,8 @@ trait SqliteDialectTrait
                 break;
             case 'DAYOFWEEK':
                 $expression
-                    ->name('STRFTIME')
-                    ->tieWith(' ')
+                    ->setName('STRFTIME')
+                    ->setConjunction(' ')
                     ->add(["'%w', " => 'literal'], [], true)
                     ->add([') + (1' => 'literal']); // Sqlite starts on index 0 but Sunday should be 1
                 break;

@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          http://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * @link          https://cakephp.org CakePHP(tm) Project
  * @since         1.2.0
- * @license       http://www.opensource.org/licenses/mit-license.php MIT License
+ * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Cache;
 
@@ -22,7 +22,6 @@ use InvalidArgumentException;
  */
 abstract class CacheEngine
 {
-
     use InstanceConfigTrait;
 
     /**
@@ -36,6 +35,8 @@ abstract class CacheEngine
      *    with either another cache config or another application.
      * - `probability` Probability of hitting a cache gc cleanup. Setting to 0 will disable
      *    cache::gc from ever being called automatically.
+     * - `warnOnWriteFailures` Some engines, such as ApcuEngine, may raise warnings on
+     *    write failures.
      *
      * @var array
      */
@@ -43,7 +44,8 @@ abstract class CacheEngine
         'duration' => 3600,
         'groups' => [],
         'prefix' => 'cake_',
-        'probability' => 100
+        'probability' => 100,
+        'warnOnWriteFailures' => true,
     ];
 
     /**
@@ -52,7 +54,7 @@ abstract class CacheEngine
      *
      * @var string
      */
-    protected $_groupPrefix = null;
+    protected $_groupPrefix;
 
     /**
      * Initialize the cache engine
@@ -65,7 +67,7 @@ abstract class CacheEngine
      */
     public function init(array $config = [])
     {
-        $this->config($config);
+        $this->setConfig($config);
 
         if (!empty($this->_config['groups'])) {
             sort($this->_config['groups']);
@@ -166,7 +168,6 @@ abstract class CacheEngine
      */
     abstract public function delete($key);
 
-
     /**
      * Delete all keys from the cache
      *
@@ -230,7 +231,7 @@ abstract class CacheEngine
      * and returns the `group value` for each of them, this is
      * the token representing each group in the cache key
      *
-     * @return array
+     * @return string[]
      */
     public function groups()
     {
@@ -241,17 +242,17 @@ abstract class CacheEngine
      * Generates a safe key for use with cache engine storage engines.
      *
      * @param string $key the key passed over
-     * @return bool|string string key or false
+     * @return string|false string key or false
      */
     public function key($key)
     {
-        if (empty($key)) {
+        if (!$key) {
             return false;
         }
 
         $prefix = '';
-        if (!empty($this->_groupPrefix)) {
-            $prefix = vsprintf($this->_groupPrefix, $this->groups());
+        if ($this->_groupPrefix) {
+            $prefix = md5(implode('_', $this->groups()));
         }
 
         $key = preg_replace('/[\s]+/', '_', strtolower(trim(str_replace([DIRECTORY_SEPARATOR, '/', '.'], '_', (string)$key))));
@@ -263,7 +264,7 @@ abstract class CacheEngine
      * Generates a safe key, taking account of the configured key prefix
      *
      * @param string $key the key passed over
-     * @return mixed string $key or false
+     * @return string Key
      * @throws \InvalidArgumentException If key's value is empty
      */
     protected function _key($key)
@@ -274,5 +275,21 @@ abstract class CacheEngine
         }
 
         return $this->_config['prefix'] . $key;
+    }
+
+    /**
+     * Cache Engines may trigger warnings if they encounter failures during operation,
+     * if option warnOnWriteFailures is set to true.
+     *
+     * @param string $message The warning message.
+     * @return void
+     */
+    protected function warning($message)
+    {
+        if ($this->getConfig('warnOnWriteFailures') !== true) {
+            return;
+        }
+
+        triggerWarning($message);
     }
 }

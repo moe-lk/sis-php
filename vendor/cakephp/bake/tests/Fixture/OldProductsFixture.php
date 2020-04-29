@@ -18,11 +18,9 @@ use Cake\TestSuite\Fixture\TestFixture;
 
 /**
  * OldProductsFixture
- *
  */
 class OldProductsFixture extends TestFixture
 {
-
     /**
      * Fields
      *
@@ -53,7 +51,7 @@ class OldProductsFixture extends TestFixture
         [
             'created' => '2015-12-30 18:11:36',
             'modified' => '2015-12-30 18:11:36',
-            'name' => 'Lorem ipsum dolor sit amet'
+            'name' => 'Lorem ipsum dolor sit amet',
         ],
     ];
 }

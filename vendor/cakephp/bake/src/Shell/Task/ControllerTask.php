@@ -21,6 +21,9 @@ use Cake\ORM\TableRegistry;
 /**
  * Task class for creating and updating controller files.
  *
+ * @property \Bake\Shell\Task\ModelTask $Model
+ * @property \Bake\Shell\Task\BakeTemplateTask $BakeTemplate
+ * @property \Bake\Shell\Task\TestTask $Test
  */
 class ControllerTask extends BakeTask
 {
@@ -32,7 +35,7 @@ class ControllerTask extends BakeTask
     public $tasks = [
         'Bake.Model',
         'Bake.BakeTemplate',
-        'Bake.Test'
+        'Bake.Test',
     ];
 
     /**
@@ -75,7 +78,7 @@ class ControllerTask extends BakeTask
     {
         $tables = $this->listAll();
         foreach ($tables as $table) {
-            TableRegistry::clear();
+            TableRegistry::getTableLocator()->clear();
             $this->main($table);
         }
     }
@@ -118,11 +121,11 @@ class ControllerTask extends BakeTask
             $plugin .= '.';
         }
 
-        if (TableRegistry::exists($plugin . $currentModelName)) {
-            $modelObj = TableRegistry::get($plugin . $currentModelName);
+        if (TableRegistry::getTableLocator()->exists($plugin . $currentModelName)) {
+            $modelObj = TableRegistry::getTableLocator()->get($plugin . $currentModelName);
         } else {
-            $modelObj = TableRegistry::get($plugin . $currentModelName, [
-                'connectionName' => $this->connection
+            $modelObj = TableRegistry::getTableLocator()->get($plugin . $currentModelName, [
+                'connectionName' => $this->connection,
             ]);
         }
 
@@ -131,11 +134,18 @@ class ControllerTask extends BakeTask
         $singularHumanName = $this->_singularHumanName($controllerName);
         $pluralHumanName = $this->_variableName($controllerName);
 
+        $defaultModel = sprintf('%s\Model\Table\%sTable', $namespace, $controllerName);
+        if (!class_exists($defaultModel)) {
+            $defaultModel = null;
+        }
+        $entityClassName = $this->_entityName($modelObj->getAlias());
+
         $data = compact(
             'actions',
-            'admin',
             'components',
             'currentModelName',
+            'defaultModel',
+            'entityClassName',
             'helpers',
             'modelObj',
             'namespace',
@@ -189,19 +199,16 @@ class ControllerTask extends BakeTask
      * Assembles and writes a unit test file
      *
      * @param string $className Controller class name
-     * @return string|null Baked test
+     * @return string|false Baked test
      */
     public function bakeTest($className)
     {
         if (!empty($this->params['no-test'])) {
-            return null;
+            return false;
         }
         $this->Test->plugin = $this->plugin;
         $this->Test->connection = $this->connection;
-        $prefix = $this->_getPrefix();
-        if ($prefix) {
-            $className = str_replace('/', '\\', $prefix) . '\\' . $className;
-        }
+        $this->Test->interactive = $this->interactive;
 
         return $this->Test->bake('Controller', $className);
     }
@@ -258,28 +265,28 @@ class ControllerTask extends BakeTask
     public function getOptionParser()
     {
         $parser = parent::getOptionParser();
-        $parser->description(
+        $parser->setDescription(
             'Bake a controller skeleton.'
         )->addArgument('name', [
             'help' => 'Name of the controller to bake (without the `Controller` suffix). ' .
-                'You can use Plugin.name to bake controllers into plugins.'
+                'You can use Plugin.name to bake controllers into plugins.',
         ])->addOption('components', [
-            'help' => 'The comma separated list of components to use.'
+            'help' => 'The comma separated list of components to use.',
         ])->addOption('helpers', [
-            'help' => 'The comma separated list of helpers to use.'
+            'help' => 'The comma separated list of helpers to use.',
         ])->addOption('prefix', [
-            'help' => 'The namespace/routing prefix to use.'
+            'help' => 'The namespace/routing prefix to use.',
         ])->addOption('actions', [
             'help' => 'The comma separated list of actions to generate. ' .
-                      'You can include custom methods provided by your template set here.'
+                      'You can include custom methods provided by your template set here.',
         ])->addOption('no-test', [
             'boolean' => true,
-            'help' => 'Do not generate a test skeleton.'
+            'help' => 'Do not generate a test skeleton.',
         ])->addOption('no-actions', [
             'boolean' => true,
-            'help' => 'Do not generate basic CRUD action methods.'
+            'help' => 'Do not generate basic CRUD action methods.',
         ])->addSubcommand('all', [
-            'help' => 'Bake all controllers with CRUD methods.'
+            'help' => 'Bake all controllers with CRUD methods.',
         ]);
 
         return $parser;

@@ -18,7 +18,6 @@ use Cake\TestSuite\Fixture\TestFixture;
 
 /**
  * Short description for class.
- *
  */
 class BakeTagsFixture extends TestFixture
 {
@@ -32,7 +31,7 @@ class BakeTagsFixture extends TestFixture
         'tag' => ['type' => 'string', 'null' => false],
         'created' => 'datetime',
         'updated' => 'datetime',
-        '_constraints' => ['primary' => ['type' => 'primary', 'columns' => ['id']]]
+        '_constraints' => ['primary' => ['type' => 'primary', 'columns' => ['id']]],
     ];
 
     /**

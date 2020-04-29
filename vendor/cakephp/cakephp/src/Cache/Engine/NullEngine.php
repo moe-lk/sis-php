@@ -1,29 +1,28 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          http://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * @link          https://cakephp.org CakePHP(tm) Project
  * @since         3.0.0
- * @license       http://www.opensource.org/licenses/mit-license.php MIT License
+ * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Cache\Engine;
 
 use Cake\Cache\CacheEngine;
 
 /**
- * Null cache engine, all operations return false.
+ * Null cache engine, all operations appear to work, but do nothing.
  *
  * This is used internally for when Cache::disable() has been called.
  */
 class NullEngine extends CacheEngine
 {
-
     /**
      * {@inheritDoc}
      */
@@ -37,7 +36,6 @@ class NullEngine extends CacheEngine
      */
     public function gc($expires = null)
     {
-        return false;
     }
 
     /**
@@ -45,13 +43,7 @@ class NullEngine extends CacheEngine
      */
     public function write($key, $value)
     {
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function writeMany($data)
-    {
+        return true;
     }
 
     /**
@@ -75,6 +67,7 @@ class NullEngine extends CacheEngine
      */
     public function increment($key, $offset = 1)
     {
+        return true;
     }
 
     /**
@@ -82,6 +75,7 @@ class NullEngine extends CacheEngine
      */
     public function decrement($key, $offset = 1)
     {
+        return true;
     }
 
     /**
@@ -89,6 +83,7 @@ class NullEngine extends CacheEngine
      */
     public function delete($key)
     {
+        return true;
     }
 
     /**

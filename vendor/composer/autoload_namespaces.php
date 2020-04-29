@@ -6,7 +6,8 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'Umpirsky\\' => array($vendorDir . '/umpirsky/twig-php-function/src'),
+    'Twig_' => array($vendorDir . '/twig/twig/lib'),
     'Detection' => array($vendorDir . '/mobiledetect/mobiledetectlib/namespaced'),
-    'Aura\\Intl' => array($vendorDir . '/aura/intl/src'),
-    'Aura\\Composer\\' => array($vendorDir . '/aura/installer-default/src'),
+    'Aptoma' => array($vendorDir . '/aptoma/twig-markdown/src'),
 );

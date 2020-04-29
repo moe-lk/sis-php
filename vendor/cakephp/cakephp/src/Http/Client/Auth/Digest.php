@@ -1,15 +1,15 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          http://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * @link          https://cakephp.org CakePHP(tm) Project
  * @since         3.0.0
- * @license       http://www.opensource.org/licenses/mit-license.php MIT License
+ * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Http\Client\Auth;
 
@@ -24,7 +24,6 @@ use Cake\Http\Client\Request;
  */
 class Digest
 {
-
     /**
      * Instance of Cake\Http\Client
      *
@@ -49,7 +48,7 @@ class Digest
      * @param \Cake\Http\Client\Request $request The request object.
      * @param array $credentials Authentication credentials.
      * @return \Cake\Http\Client\Request The updated request.
-     * @see http://www.ietf.org/rfc/rfc2617.txt
+     * @see https://www.ietf.org/rfc/rfc2617.txt
      */
     public function authentication(Request $request, array $credentials)
     {
@@ -81,9 +80,9 @@ class Digest
     protected function _getServerInfo(Request $request, $credentials)
     {
         $response = $this->_client->get(
-            $request->url(),
+            $request->getUri(),
             [],
-            ['auth' => []]
+            ['auth' => ['type' => null]]
         );
 
         if (!$response->getHeader('WWW-Authenticate')) {
@@ -116,7 +115,8 @@ class Digest
     {
         $path = $request->getUri()->getPath();
         $a1 = md5($credentials['username'] . ':' . $credentials['realm'] . ':' . $credentials['password']);
-        $a2 = md5($request->method() . ':' . $path);
+        $a2 = md5($request->getMethod() . ':' . $path);
+        $nc = null;
 
         if (empty($credentials['qop'])) {
             $response = md5($a1 . ':' . $credentials['nonce'] . ':' . $a2);
@@ -142,3 +142,6 @@ class Digest
         return $authHeader;
     }
 }
+
+// @deprecated 3.4.0 Add backwards compat alias.
+class_alias('Cake\Http\Client\Auth\Digest', 'Cake\Network\Http\Auth\Digest');

@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          http://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * @link          https://cakephp.org CakePHP(tm) Project
  * @since         3.0.0
- * @license       http://www.opensource.org/licenses/mit-license.php MIT License
+ * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Database\Type;
 
@@ -28,16 +28,21 @@ use PDO;
  */
 class BinaryType extends Type implements TypeInterface
 {
-
     /**
-     * Identifier name for this type
+     * Identifier name for this type.
+     *
+     * (This property is declared here again so that the inheritance from
+     * Cake\Database\Type can be removed in the future.)
      *
      * @var string|null
      */
-    protected $_name = null;
+    protected $_name;
 
     /**
-     * Constructor
+     * Constructor.
+     *
+     * (This method is declared here again so that the inheritance from
+     * Cake\Database\Type can be removed in the future.)
      *
      * @param string|null $name The name identifying this type
      */
@@ -64,7 +69,7 @@ class BinaryType extends Type implements TypeInterface
     /**
      * Convert binary into resource handles
      *
-     * @param null|string|resource $value The value to convert.
+     * @param resource|string|null $value The value to convert.
      * @param \Cake\Database\Driver $driver The driver instance to convert with.
      * @return resource|null
      * @throws \Cake\Core\Exception\Exception
@@ -74,7 +79,11 @@ class BinaryType extends Type implements TypeInterface
         if ($value === null) {
             return null;
         }
-        if (is_string($value) && $driver instanceof Sqlserver) {
+        if (
+            is_string($value)
+            && $driver instanceof Sqlserver
+            && version_compare(PHP_VERSION, '7.0', '<')
+        ) {
             $value = pack('H*', $value);
         }
         if (is_string($value)) {
@@ -99,7 +108,7 @@ class BinaryType extends Type implements TypeInterface
     }
 
     /**
-     * Marshalls flat data into PHP objects.
+     * Marshals flat data into PHP objects.
      *
      * Most useful for converting request data into PHP objects
      * that make sense for the rest of the ORM/Database layers.

@@ -1,33 +1,35 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          http://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * @link          https://cakephp.org CakePHP(tm) Project
  * @since         3.0.0
- * @license       http://www.opensource.org/licenses/mit-license.php MIT License
+ * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Database\Driver;
 
 use Cake\Database\Query;
 use Cake\Database\Statement\PDOStatement;
 use PDO;
+use PDOException;
 
 /**
  * PDO driver trait
+ *
+ * @deprecated 3.6.0 The methods of this trait have been added to `Driver` class.
  */
 trait PDODriverTrait
 {
-
     /**
      * Instance of PDO.
      *
-     * @var \PDO
+     * @var \PDO|null
      */
     protected $_connection;
 
@@ -56,7 +58,7 @@ trait PDODriverTrait
      * If first argument is passed, it will set internal connection object or
      * result to the value passed
      *
-     * @param null|\PDO $connection The PDO connection instance.
+     * @param \PDO|null $connection The PDO connection instance.
      * @return \PDO connection object used internally
      */
     public function connection($connection = null)
@@ -79,7 +81,7 @@ trait PDODriverTrait
     }
 
     /**
-     * Check whether or not the driver is connected.
+     * Checks whether or not the driver is connected.
      *
      * @return bool
      */
@@ -90,13 +92,12 @@ trait PDODriverTrait
         } else {
             try {
                 $connected = $this->_connection->query('SELECT 1');
-            } catch (\PDOException $e) {
+            } catch (PDOException $e) {
                 $connected = false;
             }
         }
-        $this->connected = !empty($connected);
 
-        return $this->connected;
+        return (bool)$connected;
     }
 
     /**
@@ -156,7 +157,7 @@ trait PDODriverTrait
             return false;
         }
 
-        return $this->_connection->rollback();
+        return $this->_connection->rollBack();
     }
 
     /**

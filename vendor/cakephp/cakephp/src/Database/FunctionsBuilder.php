@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          http://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * @link          https://cakephp.org CakePHP(tm) Project
  * @since         3.0.0
- * @license       http://www.opensource.org/licenses/mit-license.php MIT License
+ * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Database;
 
@@ -23,7 +23,6 @@ use Cake\Database\Expression\FunctionExpression;
  */
 class FunctionsBuilder
 {
-
     /**
      * Returns a new instance of a FunctionExpression. This is used for generating
      * arbitrary function calls in the final SQL string.
@@ -44,7 +43,7 @@ class FunctionsBuilder
      * argument.
      *
      * @param string $name name of the function to build
-     * @param mixed $expression the function argument
+     * @param string|\Cake\Database\ExpressionInterface $expression the function argument
      * @param array $types list of types to bind to the arguments
      * @param string $return The return type for the function
      * @return \Cake\Database\Expression\FunctionExpression
@@ -61,9 +60,19 @@ class FunctionsBuilder
     }
 
     /**
+     * Returns a FunctionExpression representing a call to SQL RAND function.
+     *
+     * @return \Cake\Database\Expression\FunctionExpression
+     */
+    public function rand()
+    {
+        return $this->_build('RAND', [], [], 'float');
+    }
+
+    /**
      * Returns a FunctionExpression representing a call to SQL SUM function.
      *
-     * @param mixed $expression the function argument
+     * @param string|\Cake\Database\ExpressionInterface $expression the function argument
      * @param array $types list of types to bind to the arguments
      * @return \Cake\Database\Expression\FunctionExpression
      */
@@ -80,7 +89,7 @@ class FunctionsBuilder
     /**
      * Returns a FunctionExpression representing a call to SQL AVG function.
      *
-     * @param mixed $expression the function argument
+     * @param string|\Cake\Database\ExpressionInterface $expression the function argument
      * @param array $types list of types to bind to the arguments
      * @return \Cake\Database\Expression\FunctionExpression
      */
@@ -92,7 +101,7 @@ class FunctionsBuilder
     /**
      * Returns a FunctionExpression representing a call to SQL MAX function.
      *
-     * @param mixed $expression the function argument
+     * @param string|\Cake\Database\ExpressionInterface $expression the function argument
      * @param array $types list of types to bind to the arguments
      * @return \Cake\Database\Expression\FunctionExpression
      */
@@ -104,7 +113,7 @@ class FunctionsBuilder
     /**
      * Returns a FunctionExpression representing a call to SQL MIN function.
      *
-     * @param mixed $expression the function argument
+     * @param string|\Cake\Database\ExpressionInterface $expression the function argument
      * @param array $types list of types to bind to the arguments
      * @return \Cake\Database\Expression\FunctionExpression
      */
@@ -116,7 +125,7 @@ class FunctionsBuilder
     /**
      * Returns a FunctionExpression representing a call to SQL COUNT function.
      *
-     * @param mixed $expression the function argument
+     * @param string|\Cake\Database\ExpressionInterface $expression the function argument
      * @param array $types list of types to bind to the arguments
      * @return \Cake\Database\Expression\FunctionExpression
      */
@@ -166,27 +175,27 @@ class FunctionsBuilder
      * Returns the specified date part from the SQL expression.
      *
      * @param string $part Part of the date to return.
-     * @param string $expression Expression to obtain the date part from.
+     * @param string|\Cake\Database\ExpressionInterface $expression Expression to obtain the date part from.
      * @param array $types list of types to bind to the arguments
      * @return \Cake\Database\Expression\FunctionExpression
      */
     public function datePart($part, $expression, $types = [])
     {
-        return $this->extract($part, $expression);
+        return $this->extract($part, $expression, $types);
     }
 
     /**
      * Returns the specified date part from the SQL expression.
      *
      * @param string $part Part of the date to return.
-     * @param string $expression Expression to obtain the date part from.
+     * @param string|\Cake\Database\ExpressionInterface $expression Expression to obtain the date part from.
      * @param array $types list of types to bind to the arguments
      * @return \Cake\Database\Expression\FunctionExpression
      */
     public function extract($part, $expression, $types = [])
     {
         $expression = $this->_literalArgumentFunction('EXTRACT', $expression, $types, 'integer');
-        $expression->tieWith(' FROM')->add([$part => 'literal'], [], true);
+        $expression->setConjunction(' FROM')->add([$part => 'literal'], [], true);
 
         return $expression;
     }
@@ -194,8 +203,8 @@ class FunctionsBuilder
     /**
      * Add the time unit to the date expression
      *
-     * @param string $expression Expression to obtain the date part from.
-     * @param string $value Value to be added. Use negative to substract.
+     * @param string|\Cake\Database\ExpressionInterface $expression Expression to obtain the date part from.
+     * @param string|int $value Value to be added. Use negative to subtract.
      * @param string $unit Unit of the value e.g. hour or day.
      * @param array $types list of types to bind to the arguments
      * @return \Cake\Database\Expression\FunctionExpression
@@ -207,7 +216,7 @@ class FunctionsBuilder
         }
         $interval = $value . ' ' . $unit;
         $expression = $this->_literalArgumentFunction('DATE_ADD', $expression, $types, 'datetime');
-        $expression->tieWith(', INTERVAL')->add([$interval => 'literal']);
+        $expression->setConjunction(', INTERVAL')->add([$interval => 'literal']);
 
         return $expression;
     }
@@ -216,7 +225,7 @@ class FunctionsBuilder
      * Returns a FunctionExpression representing a call to SQL WEEKDAY function.
      * 1 - Sunday, 2 - Monday, 3 - Tuesday...
      *
-     * @param mixed $expression the function argument
+     * @param string|\Cake\Database\ExpressionInterface $expression the function argument
      * @param array $types list of types to bind to the arguments
      * @return \Cake\Database\Expression\FunctionExpression
      */
@@ -229,7 +238,7 @@ class FunctionsBuilder
      * Returns a FunctionExpression representing a call to SQL WEEKDAY function.
      * 1 - Sunday, 2 - Monday, 3 - Tuesday...
      *
-     * @param mixed $expression the function argument
+     * @param string|\Cake\Database\ExpressionInterface $expression the function argument
      * @param array $types list of types to bind to the arguments
      * @return \Cake\Database\Expression\FunctionExpression
      */
@@ -249,13 +258,13 @@ class FunctionsBuilder
     public function now($type = 'datetime')
     {
         if ($type === 'datetime') {
-            return $this->_build('NOW')->returnType('datetime');
+            return $this->_build('NOW')->setReturnType('datetime');
         }
         if ($type === 'date') {
-            return $this->_build('CURRENT_DATE')->returnType('date');
+            return $this->_build('CURRENT_DATE')->setReturnType('date');
         }
         if ($type === 'time') {
-            return $this->_build('CURRENT_TIME')->returnType('time');
+            return $this->_build('CURRENT_TIME')->setReturnType('time');
         }
     }
 

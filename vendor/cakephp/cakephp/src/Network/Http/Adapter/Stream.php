@@ -1,3 +1,4 @@
 <?php
-// @deprecated Backwards compatibility with earlier 3.x versions.
-class_alias('Cake\Http\Client\Adapter\Stream', 'Cake\Network\Http\Adapter\Stream');
+// @deprecated 3.4.0 Load new class and alias.
+class_exists('Cake\Http\Client\Adapter\Stream');
+deprecationWarning('Use Cake\Http\Client\Adapter\Stream instead of Cake\Network\Http\Adapter\Stream.');

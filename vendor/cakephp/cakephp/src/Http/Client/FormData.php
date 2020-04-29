@@ -1,15 +1,15 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          http://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * @link          https://cakephp.org CakePHP(tm) Project
  * @since         3.0.0
- * @license       http://www.opensource.org/licenses/mit-license.php MIT License
+ * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Http\Client;
 
@@ -25,7 +25,6 @@ use finfo;
  */
 class FormData implements Countable
 {
-
     /**
      * Boundary marker.
      *
@@ -50,7 +49,7 @@ class FormData implements Countable
     /**
      * The parts in the form data.
      *
-     * @var array
+     * @var \Cake\Http\Client\FormDataPart[]
      */
     protected $_parts = [];
 
@@ -100,14 +99,7 @@ class FormData implements Countable
         if (is_array($value)) {
             $this->addRecursive($name, $value);
         } elseif (is_resource($value)) {
-            $this->_parts[] = $this->addFile($name, $value);
-        } elseif (is_string($value) && strlen($value) && $value[0] === '@') {
-            trigger_error(
-                'Using the @ syntax for file uploads is not safe and is deprecated. ' .
-                'Instead you should use file handles.',
-                E_USER_DEPRECATED
-            );
-            $this->_parts[] = $this->addFile($name, $value);
+            $this->addFile($name, $value);
         } elseif ($name instanceof FormDataPart && $value === null) {
             $this->_hasComplexPart = true;
             $this->_parts[] = $name;
@@ -169,6 +161,7 @@ class FormData implements Countable
         if ($filename) {
             $part->filename($filename);
         }
+        $this->add($part);
 
         return $part;
     }
@@ -237,7 +230,7 @@ class FormData implements Countable
             return 'application/x-www-form-urlencoded';
         }
 
-        return 'multipart/form-data; boundary="' . $this->boundary() . '"';
+        return 'multipart/form-data; boundary=' . $this->boundary();
     }
 
     /**
@@ -256,7 +249,7 @@ class FormData implements Countable
                 $out .= (string)$part;
                 $out .= "\r\n";
             }
-            $out .= "--$boundary--\r\n\r\n";
+            $out .= "--$boundary--\r\n";
 
             return $out;
         }
@@ -268,3 +261,6 @@ class FormData implements Countable
         return http_build_query($data);
     }
 }
+
+// @deprecated 3.4.0 Add backwards compat alias.
+class_alias('Cake\Http\Client\FormData', 'Cake\Network\Http\FormData');

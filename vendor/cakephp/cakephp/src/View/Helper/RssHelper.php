@@ -1,32 +1,33 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          http://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * @link          https://cakephp.org CakePHP(tm) Project
  * @since         1.2.0
- * @license       http://www.opensource.org/licenses/mit-license.php MIT License
+ * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\View\Helper;
 
 use Cake\Utility\Xml;
 use Cake\View\Helper;
+use Cake\View\View;
 
 /**
  * RSS Helper class for easy output RSS structures.
  *
- * @property UrlHelper $Url
- * @property TimeHelper $Time
- * @link http://book.cakephp.org/3.0/en/views/helpers/rss.html
+ * @property \Cake\View\Helper\UrlHelper $Url
+ * @property \Cake\View\Helper\TimeHelper $Time
+ * @link https://book.cakephp.org/3/en/views/helpers/rss.html
+ * @deprecated 3.5.0 RssHelper is deprecated and will be removed in 4.0.0
  */
 class RssHelper extends Helper
 {
-
     /**
      * Helpers used by RSS Helper
      *
@@ -39,14 +40,14 @@ class RssHelper extends Helper
      *
      * @var string
      */
-    public $base = null;
+    public $base;
 
     /**
      * URL to current action.
      *
      * @var string
      */
-    public $here = null;
+    public $here;
 
     /**
      * Parameter array.
@@ -60,28 +61,28 @@ class RssHelper extends Helper
      *
      * @var string
      */
-    public $action = null;
+    public $action;
 
     /**
      * POSTed model data
      *
      * @var array
      */
-    public $data = null;
+    public $data;
 
     /**
      * Name of the current model
      *
      * @var string
      */
-    public $model = null;
+    public $model;
 
     /**
      * Name of the current field
      *
      * @var string
      */
-    public $field = null;
+    public $field;
 
     /**
      * Default spec version of generated RSS
@@ -89,6 +90,15 @@ class RssHelper extends Helper
      * @var string
      */
     public $version = '2.0';
+
+    /**
+     * {@inheritDoc}
+     */
+    public function __construct(View $view, array $settings = [])
+    {
+        deprecationWarning('RssHelper is deprecated and will be removed in 4.0.0');
+        parent::__construct($view, $settings);
+    }
 
     /**
      * Returns an RSS document wrapped in `<rss />` tags
@@ -210,6 +220,7 @@ class RssHelper extends Helper
                     break;
                 case 'category':
                     if (is_array($val) && !empty($val[0])) {
+                        $categories = [];
                         foreach ($val as $category) {
                             $attrib = [];
                             if (is_array($category) && isset($category['domain'])) {
@@ -247,7 +258,7 @@ class RssHelper extends Helper
                 case 'enclosure':
                     if (is_string($val['url']) && is_file(WWW_ROOT . $val['url']) && file_exists(WWW_ROOT . $val['url'])) {
                         if (!isset($val['length']) && strpos($val['url'], '://') === false) {
-                            $val['length'] = sprintf("%u", filesize(WWW_ROOT . $val['url']));
+                            $val['length'] = sprintf('%u', filesize(WWW_ROOT . $val['url']));
                         }
                         if (!isset($val['type']) && function_exists('mime_content_type')) {
                             $val['type'] = mime_content_type(WWW_ROOT . $val['url']);
@@ -281,7 +292,7 @@ class RssHelper extends Helper
      */
     public function time($time)
     {
-        return $this->Time->toRSS($time);
+        return $this->Time->toRss($time);
     }
 
     /**

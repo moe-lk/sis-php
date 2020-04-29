@@ -2,21 +2,21 @@
 /**
  * ConsoleInputSubcommand file
  *
- * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          http://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * @link          https://cakephp.org CakePHP(tm) Project
  * @since         2.0.0
- * @license       http://www.opensource.org/licenses/mit-license.php MIT License
+ * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Console;
 
-use SimpleXmlElement;
+use SimpleXMLElement;
 
 /**
  * An object to represent a single subcommand used in the command line.
@@ -26,20 +26,19 @@ use SimpleXmlElement;
  */
 class ConsoleInputSubcommand
 {
-
     /**
      * Name of the subcommand
      *
      * @var string
      */
-    protected $_name;
+    protected $_name = '';
 
     /**
      * Help string for the subcommand
      *
      * @var string
      */
-    protected $_help;
+    protected $_help = '';
 
     /**
      * The ConsoleOptionParser for this subcommand.
@@ -84,6 +83,16 @@ class ConsoleInputSubcommand
     }
 
     /**
+     * Get the raw help string for this command
+     *
+     * @return string
+     */
+    public function getRawHelp()
+    {
+        return $this->_help;
+    }
+
+    /**
      * Generate the help for this this subcommand.
      *
      * @param int $width The width to make the name of the subcommand.
@@ -102,7 +111,7 @@ class ConsoleInputSubcommand
     /**
      * Get the usage value for this option
      *
-     * @return mixed Either false or a ConsoleOptionParser
+     * @return \Cake\Console\ConsoleOptionParser|false Either false or a ConsoleOptionParser
      */
     public function parser()
     {
@@ -116,10 +125,10 @@ class ConsoleInputSubcommand
     /**
      * Append this subcommand to the Parent element
      *
-     * @param \SimpleXmlElement $parent The parent element.
-     * @return \SimpleXmlElement The parent with this subcommand appended.
+     * @param \SimpleXMLElement $parent The parent element.
+     * @return \SimpleXMLElement The parent with this subcommand appended.
      */
-    public function xml(SimpleXmlElement $parent)
+    public function xml(SimpleXMLElement $parent)
     {
         $command = $parent->addChild('command');
         $command->addAttribute('name', $this->_name);

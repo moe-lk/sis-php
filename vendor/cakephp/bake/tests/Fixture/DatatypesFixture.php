@@ -21,7 +21,6 @@ use Cake\TestSuite\Fixture\TestFixture;
  */
 class DatatypesFixture extends TestFixture
 {
-
     /**
      * Fields property
      *
@@ -32,9 +31,11 @@ class DatatypesFixture extends TestFixture
         'decimal_field' => ['type' => 'decimal', 'length' => '6', 'precision' => 3, 'default' => '0.000'],
         'float_field' => ['type' => 'float', 'length' => '5,2', 'null' => false, 'default' => null],
         'huge_int' => ['type' => 'biginteger'],
+        'small_int' => ['type' => 'smallinteger'],
+        'tiny_int' => ['type' => 'tinyinteger'],
         'bool' => ['type' => 'boolean', 'null' => false, 'default' => false],
         'uuid' => ['type' => 'uuid'],
-        '_constraints' => ['primary' => ['type' => 'primary', 'columns' => ['id']]]
+        '_constraints' => ['primary' => ['type' => 'primary', 'columns' => ['id']]],
     ];
 
     /**
@@ -43,6 +44,6 @@ class DatatypesFixture extends TestFixture
      * @var array
      */
     public $records = [
-        ['float_field' => 42.23, 'huge_int' => '1234567891234567891', 'bool' => 0],
+        ['float_field' => 42.23, 'huge_int' => '1234567891234567891', 'small_int' => '1234', 'tiny_int' => '12', 'bool' => 0],
     ];
 }
