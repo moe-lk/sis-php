@@ -1278,7 +1278,8 @@ function InstitutionStudentController($location, $q, $scope, $window, $filter, U
             .then(function (response) {
                 var username = StudentController.selectedStudentData.username;
                 if (username == StudentController.selectedStudentData.openemis_no || username == '' || typeof username == 'undefined') {
-                    StudentController.selectedStudentData.username = response;
+                    StudentController.selectedStudentData.username = response.replace(/-/g,"");
+
                 }
                 StudentController.selectedStudentData.openemis_no = response;
                 UtilsSvc.isAppendLoader(false);
