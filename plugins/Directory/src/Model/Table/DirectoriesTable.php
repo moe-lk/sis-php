@@ -499,7 +499,7 @@ class DirectoriesTable extends ControllerActionTable
         $this->fields['openemis_no']['attr']['value'] = $openemisNo;
         // pr($this->request->data[$this->alias()]['username']);
         if (!isset($this->request->data[$this->alias()]['username'])) {
-            $this->request->data[$this->alias()]['username'] = $openemisNo;
+            $this->request->data[$this->alias()]['username'] = str_replace('-','', $openemisNo);
         } elseif ($this->request->data[$this->alias()]['username'] == $this->request->data[$this->alias()]['openemis_no']) {
             $this->request->data[$this->alias()]['username'] = $openemisNo;
         } elseif (empty($this->request->data[$this->alias()]['username'])) {
