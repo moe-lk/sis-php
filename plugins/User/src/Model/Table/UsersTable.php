@@ -527,7 +527,7 @@ class UsersTable extends AppTable
 
     public function getUniqueOpenemisId($options = [])
     {
-       return MoeUuid::getUniqueAlphanumeric(4);
+       return MoeUuid::getUniqueAlphanumeric(3);
     }
 
     public function validationDefault(Validator $validator)
