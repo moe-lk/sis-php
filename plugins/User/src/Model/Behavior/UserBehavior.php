@@ -479,7 +479,7 @@ class UserBehavior extends Behavior
 
     public function getUniqueOpenemisId($options = [])
     {
-       return MoeUuid::getUniqueAlphanumeric(4);
+       return MoeUuid::getUniqueAlphanumeric(3);
 //        $prefix = TableRegistry::get('Configuration.ConfigItems')->value('openemis_id_prefix');
 //        $prefix = explode(",", $prefix);
 //        $prefix = ($prefix[1] > 0)? $prefix[0]: '';
