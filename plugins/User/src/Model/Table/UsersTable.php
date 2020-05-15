@@ -15,7 +15,7 @@ use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Inflector;
 use Cake\Validation\Validator;
-use Cake\Utility\Text;
+use Mohamednizar\MoeUuid\MoeUuid;
 
 class UsersTable extends AppTable
 {
@@ -122,6 +122,7 @@ class UsersTable extends AppTable
     public function createAuthorisedUser(Event $event, $userName, array $userInfo)
     {
         $openemisNo = $this->getUniqueOpenemisId();
+        $userName = str_replace('-','',$userName);
 
         $GenderTable = TableRegistry::get('User.Genders');
         $genderList = $GenderTable->find('list')->toArray();
@@ -526,18 +527,7 @@ class UsersTable extends AppTable
 
     public function getUniqueOpenemisId($options = [])
     {
-       $openemis_no = str_split(Text::uuid(),8);
-       $openemis_no = $openemis_no[0];
-        $latest = $this->find()
-            ->order($this->aliasField('id') . ' DESC')
-            ->where([$this->aliasField('openemis_no') => $openemis_no])
-            ->first();
-
-        if (!is_null($latest)) {
-            $this->getUniqueOpenemisId();
-        } else {
-           return $openemis_no;
-        }
+       return MoeUuid::getUniqueAlphanumeric(3);
     }
 
     public function validationDefault(Validator $validator)

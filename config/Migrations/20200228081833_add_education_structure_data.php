@@ -1,16 +1,12 @@
 <?php
 
-use Flynsarmy\CsvSeeder\CsvSeeder;
+// use Flynsarmy\CsvSeeder\CsvSeeder;
 use Phinx\Migration\AbstractMigration;
 
-class AddEducationStructureData extends CsvSeeder
+class AddEducationStructureData extends AbstractMigration
 {
 
-    public function __construct()
-    {
-        $this->table = 'education_grades';
-        $this->filename = base_path().'/database/seeds/csv-data/education_grades.csv';
-    }
+    
 
     /**
      * Change Method.
@@ -37,11 +33,11 @@ class AddEducationStructureData extends CsvSeeder
     {
 
         // Recommended when importing larger CSVs
-        DB::disableQueryLog();
+        // DB::disableQueryLog();
 
-        // Uncomment the below to wipe the table clean before populating
-        DB::table($this->table)->truncate();
+        // // Uncomment the below to wipe the table clean before populating
+        // DB::table($this->table)->truncate();
 
-        parent::run();
+        // parent::run();
     }
 }

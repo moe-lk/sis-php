@@ -35,7 +35,7 @@ class NewMigrationForEndOfStaffAssignment extends AbstractMigration
                 $staff->updateAll(['end_date' => null , 'end_year' => null , 'staff_status_id' => 1],['id'=>$row->id]);
             }
         }catch (\Exception $e){
-            dd($e);
+            // dd($e);
         }
 
 
