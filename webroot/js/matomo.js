@@ -1,4 +1,4 @@
-var matoma_url = require('./config.json');
+var CONFIG = $.getJSON('../config.json');
 var _paq = window._paq || [];
 /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
 _paq.push(['trackPageView']);
