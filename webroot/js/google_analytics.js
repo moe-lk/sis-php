@@ -1,4 +1,5 @@
+var gaid = 'UA-167196928-1';
 window.dataLayer = window.dataLayer || [];
 function gtag() { dataLayer.push(arguments); }
 gtag('js', new Date());
-gtag('config', CONFIG.google_gtag);
+gtag('config', gaid);
