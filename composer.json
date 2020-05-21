@@ -14,8 +14,7 @@
         "mohamednizar/moe-uuid": "^1.2@beta",
         "korditpteltd/kd-cakephp-page": "dev-master",
         "korditpteltd/kd-cakephp-restful": "dev-master",
-        "korditpteltd/kd-cakephp-webhooks": "dev-master",
-        "cakephp/debug_kit": "3.7.*"
+        "korditpteltd/kd-cakephp-webhooks": "dev-master"
     },
     "require-dev": {
         "psy/psysh": "@stable",
