@@ -15,6 +15,7 @@
         "korditpteltd/kd-cakephp-page": "dev-master",
         "korditpteltd/kd-cakephp-restful": "dev-master",
         "korditpteltd/kd-cakephp-webhooks": "dev-master",
+        "phpoffice/phpexcel": "^1.8",
         "cakephp/debug_kit": "3.7.*"
     },
     "require-dev": {
