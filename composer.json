@@ -14,13 +14,9 @@
         "mohamednizar/moe-uuid": "^1.2@beta",
         "korditpteltd/kd-cakephp-page": "dev-master",
         "korditpteltd/kd-cakephp-restful": "dev-master",
-<<<<<<< Updated upstream
-        "korditpteltd/kd-cakephp-webhooks": "dev-master"
-=======
         "korditpteltd/kd-cakephp-webhooks": "dev-master",
         "cakephp/debug_kit": "3.7.*",
         "phpoffice/phpexcel": "^1.8"
->>>>>>> Stashed changes
     },
     "require-dev": {
         "psy/psysh": "@stable",
