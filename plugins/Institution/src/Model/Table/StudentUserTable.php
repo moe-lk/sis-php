@@ -180,7 +180,7 @@ class StudentUserTable extends ControllerActionTable
                 ],
                 'validNumber' => [
                     'rule' => array('custom', '/^[A-Za-z0-9\/]+$/'),
-                    'message' => 'Must contain letters , numbers and "/" SU '
+                    'message' => 'Must contain letters , numbers and "/" only '
                 ],
                 'ruleNotEmpty' => [
                     'rule' => ['notEmpty'],
