@@ -179,8 +179,8 @@ class StudentUserTable extends ControllerActionTable
                     'message' => 'Admission number must be of 5 characters long',
                 ],
                 'validNumber' => [
-                    'rule' => array('custom', '/^[a-z\d]+(?:\/[a-z\d]+)+$/i'),
-                    'message' => 'Must contain letters , numbers and "/" only '
+                    'rule' => array('custom', '/^[A-Za-z0-9\/]+$/'),
+                    'message' => 'Must contain letters , numbers and "/" SU '
                 ],
                 'ruleNotEmpty' => [
                     'rule' => ['notEmpty'],
