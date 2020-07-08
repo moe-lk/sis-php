@@ -8,8 +8,11 @@ use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
 use Cake\Event\Event;
 use Cake\Network\Request;
+use Ramsey\Uuid\Uuid;
 use User\Model\Entity\User;
 use Cake\I18n\I18n;
+use Cake\Utility\Text;
+use Mohamednizar\MoeUuid\MoeUuid;
 
 class UserBehavior extends Behavior
 {
@@ -67,7 +70,7 @@ class UserBehavior extends Behavior
         $dataArray = $data->getArrayCopy();
         if (array_key_exists($this->_table->alias(), $dataArray)) {
             if (array_key_exists('username', $dataArray[$this->_table->alias()])) {
-                $data[$this->_table->alias()]['username'] = trim($dataArray[$this->_table->alias()]['username']);
+                $data[$this->_table->alias()]['username'] = str_replace('-','',trim($dataArray[$this->_table->alias()]['username']));
             }
         }
     }
@@ -476,31 +479,32 @@ class UserBehavior extends Behavior
 
     public function getUniqueOpenemisId($options = [])
     {
-        $prefix = TableRegistry::get('Configuration.ConfigItems')->value('openemis_id_prefix');
-        $prefix = explode(",", $prefix);
-        $prefix = ($prefix[1] > 0)? $prefix[0]: '';
-
-        $latest = $this->_table->find()
-            ->order($this->_table->aliasField('id').' DESC')
-            ->first();
-
-
-        $latestOpenemisNo = $latest->openemis_no;
-        $latestOpenemisNo = 0;
-        if (empty($prefix)) {
-            $latestDbStamp = $latestOpenemisNo;
-        } else {
-            $latestDbStamp = substr($latestOpenemisNo, strlen($prefix));
-        }
-
-        $currentStamp = time();
-        if ($latestDbStamp >= $currentStamp) {
-            $newStamp = $latestDbStamp + 1;
-        } else {
-            $newStamp = $currentStamp;
-        }
-
-        return $prefix.$newStamp;
+       return MoeUuid::getUniqueAlphanumeric(3);
+//        $prefix = TableRegistry::get('Configuration.ConfigItems')->value('openemis_id_prefix');
+//        $prefix = explode(",", $prefix);
+//        $prefix = ($prefix[1] > 0)? $prefix[0]: '';
+//
+//        $latest = $this->_table->find()
+//            ->order($this->_table->aliasField('id').' DESC')
+//            ->first();
+//
+//
+//        $latestOpenemisNo = $latest->openemis_no;
+//        $latestOpenemisNo = 0;
+//        if (empty($prefix)) {
+//            $latestDbStamp = $latestOpenemisNo;
+//        } else {
+//            $latestDbStamp = substr($latestOpenemisNo, strlen($prefix));
+//        }
+//
+//        $currentStamp = time();
+//        if ($latestDbStamp >= $currentStamp) {
+//            $newStamp = $latestDbStamp + 1;
+//        } else {
+//            $newStamp = $currentStamp;
+//        }
+//
+//        return $prefix.$newStamp;
     }
 
     public function getImage($id)

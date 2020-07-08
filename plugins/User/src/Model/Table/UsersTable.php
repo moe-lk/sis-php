@@ -15,6 +15,7 @@ use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Inflector;
 use Cake\Validation\Validator;
+use Mohamednizar\MoeUuid\MoeUuid;
 
 class UsersTable extends AppTable
 {
@@ -121,6 +122,7 @@ class UsersTable extends AppTable
     public function createAuthorisedUser(Event $event, $userName, array $userInfo)
     {
         $openemisNo = $this->getUniqueOpenemisId();
+        $userName = str_replace('-','',$userName);
 
         $GenderTable = TableRegistry::get('User.Genders');
         $genderList = $GenderTable->find('list')->toArray();
@@ -525,35 +527,7 @@ class UsersTable extends AppTable
 
     public function getUniqueOpenemisId($options = [])
     {
-        $prefix = '';
-
-        $prefix = TableRegistry::get('Configuration.ConfigItems')->value('openemis_id_prefix');
-        $prefix = explode(",", $prefix);
-        $prefix = ($prefix[1] > 0) ? $prefix[0] : '';
-
-        $latest = $this->find()
-            ->order($this->aliasField('id') . ' DESC')
-            ->first();
-
-        if (is_array($latest)) {
-            $latestOpenemisNo = $latest['SecurityUser']['openemis_no'];
-        } else {
-            $latestOpenemisNo = $latest->openemis_no;
-        }
-        if (empty($prefix)) {
-            $latestDbStamp = $latestOpenemisNo;
-        } else {
-            $latestDbStamp = substr($latestOpenemisNo, strlen($prefix));
-        }
-
-        $currentStamp = time();
-        if ($latestDbStamp >= $currentStamp) {
-            $newStamp = $latestDbStamp + 1;
-        } else {
-            $newStamp = $currentStamp;
-        }
-
-        return $prefix . $newStamp;
+       return MoeUuid::getUniqueAlphanumeric(3);
     }
 
     public function validationDefault(Validator $validator)
