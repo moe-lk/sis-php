@@ -281,13 +281,13 @@ return [
      * Configures logging options
      */
     'Log' => [
-        'debug' => [
-            'className' => 'Cake\Log\Engine\FileLog',
-            'path' => LOGS,
-            'file' => 'debug',
-            'levels' => [ 'debug'],
-            'url' => env('LOG_DEBUG_URL', null),
-        ],
+        // 'debug' => [
+        //     'className' => 'Cake\Log\Engine\FileLog',
+        //     'path' => LOGS,
+        //     'file' => 'debug',
+        //     'levels' => [ 'debug'],
+        //     'url' => env('LOG_DEBUG_URL', null),
+        // ],
         'error' => [
             'className' => 'Cake\Log\Engine\FileLog',
             'path' => LOGS,
