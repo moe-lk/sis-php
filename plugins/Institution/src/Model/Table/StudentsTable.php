@@ -563,8 +563,10 @@ class StudentsTable extends ControllerActionTable
     public function beforeAction(Event $event, ArrayObject $extra)
     {
         $this->field('previous_institution_student_id', ['type' => 'hidden']);
-        // $this->field('admission_id', ['type' => 'string', 'attr' => ['label' => 'Admission No']]);
-        $this->field('admission_id', ['attr' => ['label' => 'Admission Number']]);
+        $this->field('exam_center_for_special_education_g5',  ['type' => 'hidden']);
+        $this->field('exam_center_for_special_education_ol',  ['type' => 'hidden']);
+        $this->field('exam_center_for_special_education_al',  ['type' => 'hidden']);
+        // $this->field('admission_id', ['attr' => ['label' => 'Admission Number']]);
     }
 
     public function beforeDelete(Event $event, Entity $entity)
