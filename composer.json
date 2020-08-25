@@ -46,8 +46,7 @@
     "scripts": {
         "post-install-cmd": "App\\Console\\Installer::postInstall",
         "post-create-project-cmd": "App\\Console\\Installer::postInstall",
-        "post-autoload-dump": "Cake\\Composer\\Installer\\PluginInstaller::postAutoloadDump",
-        "post-autoload-dump": "php -r \"copy('cakephp-plugins.php', 'vendor/cakephp-plugins.php');\"",
+        "post-autoload-dump": ["Cake\\Composer\\Installer\\PluginInstaller::postAutoloadDump" , "php -r \"copy('cakephp-plugins.php', 'vendor/cakephp-plugins.php');\""],
         "check": [
             "@test",
             "@cs-check"
