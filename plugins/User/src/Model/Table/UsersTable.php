@@ -504,6 +504,17 @@ class UsersTable extends AppTable
         $this->ControllerAction->setFieldOrder($fieldOrder);
     }
 
+
+    public function beforeDelete(Event $event, Entity $entity){
+         //if users tries to delete some data from updated another service
+         if ($entity->updated_from != 'sis') {
+            $event->stopPropagation();
+            $message = __('This record is associated with Examination, You cannot delete this.');
+            $this->Alert->error($message, ['type' => 'string', 'reset' => true]);
+            return false;
+        }
+    }
+
     public function editBeforeAction(Event $event)
     {
         $this->field('preferred_name', ['visible' => true, 'attr' => ['label' => 'Name with Initial']]);
