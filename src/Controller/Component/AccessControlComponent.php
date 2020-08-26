@@ -406,6 +406,35 @@ class AccessControlComponent extends Component
         return $superAdmin == 1;
     }
 
+    public function getPrincipalInstituionIds(){
+        $userId = $this->Auth->user('id');
+        $GroupUsers = TableRegistry::get('Security.SecurityGroupUsers');
+        $InstitutionGroup = TableRegistry::get('Security.SecurityGroupInstitutions');
+        $groupUserRecords = $GroupUsers->find()
+            ->matching('SecurityGroups')
+            ->matching('SecurityRoles')
+//            ->matching('SecurityGroupInstitutions')
+            ->where([
+                $GroupUsers->aliasField('security_user_id') => $userId])
+            ->group([
+                $GroupUsers->aliasField('security_group_id'),
+                $GroupUsers->aliasField('security_role_id'),
+//                $InstitutionGroupe->aliasField('institution_id')
+
+            ])
+            ->join('security_group_institutions','security_group_institutions.security_group_id','SecurityGroups.id')
+            ->select(['id' => 'SecurityGroups.id'])
+            ->all()
+            ->toArray();
+
+        $institutions = $InstitutionGroup->find()
+            ->matching('SecurityGroups')
+            ->where([$InstitutionGroup->aliasField('security_group_id IN') => array_column($groupUserRecords,'id') ])
+            ->select([$InstitutionGroup->aliasField('institution_id')])
+            ->all()
+            ->toArray();
+        return array_column($institutions,'institution_id');
+    }
 
     public function getRolesByUser($userId = null)
     {
@@ -427,13 +456,8 @@ class AccessControlComponent extends Component
 
     public function isPrincipal()
     {
-
-        $role = $this->getRolesByUser();
-        $separator = $this->config('separator');
         $userId = $this->Auth->user('id');
         $GroupRoles = TableRegistry::get('Security.SecurityGroupUsers');
-       // $session = $request->session();
-        $institutionId = $this->Session->read('Institution.Institutions.id');
         $userRole = $GroupRoles
             ->find()
             ->contain('SecurityRoles')

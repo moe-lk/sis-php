@@ -14,14 +14,14 @@
         "mohamednizar/moe-uuid": "^1.2@beta",
         "korditpteltd/kd-cakephp-page": "dev-master",
         "korditpteltd/kd-cakephp-restful": "dev-master",
-        "korditpteltd/kd-cakephp-webhooks": "dev-master"
+        "korditpteltd/kd-cakephp-webhooks": "dev-master",
+        "phpoffice/phpexcel": "^1.8",
+        "cakephp/debug_kit": "3.7.*"
     },
     "require-dev": {
         "psy/psysh": "@stable",
         "phpunit/phpunit": "*",
-        "cakephp/plugin-installer": "*",
         "cakephp/migrations": "~1.0",
-        "cakephp/debug_kit": "~3.2",
         "cakephp/bake": "~1.1"
     },
     "suggest": {
@@ -46,8 +46,7 @@
     "scripts": {
         "post-install-cmd": "App\\Console\\Installer::postInstall",
         "post-create-project-cmd": "App\\Console\\Installer::postInstall",
-        "post-autoload-dump": "Cake\\Composer\\Installer\\PluginInstaller::postAutoloadDump",
-        "post-autoload-dump": "php -r \"copy('cakephp-plugins.php', 'vendor/cakephp-plugins.php');\"",
+        "post-autoload-dump": ["Cake\\Composer\\Installer\\PluginInstaller::postAutoloadDump" , "php -r \"copy('cakephp-plugins.php', 'vendor/cakephp-plugins.php');\""],
         "check": [
             "@test",
             "@cs-check"
@@ -55,6 +54,7 @@
         "cs-check": "phpcs --colors -p --standard=vendor/cakephp/cakephp-codesniffer/CakePHP ./src ./tests",
         "cs-fix": "phpcbf --colors --standard=vendor/cakephp/cakephp-codesniffer/CakePHP ./src ./tests",
         "test": "phpunit --colors=always"
+
     },
     "minimum-stability": "dev",
     "prefer-stable": true
