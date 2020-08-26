@@ -577,6 +577,14 @@ class StudentsTable extends ControllerActionTable
             $event->stopPropagation();
             return false;
         }
+
+         //if users tries to delete some data from updated another service
+         if ($entity->updated_from != 'sis') {
+            $event->stopPropagation();
+            $message = __('This record is associated with Examination, You cannot delete this.');
+            $this->Alert->error($message, ['type' => 'string', 'reset' => true]);
+            return false;
+        }
     }
 
     public function indexBeforeAction(Event $event, ArrayObject $extra)

@@ -80,6 +80,15 @@ class DirectoriesTable extends ControllerActionTable
         $this->addBehavior('Import.ImportLink', ['import_model'=>'ImportUsers']);
         $this->addBehavior('ControllerAction.Image');
 
+        $this->belongsToMany('SecurityGroups', [
+            'className' => 'Security.SystemGroups',
+            'joinTable' => 'security_group_institutions',
+            'foreignKey' => 'institution_id',
+            'targetForeignKey' => 'security_group_id',
+            'through' => 'Security.SecurityGroupInstitutions',
+            'dependent' => true
+        ]);
+
         $this->addBehavior('TrackActivity', ['target' => 'User.UserActivities', 'key' => 'security_user_id', 'session' => 'Directory.Directories.id']);
         $this->toggle('search', false);
     }
@@ -121,6 +130,18 @@ class DirectoriesTable extends ControllerActionTable
         $BaseUsers = TableRegistry::get('User.Users');
         return $BaseUsers->setUserValidation($validator, $this);
     }
+
+    public function beforeDelete(Event $event, Entity $entity)
+    {
+        //if users tries to delete some data from updated another service
+        if ($entity->updated_from != 'sis') {
+            $event->stopPropagation();
+            $message = __('This record is associated with Examination, You cannot delete this.');
+            $this->Alert->error($message, ['type' => 'string', 'reset' => true]);
+            return false;
+        }
+    }
+
 
     public function beforeMarshal(Event $event, ArrayObject $data, ArrayObject $options)
     {
@@ -250,20 +271,16 @@ class DirectoriesTable extends ControllerActionTable
 
         $userId = $this->Session->read('Auth.User.id');
 
-        $conditions = [$this->aliasField('created_user_id') => $userId];
-
-        $notSuperAdminCondition = [
-            $this->aliasField('super_admin') => 0
+        $conditions = [
+            $this->aliasField('created_user_id') => $userId
         ];
 
-        $modifiedUser = [
-            $this->aliasField('modified_user_id') => $userId
-        ];
-
-
+        $this->AccessControl->getPrincipalInstituionIds($userId);
 
         // POCOR-2547 sort list of staff and student by name
         $orders = [];
+
+        $institutionIds = $this->AccessControl->getPrincipalInstituionIds();
 
         if (!isset($this->request->query['sort'])) {
             $orders = [
@@ -272,9 +289,28 @@ class DirectoriesTable extends ControllerActionTable
             ];
         }
 
-        $query->where($conditions)
-//            ->orWhere($modifiedUser)
-            ->order($orders);
+        if(!empty($institutionIds) && $this->AccessControl->isPrincipal()){
+            $query
+                ->join([
+                    [
+                        'type' => 'INNER',
+                        'table' => 'institution_students',
+                        'alias' => 'InstitutionStudents',
+                        'conditions' => [
+                            'InstitutionStudents.institution_id'.' IN ('.implode(",",$institutionIds).')',
+                            'InstitutionStudents.student_id = '. $this->aliasField('id')
+                        ]
+                    ]
+                ])
+                ->group($this->aliasField('id'))
+                ->order($orders);
+
+        }elseif($this->Auth->user('super_admin') == 1){
+            $query->order($orders);
+        }else{
+            $query->where($conditions)
+                ->order($orders);
+        }
 
         $options['auto_search'] = true;
 
@@ -463,7 +499,7 @@ class DirectoriesTable extends ControllerActionTable
         $this->fields['openemis_no']['attr']['value'] = $openemisNo;
         // pr($this->request->data[$this->alias()]['username']);
         if (!isset($this->request->data[$this->alias()]['username'])) {
-            $this->request->data[$this->alias()]['username'] = $openemisNo;
+            $this->request->data[$this->alias()]['username'] = str_replace('-','', $openemisNo);
         } elseif ($this->request->data[$this->alias()]['username'] == $this->request->data[$this->alias()]['openemis_no']) {
             $this->request->data[$this->alias()]['username'] = $openemisNo;
         } elseif (empty($this->request->data[$this->alias()]['username'])) {
