@@ -1,20 +1,21 @@
 <?php
 namespace User\Model\Table;
 
-use App\Model\Table\AppTable;
-use App\Model\Traits\OptionsTrait;
-use App\Model\Traits\UserTrait;
 use ArrayObject;
-use Cake\Datasource\ConnectionManager;
-use Cake\Event\Event;
 use Cake\I18n\Time;
+use Cake\ORM\Query;
+use Cake\ORM\Entity;
+use Cake\Event\Event;
 use Cake\Network\Request;
 use Cake\Network\Session;
-use Cake\ORM\Entity;
-use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Inflector;
+use Lsf\UniqueUid\UniqueUid;
+use App\Model\Table\AppTable;
 use Cake\Validation\Validator;
+use App\Model\Traits\UserTrait;
+use App\Model\Traits\OptionsTrait;
+use Cake\Datasource\ConnectionManager;
 
 class UsersTable extends AppTable
 {
@@ -525,35 +526,8 @@ class UsersTable extends AppTable
 
     public function getUniqueOpenemisId($options = [])
     {
-        $prefix = '';
-
-        $prefix = TableRegistry::get('Configuration.ConfigItems')->value('openemis_id_prefix');
-        $prefix = explode(",", $prefix);
-        $prefix = ($prefix[1] > 0) ? $prefix[0] : '';
-
-        $latest = $this->find()
-            ->order($this->aliasField('id') . ' DESC')
-            ->first();
-
-        if (is_array($latest)) {
-            $latestOpenemisNo = $latest['SecurityUser']['openemis_no'];
-        } else {
-            $latestOpenemisNo = $latest->openemis_no;
-        }
-        if (empty($prefix)) {
-            $latestDbStamp = $latestOpenemisNo;
-        } else {
-            $latestDbStamp = substr($latestOpenemisNo, strlen($prefix));
-        }
-
-        $currentStamp = time();
-        if ($latestDbStamp >= $currentStamp) {
-            $newStamp = $latestDbStamp + 1;
-        } else {
-            $newStamp = $currentStamp;
-        }
-
-        return $prefix . $newStamp;
+       $this->uniqueId = new UniqueUid();
+       return $this->uniqueId->getUniqueAlphanumeric();
     }
 
     public function validationDefault(Validator $validator)
