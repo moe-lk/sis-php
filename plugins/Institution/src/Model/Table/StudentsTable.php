@@ -566,7 +566,7 @@ class StudentsTable extends ControllerActionTable
         $this->field('exam_center_for_special_education_g5',  ['type' => 'hidden']);
         $this->field('exam_center_for_special_education_ol',  ['type' => 'hidden']);
         $this->field('exam_center_for_special_education_al',  ['type' => 'hidden']);
-        // $this->field('admission_id', ['attr' => ['label' => 'Admission Number']]);
+        $this->field('updated_from', ['type' => 'hidden']);
     }
 
     public function beforeDelete(Event $event, Entity $entity)
@@ -575,6 +575,14 @@ class StudentsTable extends ControllerActionTable
         // if user tries to delete record that is not enrolled
         if ($entity->student_status_id != $studentStatuses['CURRENT']) {
             $event->stopPropagation();
+            return false;
+        }
+
+         //if users tries to delete some data from updated another service
+         if ($entity->updated_from != 'sis') {
+            $event->stopPropagation();
+            $message = __('This record is associated with Examination, You cannot delete this.');
+            $this->Alert->error($message, ['type' => 'string', 'reset' => true]);
             return false;
         }
     }
