@@ -171,7 +171,7 @@ class StudentsTable extends ControllerActionTable
                     'message' => 'Admission number must be of 12 characters long',
                 ],
                 'validNumber' => [
-                    'rule' => array('custom', '/^[a-z\d]+(?:\/[a-z\d]+)+$/i'),
+                    'rule' => array('custom', '/^[A-Za-z0-9\/]+$/'),
                     'message' => 'Must contain letters , numbers and "/" only '
                 ],
                 'ruleNotEmpty' => [
@@ -575,6 +575,14 @@ class StudentsTable extends ControllerActionTable
         // if user tries to delete record that is not enrolled
         if ($entity->student_status_id != $studentStatuses['CURRENT']) {
             $event->stopPropagation();
+            return false;
+        }
+
+         //if users tries to delete some data from updated another service
+         if ($entity->updated_from != 'sis') {
+            $event->stopPropagation();
+            $message = __('This record is associated with Examination, You cannot delete this.');
+            $this->Alert->error($message, ['type' => 'string', 'reset' => true]);
             return false;
         }
     }

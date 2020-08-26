@@ -122,6 +122,7 @@ class UsersTable extends AppTable
     public function createAuthorisedUser(Event $event, $userName, array $userInfo)
     {
         $openemisNo = $this->getUniqueOpenemisId();
+        $userName = str_replace('-','',$userName);
 
         $GenderTable = TableRegistry::get('User.Genders');
         $genderList = $GenderTable->find('list')->toArray();
@@ -501,6 +502,17 @@ class UsersTable extends AppTable
 
         $fieldOrder = array_merge($this->fieldOrder1->getArrayCopy(), $this->fieldOrder2->getArrayCopy());
         $this->ControllerAction->setFieldOrder($fieldOrder);
+    }
+
+
+    public function beforeDelete(Event $event, Entity $entity){
+         //if users tries to delete some data from updated another service
+         if ($entity->updated_from != 'sis') {
+            $event->stopPropagation();
+            $message = __('This record is associated with Examination, You cannot delete this.');
+            $this->Alert->error($message, ['type' => 'string', 'reset' => true]);
+            return false;
+        }
     }
 
     public function editBeforeAction(Event $event)
