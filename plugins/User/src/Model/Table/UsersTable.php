@@ -204,6 +204,7 @@ class UsersTable extends AppTable
         $this->field('username', ['visible' => false]);
         $this->field('middle_name', ['visible' => false]);
         $this->field('third_name', ['visible' => false]);
+        $this->field('updated_from', ['visible' => false]);
         $this->field('preferred_name', ['visible' => false]);
         $this->ControllerAction->field('username', ['visible' => false]);
         $this->ControllerAction->field('super_admin', ['visible' => false]);
@@ -514,6 +515,7 @@ class UsersTable extends AppTable
         $this->fields['openemis_no']['attr']['readonly'] = true;
         $this->fields['photo_content']['type'] = 'image';
         $this->fields['super_admin']['type'] = 'hidden';
+        $this->fields['updated_from']['type'] = 'hidden';
         $this->fields['super_admin']['value'] = 0;
         $this->fields['gender_id']['type'] = 'select';
         $this->fields['gender_id']['options'] = $this->Genders->find('list', ['keyField' => 'id', 'valueField' => 'name'])->toArray();
