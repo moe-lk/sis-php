@@ -566,7 +566,7 @@ class StudentsTable extends ControllerActionTable
         $this->field('exam_center_for_special_education_g5',  ['type' => 'hidden']);
         $this->field('exam_center_for_special_education_ol',  ['type' => 'hidden']);
         $this->field('exam_center_for_special_education_al',  ['type' => 'hidden']);
-        // $this->field('admission_id', ['attr' => ['label' => 'Admission Number']]);
+        $this->field('updated_from', ['type' => 'hidden']);
     }
 
     public function beforeDelete(Event $event, Entity $entity)
@@ -598,6 +598,7 @@ class StudentsTable extends ControllerActionTable
         $this->field('admission_id', ['after' => 'student_status_id']);
         $this->field('area_administrative_id', ['visible' => false]);
         $this->fields['start_date']['visible'] = false;
+        $this->fields['updated_from']['visible'] = false;
         $this->fields['end_date']['visible'] = false;
         $this->fields['class']['sort'] = ['field' => 'InstitutionClasses.name'];
         $this->fields['student_id']['sort'] = ['field' => 'Users.first_name'];
