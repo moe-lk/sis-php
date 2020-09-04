@@ -29,6 +29,10 @@ class StudentsTable extends ControllerActionTable
         $this->table('institution_students');
         parent::initialize($config);
 
+        $this->addBehavior('Muffin/Trash.Trash', [
+            'field' => 'deleted_at'
+        ]);
+
         // Associations
         $this->belongsTo('Users', ['className' => 'Security.Users', 'foreignKey' => 'student_id']);
         $this->belongsTo('StudentStatuses', ['className' => 'Student.StudentStatuses']);
@@ -747,7 +751,7 @@ class StudentsTable extends ControllerActionTable
         $session = $request->session();
         $institutionId = $session->read('Institution.Institutions.id');
 
-        $query->find('withClass', ['institution_id' => $institutionId, 'period_id' => $selectedAcademicPeriod]);
+        $query->find('withClass', ['institution_id' => $institutionId, 'period_id' => $selectedAcademicPeriod,]);
 
         $sortList = ['InstitutionClasses.name'];
         if (array_key_exists('sortWhitelist', $extra['options'])) {

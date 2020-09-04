@@ -48,6 +48,8 @@ class UsersTable extends AppTable
         $this->table('security_users');
         parent::initialize($config);
 
+       
+
         self::handleAssociations($this);
 
         $this->fieldOrder1 = new ArrayObject(['photo_content', 'openemis_no', 'first_name', 'middle_name', 'third_name', 'last_name', 'preferred_name', 'gender_id', 'date_of_birth', 'address', 'postal_code']);
@@ -922,7 +924,7 @@ class UsersTable extends AppTable
                 'is_guardian',
             ])
             ->where([
-                'status' => 1,
+                'status' => 1
             ]);
 
         return $query;

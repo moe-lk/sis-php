@@ -14,7 +14,9 @@
         "mohamednizar/moe-uuid": "^1.2@beta",
         "korditpteltd/kd-cakephp-page": "dev-master",
         "korditpteltd/kd-cakephp-restful": "dev-master",
-        "korditpteltd/kd-cakephp-webhooks": "dev-master"
+        "korditpteltd/kd-cakephp-webhooks": "dev-master",
+        "pgbi/cakephp3-soft-delete": "~1.0",
+        "muffin/trash": "2.0.0"
     },
     "require-dev": {
         "psy/psysh": "@stable",
