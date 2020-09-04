@@ -175,7 +175,7 @@ class StudentsTable extends ControllerActionTable
                     'message' => 'Admission number must be of 12 characters long',
                 ],
                 'validNumber' => [
-                    'rule' => array('custom', '/^[a-z\d]+(?:\/[a-z\d]+)+$/i'),
+                    'rule' => array('custom', '/^[A-Za-z0-9\/]+$/'),
                     'message' => 'Must contain letters , numbers and "/" only '
                 ],
                 'ruleNotEmpty' => [
@@ -570,7 +570,7 @@ class StudentsTable extends ControllerActionTable
         $this->field('exam_center_for_special_education_g5',  ['type' => 'hidden']);
         $this->field('exam_center_for_special_education_ol',  ['type' => 'hidden']);
         $this->field('exam_center_for_special_education_al',  ['type' => 'hidden']);
-        // $this->field('admission_id', ['attr' => ['label' => 'Admission Number']]);
+        $this->field('updated_from', ['type' => 'hidden']);
     }
 
     public function beforeDelete(Event $event, Entity $entity)
@@ -579,6 +579,14 @@ class StudentsTable extends ControllerActionTable
         // if user tries to delete record that is not enrolled
         if ($entity->student_status_id != $studentStatuses['CURRENT']) {
             $event->stopPropagation();
+            return false;
+        }
+
+         //if users tries to delete some data from updated another service
+         if ($entity->updated_from != 'sis') {
+            $event->stopPropagation();
+            $message = __('This record is associated with Examination, You cannot delete this.');
+            $this->Alert->error($message, ['type' => 'string', 'reset' => true]);
             return false;
         }
     }
@@ -594,6 +602,7 @@ class StudentsTable extends ControllerActionTable
         $this->field('admission_id', ['after' => 'student_status_id']);
         $this->field('area_administrative_id', ['visible' => false]);
         $this->fields['start_date']['visible'] = false;
+        $this->fields['updated_from']['visible'] = false;
         $this->fields['end_date']['visible'] = false;
         $this->fields['class']['sort'] = ['field' => 'InstitutionClasses.name'];
         $this->fields['student_id']['sort'] = ['field' => 'Users.first_name'];

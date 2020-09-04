@@ -183,7 +183,7 @@ class StudentUserTable extends ControllerActionTable
                     'message' => 'Admission number must be of 5 characters long',
                 ],
                 'validNumber' => [
-                    'rule' => array('custom', '/^[a-z\d]+(?:\/[a-z\d]+)+$/i'),
+                    'rule' => array('custom', '/^[A-Za-z0-9\/]+$/'),
                     'message' => 'Must contain letters , numbers and "/" only '
                 ],
                 'ruleNotEmpty' => [
@@ -237,6 +237,7 @@ class StudentUserTable extends ControllerActionTable
         $this->field('middle_name', ['visible' => false]);
         $this->field('third_name', ['visible' => false]);
         $this->field('preferred_name', ['visible' => false]);
+        $this->field('updated_from', ['visible' => false]);
 
         $toolbarButtons = $extra['toolbarButtons'];
 
