@@ -21,6 +21,10 @@ class StudentUserTable extends ControllerActionTable
         $this->entityClass('User.User');
         parent::initialize($config);
 
+        $this->addBehavior('Muffin/Trash.Trash', [
+            'field' => 'deleted_at'
+        ]);
+
         // Associations
         self::handleAssociations($this);
 

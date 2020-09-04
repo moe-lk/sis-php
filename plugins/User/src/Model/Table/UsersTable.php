@@ -49,6 +49,8 @@ class UsersTable extends AppTable
         $this->table('security_users');
         parent::initialize($config);
 
+       
+
         self::handleAssociations($this);
 
         $this->fieldOrder1 = new ArrayObject(['photo_content', 'openemis_no', 'first_name', 'middle_name', 'third_name', 'last_name', 'preferred_name', 'gender_id', 'date_of_birth', 'address', 'postal_code']);
@@ -206,6 +208,7 @@ class UsersTable extends AppTable
         $this->field('username', ['visible' => false]);
         $this->field('middle_name', ['visible' => false]);
         $this->field('third_name', ['visible' => false]);
+        $this->field('updated_from', ['visible' => false]);
         $this->field('preferred_name', ['visible' => false]);
         $this->ControllerAction->field('username', ['visible' => false]);
         $this->ControllerAction->field('super_admin', ['visible' => false]);
@@ -527,6 +530,7 @@ class UsersTable extends AppTable
         $this->fields['openemis_no']['attr']['readonly'] = true;
         $this->fields['photo_content']['type'] = 'image';
         $this->fields['super_admin']['type'] = 'hidden';
+        $this->fields['updated_from']['type'] = 'hidden';
         $this->fields['super_admin']['value'] = 0;
         $this->fields['gender_id']['type'] = 'select';
         $this->fields['gender_id']['options'] = $this->Genders->find('list', ['keyField' => 'id', 'valueField' => 'name'])->toArray();
@@ -906,7 +910,7 @@ class UsersTable extends AppTable
                 'is_guardian',
             ])
             ->where([
-                'status' => 1,
+                'status' => 1
             ]);
 
         return $query;
