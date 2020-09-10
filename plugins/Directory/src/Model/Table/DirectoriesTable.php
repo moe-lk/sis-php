@@ -35,7 +35,8 @@ class DirectoriesTable extends ControllerActionTable
         parent::initialize($config);
 
         $this->addBehavior('Muffin/Trash.Trash', [
-            'field' => 'deleted_at'
+            'field' => 'deleted_at',
+            'events' => ['Model.beforeFind']
         ]);
 
 

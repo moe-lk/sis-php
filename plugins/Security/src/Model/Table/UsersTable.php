@@ -22,7 +22,8 @@ class UsersTable extends AppTable
         $this->entityClass('User.User');
 
         $this->addBehavior('Muffin/Trash.Trash', [
-            'field' => 'deleted_at'
+            'field' => 'deleted_at',
+            'events' => ['Model.beforeFind']
         ]);
 
         $this->belongsTo('Genders', ['className' => 'User.Genders']);
@@ -155,6 +156,7 @@ class UsersTable extends AppTable
         $this->fields['middle_name'] ['visible'] = false;
         $this->fields['third_name']['visible'] = false;
         $this->fields['preferred_name']['visible'] = false;
+        $this->fields['updated_from']['type'] = 'readonly';
 
         if ($this->action == 'edit') {
             $this->fields['last_login']['visible'] = false;
@@ -164,6 +166,10 @@ class UsersTable extends AppTable
         $this->ControllerAction->setFieldOrder([
             'openemis_no', 'first_name', 'middle_name', 'third_name', 'last_name', 'preferred_name', 'gender_id', 'date_of_birth', 'status', 'username', 'password',
         ]);
+    }
+
+    public function onGetUpdatedFrom(Event $event, Entity $entity){
+        return $entity->admission_id > 0 ? $entity->admission_id : 'Not Provided';
     }
 
     public function indexBeforeAction(Event $event)

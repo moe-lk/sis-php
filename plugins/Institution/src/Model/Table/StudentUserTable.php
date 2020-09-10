@@ -22,7 +22,8 @@ class StudentUserTable extends ControllerActionTable
         parent::initialize($config);
 
         $this->addBehavior('Muffin/Trash.Trash', [
-            'field' => 'deleted_at'
+            'field' => 'deleted_at',
+            'events' => ['Model.beforeFind']
         ]);
 
         // Associations
@@ -224,6 +225,11 @@ class StudentUserTable extends ControllerActionTable
         return $entity->admission_id > 0 ? $entity->admission_id : 'Not Provided';
     }
 
+    public function onGetUpdatedFrom(Event $event, Entity $entity)
+    {
+        return $entity->updated_from == 'doe' ? 'DoE' : 'SIS';
+    }
+
     public function beforeAction(Event $event, ArrayObject $extra)
     {
         $this->field('username', ['visible' => false]);
@@ -237,7 +243,8 @@ class StudentUserTable extends ControllerActionTable
         $this->field('middle_name', ['visible' => false]);
         $this->field('third_name', ['visible' => false]);
         $this->field('preferred_name', ['visible' => false]);
-        $this->field('updated_from', ['visible' => false]);
+        $this->field('deleted_at',  ['type' => 'hidden']);
+        $this->field('updated_from',  ['type' => 'readonly','after' => 'created']);
 
         $toolbarButtons = $extra['toolbarButtons'];
 
