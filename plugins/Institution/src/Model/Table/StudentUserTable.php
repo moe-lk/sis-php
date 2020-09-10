@@ -220,6 +220,11 @@ class StudentUserTable extends ControllerActionTable
         return $validator;
     }
     
+
+    public function onGetUpdatedFrom(Event $event, Entity $entity){
+        return $entity->admission_id > 0 ? $entity->admission_id : 'Not Provided';
+    }
+
     public function onGetAdmissionId(Event $event, Entity $entity)
     {
         return $entity->admission_id > 0 ? $entity->admission_id : 'Not Provided';
@@ -238,7 +243,7 @@ class StudentUserTable extends ControllerActionTable
         $this->field('middle_name', ['visible' => false]);
         $this->field('third_name', ['visible' => false]);
         $this->field('preferred_name', ['visible' => false]);
-        $this->field('updated_from', ['visible' => false]);
+        // $this->field('updated_from', ['visible' => false]);
 
         $toolbarButtons = $extra['toolbarButtons'];
 

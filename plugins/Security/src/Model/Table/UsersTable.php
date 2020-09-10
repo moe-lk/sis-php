@@ -167,6 +167,10 @@ class UsersTable extends AppTable
         ]);
     }
 
+    public function onGetUpdatedFrom(Event $event, Entity $entity){
+        return $entity->admission_id > 0 ? $entity->admission_id : 'Not Provided';
+    }
+
     public function indexBeforeAction(Event $event)
     {
         $this->fields['first_name']['visible'] = false;
