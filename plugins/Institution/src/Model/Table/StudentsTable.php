@@ -1,18 +1,19 @@
 <?php
 namespace Institution\Model\Table;
 
-use App\Model\Table\ControllerActionTable;
 use ArrayObject;
-use Cake\Core\Configure;
-use Cake\Datasource\ResultSetInterface;
-use Cake\Event\Event;
-use Cake\Network\Request;
-use Cake\ORM\Entity;
 use Cake\ORM\Query;
+use Cake\ORM\Entity;
+use Cake\Event\Event;
 use Cake\ORM\ResultSet;
+use function Psy\debug;
+use Cake\Core\Configure;
+use Cake\Network\Request;
 use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
-use function Psy\debug;
+use Cake\Datasource\ResultSetInterface;
+use App\Model\Table\ControllerActionTable;
+use Muffin\Trash\Model\Behavior\TrashBehavior;
 
 
 class StudentsTable extends ControllerActionTable
@@ -30,7 +31,8 @@ class StudentsTable extends ControllerActionTable
         parent::initialize($config);
 
         $this->addBehavior('Muffin/Trash.Trash', [
-            'field' => 'deleted_at'
+            'field' => 'deleted_at',
+            'events' => ['Model.beforeFind']
         ]);
 
         // Associations
