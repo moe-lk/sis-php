@@ -156,6 +156,7 @@ class UsersTable extends AppTable
         $this->fields['middle_name'] ['visible'] = false;
         $this->fields['third_name']['visible'] = false;
         $this->fields['preferred_name']['visible'] = false;
+        $this->fields['updated_from']['type'] = 'readonly';
 
         if ($this->action == 'edit') {
             $this->fields['last_login']['visible'] = false;

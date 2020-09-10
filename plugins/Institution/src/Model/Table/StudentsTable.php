@@ -568,14 +568,19 @@ class StudentsTable extends ControllerActionTable
         return $entity->admission_id > 0 ? $entity->admission_id : 'Not Provided';
     }
 
+    public function onGetUpdatedFrom(Event $event, Entity $entity)
+    {
+        return $entity->updated_from == 'doe' ? 'DoE' : 'SIS';
+    }
+
     public function beforeAction(Event $event, ArrayObject $extra)
     {
         $this->field('previous_institution_student_id', ['type' => 'hidden']);
         $this->field('exam_center_for_special_education_g5',  ['type' => 'hidden']);
         $this->field('exam_center_for_special_education_ol',  ['type' => 'hidden']);
         $this->field('exam_center_for_special_education_al',  ['type' => 'hidden']);
-        $this->field('updated_from',  ['type' => 'hidden']);
         $this->field('deleted_at',  ['type' => 'hidden']);
+        $this->field('updated_from',  ['type' => 'hidden']);
     }
 
     public function beforeDelete(Event $event, Entity $entity)
@@ -818,6 +823,7 @@ class StudentsTable extends ControllerActionTable
     {
         $this->field('photo_content', ['type' => 'image', 'before' => 'openemis_no']);
         $this->field('openemis_no', ['type' => 'readonly', 'order' => 1]);
+        $this->field('updated_from', ['type' => 'readonly', 'order' => 1]);
         $this->fields['student_id']['order'] = 10;
         $extra['toolbarButtons']['back']['url']['action'] = 'StudentProgrammes';
     }
@@ -851,6 +857,7 @@ class StudentsTable extends ControllerActionTable
 
     public function editAfterAction(Event $event, Entity $entity)
     {
+        $this->field('updated_from', ['type' => 'readonly', 'attr' => ['value' => $entity->updated_from]]);
         // Start PHPOE-1897
         $statuses = $this->StudentStatuses->findCodeList();
         if ($entity->student_status_id != $statuses['CURRENT']) {
