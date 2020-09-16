@@ -34,12 +34,6 @@ class DirectoriesTable extends ControllerActionTable
         $this->entityClass('User.User');
         parent::initialize($config);
 
-        $this->addBehavior('Muffin/Trash.Trash', [
-            'field' => 'deleted_at',
-            'events' => ['Model.beforeFind']
-        ]);
-
-
         $this->belongsTo('Genders', ['className' => 'User.Genders']);
         $this->belongsTo('AddressAreas', ['className' => 'Area.AreaAdministratives', 'foreignKey' => 'address_area_id']);
         $this->belongsTo('BirthplaceAreas', ['className' => 'Area.AreaAdministratives', 'foreignKey' => 'birthplace_area_id']);
@@ -281,10 +275,12 @@ class DirectoriesTable extends ControllerActionTable
             $this->aliasField('created_user_id') => $userId
         ];
 
+        $this->AccessControl->getPrincipalInstituionIds($userId);
+
         // POCOR-2547 sort list of staff and student by name
         $orders = [];
 
-        $institutionIds = $this->AccessControl->getInstitutionsByUser($userId);
+        $institutionIds = $this->AccessControl->getPrincipalInstituionIds();
 
         if (!isset($this->request->query['sort'])) {
             $orders = [
@@ -406,7 +402,6 @@ class DirectoriesTable extends ControllerActionTable
         $this->field('middle_name', ['visible' => false]);
         $this->field('third_name', ['visible' => false]);
         $this->field('preferred_name', ['visible' => false]);
-        $this->field('updated_from', ['visible' => false]);
         if ($this->action == 'add') {
             if ($this->controller->name != 'Students') {
                 $this->field('user_type', ['type' => 'select', 'after' => 'photo_content']);
