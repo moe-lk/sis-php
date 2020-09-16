@@ -1277,7 +1277,9 @@ function InstitutionStudentController($location, $q, $scope, $window, $filter, U
         InstitutionsStudentsSvc.getUniqueOpenEmisId()
             .then(function (response) {
                 var username = StudentController.selectedStudentData.username;
-                StudentController.selectedStudentData.username = response.replace(/-/g,"");
+                if (username == StudentController.selectedStudentData.openemis_no || username == '' || typeof username == 'undefined') {
+                    StudentController.selectedStudentData.username = response;
+                }
                 StudentController.selectedStudentData.openemis_no = response;
                 UtilsSvc.isAppendLoader(false);
             }, function (error) {

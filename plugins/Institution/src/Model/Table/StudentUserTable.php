@@ -21,11 +21,6 @@ class StudentUserTable extends ControllerActionTable
         $this->entityClass('User.User');
         parent::initialize($config);
 
-        $this->addBehavior('Muffin/Trash.Trash', [
-            'field' => 'deleted_at',
-            'events' => ['Model.beforeFind']
-        ]);
-
         // Associations
         self::handleAssociations($this);
 
@@ -184,7 +179,7 @@ class StudentUserTable extends ControllerActionTable
                     'message' => 'Admission number must be of 5 characters long',
                 ],
                 'validNumber' => [
-                    'rule' => array('custom', '/^[A-Za-z0-9\/]+$/'),
+                    'rule' => array('custom', '/^[a-z\d]+(?:\/[a-z\d]+)+$/i'),
                     'message' => 'Must contain letters , numbers and "/" only '
                 ],
                 'ruleNotEmpty' => [
@@ -225,11 +220,6 @@ class StudentUserTable extends ControllerActionTable
         return $entity->admission_id > 0 ? $entity->admission_id : 'Not Provided';
     }
 
-    public function onGetUpdatedFrom(Event $event, Entity $entity)
-    {
-        return $entity->updated_from == 'doe' ? 'DoE' : 'SIS';
-    }
-
     public function beforeAction(Event $event, ArrayObject $extra)
     {
         $this->field('username', ['visible' => false]);
@@ -243,8 +233,6 @@ class StudentUserTable extends ControllerActionTable
         $this->field('middle_name', ['visible' => false]);
         $this->field('third_name', ['visible' => false]);
         $this->field('preferred_name', ['visible' => false]);
-        $this->field('deleted_at',  ['type' => 'hidden']);
-        $this->field('updated_from',  ['type' => 'readonly','after' => 'created']);
 
         $toolbarButtons = $extra['toolbarButtons'];
 

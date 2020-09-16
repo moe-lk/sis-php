@@ -1,21 +1,21 @@
 <?php
 namespace User\Model\Table;
 
+use App\Model\Table\AppTable;
+use App\Model\Traits\OptionsTrait;
+use App\Model\Traits\UserTrait;
 use ArrayObject;
-use Cake\I18n\Time;
-use Cake\ORM\Query;
-use Cake\ORM\Entity;
+use Cake\Datasource\ConnectionManager;
 use Cake\Event\Event;
+use Cake\I18n\Time;
 use Cake\Network\Request;
 use Cake\Network\Session;
+use Cake\ORM\Entity;
+use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Inflector;
-use Lsf\UniqueUid\UniqueUid;
-use App\Model\Table\AppTable;
 use Cake\Validation\Validator;
-use App\Model\Traits\UserTrait;
-use App\Model\Traits\OptionsTrait;
-use Cake\Datasource\ConnectionManager;
+use Mohamednizar\MoeUuid\MoeUuid;
 
 class UsersTable extends AppTable
 {
@@ -48,8 +48,6 @@ class UsersTable extends AppTable
     {
         $this->table('security_users');
         parent::initialize($config);
-
-       
 
         self::handleAssociations($this);
 
@@ -208,7 +206,6 @@ class UsersTable extends AppTable
         $this->field('username', ['visible' => false]);
         $this->field('middle_name', ['visible' => false]);
         $this->field('third_name', ['visible' => false]);
-        $this->field('updated_from', ['visible' => false]);
         $this->field('preferred_name', ['visible' => false]);
         $this->ControllerAction->field('username', ['visible' => false]);
         $this->ControllerAction->field('super_admin', ['visible' => false]);
@@ -530,7 +527,6 @@ class UsersTable extends AppTable
         $this->fields['openemis_no']['attr']['readonly'] = true;
         $this->fields['photo_content']['type'] = 'image';
         $this->fields['super_admin']['type'] = 'hidden';
-        $this->fields['updated_from']['type'] = 'hidden';
         $this->fields['super_admin']['value'] = 0;
         $this->fields['gender_id']['type'] = 'select';
         $this->fields['gender_id']['options'] = $this->Genders->find('list', ['keyField' => 'id', 'valueField' => 'name'])->toArray();
@@ -542,8 +538,7 @@ class UsersTable extends AppTable
 
     public function getUniqueOpenemisId($options = [])
     {
-       $this->uniqueId = new UniqueUid();
-       return $this->uniqueId->getUniqueAlphanumeric();
+       return MoeUuid::getUniqueAlphanumeric(3);
     }
 
     public function validationDefault(Validator $validator)
@@ -910,7 +905,7 @@ class UsersTable extends AppTable
                 'is_guardian',
             ])
             ->where([
-                'status' => 1
+                'status' => 1,
             ]);
 
         return $query;
