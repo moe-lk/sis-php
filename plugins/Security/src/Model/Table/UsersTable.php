@@ -21,6 +21,11 @@ class UsersTable extends AppTable
         parent::initialize($config);
         $this->entityClass('User.User');
 
+        $this->addBehavior('Muffin/Trash.Trash', [
+            'field' => 'deleted_at',
+            'events' => ['Model.beforeFind']
+        ]);
+
         $this->belongsTo('Genders', ['className' => 'User.Genders']);
         $this->belongsTo('AddressAreas', ['className' => 'Area.AreaAdministratives', 'foreignKey' => 'address_area_id']);
         $this->belongsTo('BirthplaceAreas', ['className' => 'Area.AreaAdministratives', 'foreignKey' => 'birthplace_area_id']);
@@ -36,6 +41,15 @@ class UsersTable extends AppTable
             'dependent' => true,
         ]);
 
+        $this->belongsToMany('SecurityGroups', [
+            'className' => 'Security.SystemGroups',
+            'joinTable' => 'security_group_institutions',
+            'foreignKey' => 'institution_id',
+            'targetForeignKey' => 'security_group_id',
+            'through' => 'Security.SecurityGroupInstitutions',
+            'dependent' => true
+        ]);
+
         $this->hasMany('Identities', ['className' => 'User.Identities', 'foreignKey' => 'security_user_id', 'dependent' => true]);
         $this->hasMany('Nationalities', ['className' => 'User.UserNationalities', 'foreignKey' => 'security_user_id', 'dependent' => true]);
         $this->hasMany('SpecialNeeds', ['className' => 'User.SpecialNeeds', 'foreignKey' => 'security_user_id', 'dependent' => true]);
@@ -46,13 +60,13 @@ class UsersTable extends AppTable
         $this->hasMany('Languages', ['className' => 'User.UserLanguages', 'foreignKey' => 'security_user_id', 'dependent' => true]);
         $this->hasMany('Awards', ['className' => 'User.Awards', 'foreignKey' => 'security_user_id', 'dependent' => true]);
         $this->hasMany('Logins', ['className' => 'SSO.SecurityUserLogins', 'foreignKey' => 'security_user_id', 'dependent' => true, 'cascadeCallbacks' => true]);
-        $this->hasMany('Counsellings', ['className' => 'Counselling.Counsellings', 'foreignKey' => 'counselor_id', 'dependent' => true, 'cascadeCallbacks' => true]);
+        // $this->hasMany('Counsellings', ['className' => 'Counselling.InstitutionCounsellings', 'foreignKey' => 'counselor_id', 'dependent' => true, 'cascadeCallbacks' => true]);
         $this->hasMany('BodyMasses', ['className' => 'User.UserBodyMasses', 'foreignKey' => 'security_user_id', 'dependent' => true, 'cascadeCallbacks' => true]);
         $this->hasMany('Insurances', ['className' => 'User.UserInsurances', 'foreignKey' => 'security_user_id', 'dependent' => true, 'cascadeCallbacks' => true]);
 
         $this->hasMany('ScholarshipApplications', ['className' => 'Scholarship.ScholarshipApplications', 'foreignKey' => 'applicant_id', 'dependent' => true, 'cascadeCallbacks' => true]);
         $this->hasMany('ApplicationAttachments', ['className' => 'Scholarship.ApplicationAttachments', 'dependent' => true, 'cascadeCallbacks' => true]);
-        $this->hasMany('ScholarshipHistories', ['className' => 'Scholarship.ScholarshipHistories', 'foreignKey' => 'applicant_id', 'dependent' => true, 'cascadeCallbacks' => true]);
+        // $this->hasMany('ScholarshipHistories', ['className' => 'Scholarship.ScholarshipHistories', 'foreignKey' => 'applicant_id', 'dependent' => true, 'cascadeCallbacks' => true]);
         $this->hasMany('ApplicationInstitutionChoices', ['className' => 'Scholarship.ApplicationInstitutionChoices', 'foreignKey' => 'applicant_id', 'dependent' => true, 'cascadeCallbacks' => true]);
         $this->hasMany('ApplicationAttachments', ['className' => 'Scholarship.ApplicationAttachments', 'foreignKey' => 'applicant_id', 'dependent' => true, 'cascadeCallbacks' => true]);
 
@@ -142,6 +156,7 @@ class UsersTable extends AppTable
         $this->fields['middle_name'] ['visible'] = false;
         $this->fields['third_name']['visible'] = false;
         $this->fields['preferred_name']['visible'] = false;
+        $this->fields['updated_from']['type'] = 'readonly';
 
         if ($this->action == 'edit') {
             $this->fields['last_login']['visible'] = false;
@@ -151,6 +166,10 @@ class UsersTable extends AppTable
         $this->ControllerAction->setFieldOrder([
             'openemis_no', 'first_name', 'middle_name', 'third_name', 'last_name', 'preferred_name', 'gender_id', 'date_of_birth', 'status', 'username', 'password',
         ]);
+    }
+
+    public function onGetUpdatedFrom(Event $event, Entity $entity){
+        return $entity->admission_id > 0 ? $entity->admission_id : 'Not Provided';
     }
 
     public function indexBeforeAction(Event $event)
@@ -286,8 +305,8 @@ class UsersTable extends AppTable
 
         // username field will be the same as uniqueOpenemisId by default
         $this->fields['username']['visible'] = true;
-        $this->fields['username']['value'] = $uniqueOpenemisId;
-        $this->fields['username']['attr']['value'] = $uniqueOpenemisId;
+        $this->fields['username']['value'] = str_replace('-','',$uniqueOpenemisId);
+        $this->fields['username']['attr']['value'] = str_replace('-','',$uniqueOpenemisId);
 
         // password will be auto generate password
         $generatePassword = $ConfigItems->getAutoGeneratedPassword();
