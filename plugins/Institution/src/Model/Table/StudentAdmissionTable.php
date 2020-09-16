@@ -44,6 +44,11 @@ class StudentAdmissionTable extends ControllerActionTable
     {
         $this->table('institution_student_admission');
 
+        $this->addBehavior('Muffin/Trash.Trash', [
+            'field' => 'deleted_at',
+            'events' => ['Model.beforeFind']
+        ]);
+
         parent::initialize($config);
         $this->belongsTo('Users', ['className' => 'User.Users', 'foreignKey' => 'student_id']);
         $this->belongsTo('Statuses', ['className' => 'Workflow.WorkflowSteps', 'foreignKey' => 'status_id']);
@@ -126,7 +131,7 @@ class StudentAdmissionTable extends ControllerActionTable
                     'message' => 'Admission number must be of 12 characters long',
                 ],
                 'validNumber' => [
-                    'rule' => array('custom', '/^[a-z\d]+(?:\/[a-z\d]+)+$/i'),
+                    'rule' => array('custom', '/^[A-Za-z0-9\/]+$/'),
                     'message' => 'Must contain letters , numbers and "/" only '
                 ],
                 'ruleNotEmpty' => [
