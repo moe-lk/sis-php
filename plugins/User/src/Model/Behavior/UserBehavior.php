@@ -419,6 +419,7 @@ class UserBehavior extends Behavior
                 $value = $this->defaultUserProfileIndex;
             }
         } else {
+            ini_set( 'memory_limit', '256M' );
             $value = base64_encode(stream_get_contents($fileContent));
         }
         return $value;
