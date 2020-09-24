@@ -436,6 +436,35 @@ class AccessControlComponent extends Component
         return array_column($institutions,'institution_id');
     }
 
+    public function getZonalGroupIds(){
+        $userId = $this->Auth->user('id');
+        $GroupUsers = TableRegistry::get('Security.SecurityGroupUsers');
+        $AreaGroup = TableRegistry::get('Security.SecurityGroupAreas');
+        $groupUserRecords = $GroupUsers->find()
+            ->matching('SecurityGroups')
+            ->matching('SecurityRoles')
+            ->where([
+                $GroupUsers->aliasField('security_user_id') => $userId])
+            ->group([
+                $GroupUsers->aliasField('security_group_id'),
+                $GroupUsers->aliasField('security_role_id'),
+
+            ])
+            // ->join('security_group_institutions','security_group_institutions.security_group_id','SecurityGroups.id')
+            ->join('security_group_areas','security_group_areas.area_id','security_group_institutions.institution_id')
+            ->select(['id' => 'SecurityGroups.id'])
+            ->all()
+            ->toArray();
+
+            $area = $AreaGroup->find()
+                ->matching('SecurityGroups')
+                ->where([$AreaGroup->aliasField('security_group_id IN') => array_column($groupUserRecords,'id') ])
+                ->select([$AreaGroup->aliasField('area_id')])
+                ->all()
+                ->toArray();
+            return  array_column($area,'area_id');
+    }
+
     public function getRolesByUser($userId = null)
     {
         if (is_null($userId)) {

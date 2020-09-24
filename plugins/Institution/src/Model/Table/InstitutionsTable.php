@@ -749,7 +749,6 @@ class InstitutionsTable extends ControllerActionTable
         if($this->request['data']['AdvanceSearch']["Institutions"]['belongsTo']["institution_status_id"]==""){
             $query->where([$this->aliasField('institution_status_id') => 1 ]);
         }
-        
         // POCOR-3983 if no sort, active status will be followed by inactive status
         if (!isset($this->request->query['sort'])) {
             $query->order([
