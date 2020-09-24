@@ -146,6 +146,13 @@ class DirectoriesTable extends ControllerActionTable
             $this->Alert->error($message, ['type' => 'string', 'reset' => true]);
             return false;
         }
+        $userId = $this->Session->read('Auth.User.id');
+        if($entity->id == $userId){
+            $event->stopPropagation();
+            $message = __('You cannot delete your record by your self');
+            $this->Alert->error($message, ['type' => 'string', 'reset' => true]);
+            return false;
+        }
     }
 
 
@@ -278,7 +285,8 @@ class DirectoriesTable extends ControllerActionTable
         $userId = $this->Session->read('Auth.User.id');
 
         $conditions = [
-            $this->aliasField('created_user_id') => $userId
+            $this->aliasField('created_user_id') => $userId,
+            $this->aliasField('modified_user_id') => $userId
         ];
 
         // POCOR-2547 sort list of staff and student by name
