@@ -30,6 +30,11 @@ class StudentsTable extends ControllerActionTable
         $this->table('institution_students');
         parent::initialize($config);
 
+        $this->addBehavior('Muffin/Trash.Trash', [
+            'field' => 'deleted_at',
+            'events' => ['Model.beforeFind']
+        ]);
+
         // Associations
         $this->belongsTo('Users', ['className' => 'Security.Users', 'foreignKey' => 'student_id']);
         $this->belongsTo('StudentStatuses', ['className' => 'Student.StudentStatuses']);
@@ -172,7 +177,7 @@ class StudentsTable extends ControllerActionTable
                     'message' => 'Admission number must be of 12 characters long',
                 ],
                 'validNumber' => [
-                    'rule' => array('custom', '/^[a-z\d]+(?:\/[a-z\d]+)+$/i'),
+                    'rule' => array('custom', '/^[A-Za-z0-9\/]+$/'),
                     'message' => 'Must contain letters , numbers and "/" only '
                 ],
                 'ruleNotEmpty' => [
@@ -561,9 +566,19 @@ class StudentsTable extends ControllerActionTable
         return $entity->admission_id > 0 ? $entity->admission_id : 'Not Provided';
     }
 
+    public function onGetUpdatedFrom(Event $event, Entity $entity)
+    {
+        return $entity->updated_from == 'doe' ? 'DoE' : 'SIS';
+    }
+
     public function beforeAction(Event $event, ArrayObject $extra)
     {
         $this->field('previous_institution_student_id', ['type' => 'hidden']);
+        $this->field('exam_center_for_special_education_g5',  ['type' => 'hidden']);
+        $this->field('exam_center_for_special_education_ol',  ['type' => 'hidden']);
+        $this->field('exam_center_for_special_education_al',  ['type' => 'hidden']);
+        $this->field('deleted_at',  ['type' => 'hidden']);
+        $this->field('updated_from',  ['type' => 'hidden']);
         // $this->field('admission_id', ['type' => 'string', 'attr' => ['label' => 'Admission No']]);
         $this->field('admission_id', ['attr' => ['label' => 'Admission Number']]);
     }
@@ -574,6 +589,14 @@ class StudentsTable extends ControllerActionTable
         // if user tries to delete record that is not enrolled
         if ($entity->student_status_id != $studentStatuses['CURRENT']) {
             $event->stopPropagation();
+            return false;
+        }
+
+        //if users tries to delete some data from updated another service
+        if ($entity->updated_from == 'doe') {
+            $event->stopPropagation();
+            $message = __('This record is associated with Examination, You cannot delete this.');
+            $this->Alert->error($message, ['type' => 'string', 'reset' => true]);
             return false;
         }
     }
@@ -800,6 +823,7 @@ class StudentsTable extends ControllerActionTable
     {
         $this->field('photo_content', ['type' => 'image', 'before' => 'openemis_no']);
         $this->field('openemis_no', ['type' => 'readonly', 'order' => 1]);
+        $this->field('updated_from', ['type' => 'readonly', 'order' => 1]);
         $this->fields['student_id']['order'] = 10;
         $extra['toolbarButtons']['back']['url']['action'] = 'StudentProgrammes';
     }
@@ -833,6 +857,7 @@ class StudentsTable extends ControllerActionTable
 
     public function editAfterAction(Event $event, Entity $entity)
     {
+        $this->field('updated_from', ['type' => 'readonly', 'attr' => ['value' => $entity->updated_from]]);
         // Start PHPOE-1897
         $statuses = $this->StudentStatuses->findCodeList();
         if ($entity->student_status_id != $statuses['CURRENT']) {
