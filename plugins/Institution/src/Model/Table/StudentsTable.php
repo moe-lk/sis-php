@@ -1,19 +1,19 @@
 <?php
 namespace Institution\Model\Table;
 
+use App\Model\Table\ControllerActionTable;
 use ArrayObject;
-use Cake\ORM\Query;
-use Cake\ORM\Entity;
-use Cake\Event\Event;
-use Cake\ORM\ResultSet;
-use function Psy\debug;
 use Cake\Core\Configure;
+use Cake\Datasource\ResultSetInterface;
+use Cake\Event\Event;
+use Cake\I18n\Time;
 use Cake\Network\Request;
+use Cake\ORM\Entity;
+use Cake\ORM\Query;
+use Cake\ORM\ResultSet;
 use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
-use Cake\Datasource\ResultSetInterface;
-use App\Model\Table\ControllerActionTable;
-use Muffin\Trash\Model\Behavior\TrashBehavior;
+use function Psy\debug;
 
 
 class StudentsTable extends ControllerActionTable
@@ -29,11 +29,6 @@ class StudentsTable extends ControllerActionTable
     {
         $this->table('institution_students');
         parent::initialize($config);
-
-        $this->addBehavior('Muffin/Trash.Trash', [
-            'field' => 'deleted_at',
-            'events' => ['Model.beforeFind']
-        ]);
 
         // Associations
         $this->belongsTo('Users', ['className' => 'Security.Users', 'foreignKey' => 'student_id']);
@@ -177,7 +172,7 @@ class StudentsTable extends ControllerActionTable
                     'message' => 'Admission number must be of 12 characters long',
                 ],
                 'validNumber' => [
-                    'rule' => array('custom', '/^[A-Za-z0-9\/]+$/'),
+                    'rule' => array('custom', '/^[a-z\d]+(?:\/[a-z\d]+)+$/i'),
                     'message' => 'Must contain letters , numbers and "/" only '
                 ],
                 'ruleNotEmpty' => [
@@ -561,26 +556,16 @@ class StudentsTable extends ControllerActionTable
         return $query;
     }
 
-
-
     public function onGetAdmissionId(Event $event, Entity $entity)
     {
         return $entity->admission_id > 0 ? $entity->admission_id : 'Not Provided';
     }
 
-    public function onGetUpdatedFrom(Event $event, Entity $entity)
-    {
-        return $entity->updated_from == 'doe' ? 'DoE' : 'SIS';
-    }
-
     public function beforeAction(Event $event, ArrayObject $extra)
     {
         $this->field('previous_institution_student_id', ['type' => 'hidden']);
-        $this->field('exam_center_for_special_education_g5',  ['type' => 'hidden']);
-        $this->field('exam_center_for_special_education_ol',  ['type' => 'hidden']);
-        $this->field('exam_center_for_special_education_al',  ['type' => 'hidden']);
-        $this->field('deleted_at',  ['type' => 'hidden']);
-        $this->field('updated_from',  ['type' => 'hidden']);
+        // $this->field('admission_id', ['type' => 'string', 'attr' => ['label' => 'Admission No']]);
+        $this->field('admission_id', ['attr' => ['label' => 'Admission Number']]);
     }
 
     public function beforeDelete(Event $event, Entity $entity)
@@ -589,14 +574,6 @@ class StudentsTable extends ControllerActionTable
         // if user tries to delete record that is not enrolled
         if ($entity->student_status_id != $studentStatuses['CURRENT']) {
             $event->stopPropagation();
-            return false;
-        }
-
-         //if users tries to delete some data from updated another service
-         if ($entity->updated_from == 'doe') {
-            $event->stopPropagation();
-            $message = __('This record is associated with Examination, You cannot delete this.');
-            $this->Alert->error($message, ['type' => 'string', 'reset' => true]);
             return false;
         }
     }
@@ -769,7 +746,7 @@ class StudentsTable extends ControllerActionTable
         $session = $request->session();
         $institutionId = $session->read('Institution.Institutions.id');
 
-        $query->find('withClass', ['institution_id' => $institutionId, 'period_id' => $selectedAcademicPeriod,]);
+        $query->find('withClass', ['institution_id' => $institutionId, 'period_id' => $selectedAcademicPeriod]);
 
         $sortList = ['InstitutionClasses.name'];
         if (array_key_exists('sortWhitelist', $extra['options'])) {
@@ -823,7 +800,6 @@ class StudentsTable extends ControllerActionTable
     {
         $this->field('photo_content', ['type' => 'image', 'before' => 'openemis_no']);
         $this->field('openemis_no', ['type' => 'readonly', 'order' => 1]);
-        $this->field('updated_from', ['type' => 'readonly', 'order' => 1]);
         $this->fields['student_id']['order'] = 10;
         $extra['toolbarButtons']['back']['url']['action'] = 'StudentProgrammes';
     }
@@ -857,7 +833,6 @@ class StudentsTable extends ControllerActionTable
 
     public function editAfterAction(Event $event, Entity $entity)
     {
-        $this->field('updated_from', ['type' => 'readonly', 'attr' => ['value' => $entity->updated_from]]);
         // Start PHPOE-1897
         $statuses = $this->StudentStatuses->findCodeList();
         if ($entity->student_status_id != $statuses['CURRENT']) {
@@ -923,13 +898,43 @@ class StudentsTable extends ControllerActionTable
 
             $indexElements[] = ['name' => 'Institution.Students/controls', 'data' => [], 'options' => [], 'order' => 0];
 
+            $session = $this->Session;
+            $institutionId = $session->read('Institution.Institutions.id');
+
+            $studentCountTable = TableRegistry::get('Institution.InstitutionStudents');
+            $studentCoutnNew = $studentCountTable->find()
+                ->where([$studentCountTable->aliasField('student_status_id') => 1,
+                    $studentCountTable->aliasField('institution_id') => $institutionId,
+                    $studentCountTable->aliasField('academic_period_id')=>2])->count();
+
+            $studentAdmissionCountTable = TableRegistry::get('Institution.InstitutionStudentAdmission');
+            $studentAdmissionCount = $studentAdmissionCountTable->find()
+                ->where([$studentAdmissionCountTable->aliasField('status_id') => 124,
+                    $studentAdmissionCountTable->aliasField('institution_id') => $institutionId,
+                    $studentAdmissionCountTable->aliasField('academic_period_id')=>2])->count();
+
+            $studentCountDiff = $studentAdmissionCount - $studentCoutnNew;
+
+            $unprocessedStudents = TableRegistry::get('UnprocessedStudents', array('table' => 'unprocessed_students'));
+            $isProcessed = $unprocessedStudents
+                -> find()
+                -> select('is_processed')
+                -> where([$unprocessedStudents->aliasField('institution_id')=>$institutionId])->first()->is_processed;
+            $academicPeriodId = $studentAdmissionCountTable
+                -> find()
+                -> select('academic_period_id')
+                -> where([$studentAdmissionCountTable->aliasField('institution_id')=>$institutionId])->first()->academic_period_id;
+
             if (!$this->isAdvancedSearchEnabled()) { //function to determine whether dashboard should be shown or not
                 $indexElements[] = [
                     'name' => $indexDashboard,
                     'data' => [
                         'model' => 'students',
                         'modelCount' => $studentCount,
+                        'notYetProcessed' => $studentCountDiff,
                         'modelArray' => $InstitutionArray,
+                        'isProcessed' => $isProcessed,
+                        'academicPeriodId' => $academicPeriodId
                     ],
                     'options' => [],
                     'order' => 2,
@@ -945,6 +950,56 @@ class StudentsTable extends ControllerActionTable
             }
 
             $extra['elements'] = array_merge($extra['elements'], $indexElements);
+        }
+        $this->addEntryToUnprocessedStudentList();
+    }
+
+    public function addEntryToUnprocessedStudentList()
+    {
+        $institutionStudentQuery = clone $this->dashboardQuery;
+        $studentCount = $institutionStudentQuery->group([$this->aliasField('student_id')])->count();
+        $session = $this->Session;
+        $institutionId = $session->read('Institution.Institutions.id');
+
+        $studentCountTable = TableRegistry::get('Institution.InstitutionStudents');
+        $studentCoutnNew = $studentCountTable->find()
+            ->where([$studentCountTable->aliasField('student_status_id') => 1,
+                $studentCountTable->aliasField('institution_id') => $institutionId,
+                $studentCountTable->aliasField('academic_period_id')=>2])->count();
+
+        $studentAdmissionCountTable = TableRegistry::get('Institution.InstitutionStudentAdmission');
+        $studentAdmissionCount = $studentAdmissionCountTable->find()
+            ->where([$studentAdmissionCountTable->aliasField('status_id') => 124,
+                $studentAdmissionCountTable->aliasField('institution_id') => $institutionId,
+                $studentAdmissionCountTable->aliasField('academic_period_id')=>2])->count();
+
+        $studentCountDiff = $studentAdmissionCount - $studentCoutnNew;
+
+        $unprocessedStudents = TableRegistry::get('UnprocessedStudents', array('table' => 'unprocessed_students'));
+        $unprocessedStudentQuery = $unprocessedStudents
+            -> find()
+            -> where([$unprocessedStudents->aliasField('institution_id') => $institutionId,])
+            ->count();
+        $academicPeriodId = $studentAdmissionCountTable
+            -> find()
+            -> select('academic_period_id')
+            -> where([$studentAdmissionCountTable->aliasField('institution_id')=>$institutionId])->first()->academic_period_id;
+
+        if($academicPeriodId == 2 && $studentCountDiff > 0) {
+            if (!($studentAdmissionCount < $studentCount || $studentAdmissionCount == $studentCount)) {
+                if ($unprocessedStudentQuery == 0) {
+                    $log = $unprocessedStudents->newEntity();
+                    $log->current_unprocessed_students_count = $studentCountDiff;
+                    $log->is_processed = 0;
+                    $log->notification = 0;
+                    $log->institution_id = $institutionId;
+                    $log->created_at = Time::now();
+
+                    if ($unprocessedStudents->save($log)) {
+                        return true;
+                    }
+                }
+            }
         }
     }
 
