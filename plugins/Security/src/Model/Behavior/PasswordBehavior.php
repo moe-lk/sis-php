@@ -165,7 +165,7 @@ class PasswordBehavior extends Behavior {
         $query = $Users->query();
         try {
             $query->update()
-                ->set(['security_timeout' => new DateTime(date('Y-m-d h:i:s a', time()))])
+                ->set(['security_timeout' => (date('Y-m-d h:i:s a', time()))])
                 ->where(['id' => $entity->id])
                 ->execute();
         } catch (\Exception $e) {
