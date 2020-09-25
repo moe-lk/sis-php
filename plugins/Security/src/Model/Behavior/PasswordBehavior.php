@@ -93,6 +93,13 @@ class PasswordBehavior extends Behavior {
 			],
 		]);
 
+        $validator->add($this->targetField,[
+            'ruleCheckUserPasswordCross' => [
+                'rule' => 'checkUserPasswordCross',
+                'message' => 'You may be trying to use an older password'
+            ]
+        ]);
+
 		if ($passwordHasUppercase) {
 			$validator->add($this->targetField, [
 				'ruleCheckUppercaseExists' => [
@@ -151,6 +158,17 @@ class PasswordBehavior extends Behavior {
 		if ($this->checkOwnPassword) {
 			$entity->password = $entity->{$this->targetField};
 		}
+        $Users = TableRegistry::get("security_users");
+        date_default_timezone_set('Asia/Colombo');
+        $query = $Users->query();
+        try {
+            $query->update()
+                ->set(['security_timeout' => (date('Y-m-d h:i:s a', time()))])
+                ->where(['id' => $entity->id])
+                ->execute();
+        } catch (\Exception $e) {
+            error_log($e);
+        }
 	}
 
 	public function editAfterAction(Event $event, Entity $entity)  {
