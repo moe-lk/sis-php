@@ -2,6 +2,7 @@
 namespace App\Model\Behavior;
 
 use App\Model\Traits\MessagesTrait;
+use Cake\Auth\DefaultPasswordHasher;
 use Cake\Event\Event;
 use Cake\I18n\Date;
 use Cake\I18n\Time;
@@ -1555,6 +1556,18 @@ class ValidationBehavior extends Behavior
         $match = preg_match('#\d#', $field);
         return !empty($match);
     }
+
+    public static function checkUserPasswordCross($field, array $globalData)
+    {
+        $id = ($globalData['data']['id']);
+        $query = TableRegistry::get('security_users')
+            ->find()
+            ->select('password')
+            ->where(['id' => $id])->first()->password;
+
+        return (!(new DefaultPasswordHasher)->check($field, $query));
+    }
+
 
     public static function checkUppercaseExists($field, array $globalData)
     {
