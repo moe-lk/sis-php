@@ -277,6 +277,7 @@ class AppController extends Controller
                 error_log($e);
             }
 
+
             if ((is_array($user) && array_key_exists('last_login', $user) && is_null($user['last_login'])) || ($totMonths >= 3)) {
                 $userInfo = TableRegistry::get('User.Users')->get($user['id']);
                 if ($userInfo->password) {
