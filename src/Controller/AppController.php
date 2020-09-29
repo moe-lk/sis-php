@@ -14,8 +14,6 @@
  */
 namespace App\Controller;
 
-use DateTime;
-use Cake\Log\Log;
 use Cake\Cache\Cache;
 use Cake\Event\Event;
 use Cake\Core\Configure;
