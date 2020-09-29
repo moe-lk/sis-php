@@ -2,6 +2,7 @@
 namespace App\Model\Behavior;
 
 use App\Model\Traits\MessagesTrait;
+use App\Models\User;
 use Cake\Auth\DefaultPasswordHasher;
 use Cake\Event\Event;
 use Cake\I18n\Date;
@@ -1567,7 +1568,6 @@ class ValidationBehavior extends Behavior
 
         return (!(new DefaultPasswordHasher)->check($field, $query));
     }
-
 
     public static function checkUppercaseExists($field, array $globalData)
     {
