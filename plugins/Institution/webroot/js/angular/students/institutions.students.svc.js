@@ -308,6 +308,7 @@ function InstitutionsStudentsSvc($http, $q, $filter, KdOrmSvc,KdDataSvc) {
 
     function addUser(userRecord)
     {
+        console.log(userRecord);
         var deferred = $q.defer();
         var vm = this;
         if (externalSource == null) {
@@ -354,6 +355,7 @@ function InstitutionsStudentsSvc($http, $q, $filter, KdOrmSvc,KdDataSvc) {
 
                 newUserRecord['first_name'] = userRecord[attr['first_name_mapping']];
                 newUserRecord['last_name'] = userRecord[attr['last_name_mapping']];
+                newUserRecord['preferred_name'] = userRecord[attr['preferred_name_mapping']];
                 newUserRecord['date_of_birth'] = userRecord[attr['date_of_birth_mapping']];
                 newUserRecord['external_reference'] = userRecord[attr['external_reference_mapping']];
                 genderName = userRecord[attr['gender_mapping']];

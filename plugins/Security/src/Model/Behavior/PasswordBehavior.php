@@ -171,7 +171,7 @@ class PasswordBehavior extends Behavior {
         } catch (\Exception $e) {
             error_log($e);
         }
-    }
+	}
 
 	public function editAfterAction(Event $event, Entity $entity)  {
 		if ($this->checkOwnPassword) {
