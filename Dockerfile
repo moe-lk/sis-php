@@ -68,8 +68,8 @@ RUN	sed -i -e "s/__SALT__/somerandomsalt/" config/app.php && \
 	# Make sessionhandler configurable via environment
 	sed -i -e "s/'php',/env('SESSION_DEFAULTS', 'php'),/" config/app.php  && \
 	# Set write permissions for webserver
-	chgrp -R www-data logs tmp && \
-	chmod -R g+rw logs tmp
+	chgrp -R www-data logs tmp webroot && \
+	chmod -R g+rw logs tmp webroot
     
 RUN composer install
 RUN composer dumpautoload
