@@ -539,6 +539,7 @@ function InstitutionStudentController($location, $q, $scope, $window, $filter, U
                                 openemis_no: StudentController.internalFilterOpenemisNo,
                                 first_name: StudentController.internalFilterFirstName,
                                 last_name: StudentController.internalFilterLastName,
+                                preferred_name: StudentController.internalFilterPreferredName,
                                 identity_number: StudentController.internalFilterIdentityNumber,
                                 date_of_birth: StudentController.internalFilterDateOfBirth,
                             }
@@ -584,6 +585,7 @@ function InstitutionStudentController($location, $q, $scope, $window, $filter, U
                             conditions: {
                                 first_name: StudentController.internalFilterFirstName,
                                 last_name: StudentController.internalFilterLastName,
+                                preferred_name: StudentController.internalFilterPreferredName,
                                 identity_number: StudentController.internalFilterIdentityNumber,
                                 date_of_birth: StudentController.internalFilterDateOfBirth
                             }
@@ -644,6 +646,7 @@ function InstitutionStudentController($location, $q, $scope, $window, $filter, U
             StudentController.appendName(studentRecords[key], mapping.middle_name_mapping);
             StudentController.appendName(studentRecords[key], mapping.third_name_mapping);
             StudentController.appendName(studentRecords[key], mapping.last_name_mapping);
+            StudentController.appendName(studentRecords[key], mapping.preferred_name_mapping);
         }
 
         var lastRow = totalRowCount;
@@ -747,6 +750,7 @@ function InstitutionStudentController($location, $q, $scope, $window, $filter, U
         StudentController.existingStudent = false;
         StudentController.selectedStudentData = {};
         StudentController.selectedStudentData.first_name = '';
+        StudentController.selectedStudentData.preferred_name = '';
         StudentController.selectedStudentData.admission_id = '';
         StudentController.selectedStudentData.last_name = '';
         StudentController.selectedStudentData.date_of_birth = '';
@@ -839,6 +843,7 @@ function InstitutionStudentController($location, $q, $scope, $window, $filter, U
         StudentController.appendName(studentData, 'middle_name', true);
         StudentController.appendName(studentData, 'third_name', true);
         StudentController.appendName(studentData, 'last_name', true);
+        StudentController.appendName(studentData, 'preferred_name', true);
         StudentController.selectedStudentData = studentData;
     }
 
@@ -1206,8 +1211,12 @@ function InstitutionStudentController($location, $q, $scope, $window, $filter, U
         if (StudentController.selectedStudentData.last_name == '') {
             StudentController.postResponse.error.last_name = empty;
             remain = true;
-	}
-	 console.log(StudentController.selectedStudentData);
+        }
+        if (StudentController.selectedStudentData.preferred_name == '') {
+            StudentController.postResponse.error.preferred_name = empty;
+            remain = true;
+        }
+	    console.log(StudentController.selectedStudentData);
         if (StudentController.selectedStudentData.having_bc_yn.id == 2 && (StudentController.selectedStudentData.area_administrative_province == "" || StudentController.selectedStudentData.area_administrative_province == null)) {
             StudentController.postResponse.error.area_administrative_province = empty;
             remain = true;

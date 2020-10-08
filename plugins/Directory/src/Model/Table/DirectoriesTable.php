@@ -417,7 +417,6 @@ class DirectoriesTable extends ControllerActionTable
         $this->field('last_name', ['attr' => ['label' => 'Name with initials']]);
         $this->field('middle_name', ['visible' => false]);
         $this->field('third_name', ['visible' => false]);
-        $this->field('preferred_name', ['visible' => false]);
         $this->field('updated_from', ['visible' => false]);
         if ($this->action == 'add') {
             if ($this->controller->name != 'Students') {
