@@ -11,6 +11,8 @@ use Cake\ORM\TableRegistry;
 use Cake\Event\Event;
 use Cake\Network\Request;
 use Cake\Validation\Validator;
+use DateTime;
+use Illuminate\Support\Facades\DB;
 
 class PasswordBehavior extends Behavior {
 	private $targetField = null;
