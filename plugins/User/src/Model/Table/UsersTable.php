@@ -209,7 +209,6 @@ class UsersTable extends AppTable
         $this->field('middle_name', ['visible' => false]);
         $this->field('third_name', ['visible' => false]);
         $this->field('updated_from', ['visible' => false]);
-        $this->field('preferred_name', ['visible' => false]);
         $this->ControllerAction->field('username', ['visible' => false]);
         $this->ControllerAction->field('super_admin', ['visible' => false]);
         $this->ControllerAction->field('photo_name', ['visible' => false]);
@@ -565,8 +564,19 @@ class UsersTable extends AppTable
                 'ruleCheckIfStringGotNoNumber' => [
                     'rule' => 'checkIfStringGotNoNumber',
                 ],
+                'ruleMaxLength' => [
+                    'rule' => ['maxLength',256]
+                ]
             ])
-            ->allowEmpty('preferred_name')
+            ->allowEmpty('preferred_name' ,[
+                'ruleCheckIfStringGotNoNumber' => [
+                    'rule' => 'checkIfStringGotNoNumber'
+                ],
+                'ruleMaxLength' => [
+                    'rule' => ['maxLength',90],
+                    'message' => 'Preferred name should not exceed 90 characters'
+                ]
+            ])
             ->add('openemis_no', [
                 'ruleUnique' => [
                     'rule' => 'validateUnique',
@@ -688,6 +698,15 @@ class UsersTable extends AppTable
                     'rule' => 'checkIfStringGotNoNumber',
                 ],
             ])
+            ->add('preferred_name' ,[
+                'ruleCheckIfStringGotNoNumber' => [
+                    'rule' => 'checkIfStringGotNoNumber'
+                ],
+                'ruleMaxLength' => [
+                    'rule' => ['maxLength',90],
+                    'message' => 'Preferred name should not exceed 90 characters'
+                ]
+            ])
             ->add('openemis_no', [
                 'ruleUnique' => [
                     'rule' => 'validateUnique',
@@ -717,6 +736,8 @@ class UsersTable extends AppTable
         $thisModel->setValidationCode('first_name.ruleCheckIfStringGotNoNumber', 'User.Users');
         $thisModel->setValidationCode('first_name.ruleNotBlank', 'User.Users');
         $thisModel->setValidationCode('last_name.ruleCheckIfStringGotNoNumber', 'User.Users');
+        $thisModel->setValidationCode('preferred_name.ruleCheckIfStringGotNoNumber', 'User.Users');
+        $thisModel->setValidationCode('preferred_name.ruleMaxLength', 'User.Users');
         $thisModel->setValidationCode('openemis_no.ruleUnique', 'User.Users');
         $thisModel->setValidationCode('username.ruleMinLength', 'User.Users');
         $thisModel->setValidationCode('username.ruleUnique', 'User.Users');

@@ -1,19 +1,19 @@
 <?php
 namespace Institution\Model\Table;
 
+use App\Model\Table\ControllerActionTable;
 use ArrayObject;
-use Cake\ORM\Query;
-use Cake\ORM\Entity;
-use Cake\Event\Event;
-use Cake\ORM\ResultSet;
-use function Psy\debug;
 use Cake\Core\Configure;
+use Cake\Datasource\ResultSetInterface;
+use Cake\Event\Event;
+use Cake\I18n\Time;
 use Cake\Network\Request;
+use Cake\ORM\Entity;
+use Cake\ORM\Query;
+use Cake\ORM\ResultSet;
 use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
-use Cake\Datasource\ResultSetInterface;
-use App\Model\Table\ControllerActionTable;
-use Muffin\Trash\Model\Behavior\TrashBehavior;
+use function Psy\debug;
 
 
 class StudentsTable extends ControllerActionTable
@@ -561,8 +561,6 @@ class StudentsTable extends ControllerActionTable
         return $query;
     }
 
-
-
     public function onGetAdmissionId(Event $event, Entity $entity)
     {
         return $entity->admission_id > 0 ? $entity->admission_id : 'Not Provided';
@@ -581,6 +579,8 @@ class StudentsTable extends ControllerActionTable
         $this->field('exam_center_for_special_education_al',  ['type' => 'hidden']);
         $this->field('deleted_at',  ['type' => 'hidden']);
         $this->field('updated_from',  ['type' => 'hidden']);
+        // $this->field('admission_id', ['type' => 'string', 'attr' => ['label' => 'Admission No']]);
+        $this->field('admission_id', ['attr' => ['label' => 'Admission Number']]);
     }
 
     public function beforeDelete(Event $event, Entity $entity)
@@ -592,8 +592,8 @@ class StudentsTable extends ControllerActionTable
             return false;
         }
 
-         //if users tries to delete some data from updated another service
-         if ($entity->updated_from == 'doe') {
+        //if users tries to delete some data from updated another service
+        if ($entity->updated_from == 'doe') {
             $event->stopPropagation();
             $message = __('This record is associated with Examination, You cannot delete this.');
             $this->Alert->error($message, ['type' => 'string', 'reset' => true]);
@@ -769,7 +769,7 @@ class StudentsTable extends ControllerActionTable
         $session = $request->session();
         $institutionId = $session->read('Institution.Institutions.id');
 
-        $query->find('withClass', ['institution_id' => $institutionId, 'period_id' => $selectedAcademicPeriod,]);
+        $query->find('withClass', ['institution_id' => $institutionId, 'period_id' => $selectedAcademicPeriod]);
 
         $sortList = ['InstitutionClasses.name'];
         if (array_key_exists('sortWhitelist', $extra['options'])) {
@@ -929,7 +929,6 @@ class StudentsTable extends ControllerActionTable
                     'data' => [
                         'model' => 'students',
                         'modelCount' => $studentCount,
-                        'modelArray' => $InstitutionArray,
                     ],
                     'options' => [],
                     'order' => 2,
