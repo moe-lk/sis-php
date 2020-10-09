@@ -616,6 +616,11 @@ class StudentsTable extends ControllerActionTable
         $this->fields['class']['sort'] = ['field' => 'InstitutionClasses.name'];
         $this->fields['student_id']['sort'] = ['field' => 'Users.first_name'];
 
+        $this->field('taking_g5_exam',  ['visible' => false]);
+        $this->field('income_at_g5',  ['visible' => false]);
+        $this->field('taking_ol_exam',  ['visible' => false]);
+        $this->field('taking_al_exam',  ['visible' => false]);
+
         $this->controller->set('ngController', 'AdvancedSearchCtrl');
 
         $StudentStatusesTable = $this->StudentStatuses;
