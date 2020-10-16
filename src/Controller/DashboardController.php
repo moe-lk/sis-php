@@ -8,6 +8,8 @@ use Cake\Utility\Inflector;
 use Cake\ORM\Table;
 use App\Controller\AppController;
 use Cake\Core\Configure;
+use DateTime;
+use function Complex\sec;
 
 class DashboardController extends AppController
 {
@@ -38,24 +40,6 @@ class DashboardController extends AppController
     public function isActionIgnored(Event $event, $action)
     {
         return true;
-    }
-
-    public function beforeFilter(Event $event)
-    {
-        parent::beforeFilter($event);
-        $user = $this->Auth->user();
-        if (is_array($user) && array_key_exists('last_login', $user) && is_null($user['last_login']) || (is_null($user['password_reset_date']) )) {
-            $userInfo = TableRegistry::get('User.Users')->get($user['id']);
-            if ($userInfo->password) {
-                $this->Alert->warning('security.login.changePassword');
-                $lastLogin = $userInfo->last_login;
-                $this->request->session()->write('Auth.User.last_login', $lastLogin);
-                // $this->redirect(['plugin' => 'Profile', 'controller' => 'Profiles', 'action' => 'Accounts', 'edit', $this->ControllerAction->paramsEncode(['id' => $user['id']])]);
-            }
-
-        }
-        $header = __('Home Page');
-        $this->set('contentHeader', $header);
     }
 
     public function onInitialize(Event $event, Table $model, ArrayObject $extra)
