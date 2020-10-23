@@ -22,6 +22,11 @@ class GuardiansTable extends ControllerActionTable
         $this->table('student_guardians');
         parent::initialize($config);
 
+        $this->addBehavior('Muffin/Trash.Trash', [
+            'field' => 'deleted_at',
+            'events' => ['Model.beforeFind']
+        ]);
+
         $this->belongsTo('StudentUser', ['className' => 'Institution.StudentUser', 'foreignKey' => 'student_id']);
         $this->belongsTo('Users', ['className' => 'Security.Users', 'foreignKey' => 'guardian_id']);
         $this->belongsTo('GuardianRelations', ['className' => 'Student.GuardianRelations', 'foreignKey' => 'guardian_relation_id']);
