@@ -46,7 +46,7 @@ function InstitutionClassStudentsController($scope, $q, $window, $http, UtilsSvc
     //     {headerName: 'Student Status', field: 'student_status_name'}
     // ];
     Controller.colDef = [
-        {headerName: 'User ID', field: 'openemis_no'},
+        {headerName: 'Student ID', field: 'openemis_no'},
         {headerName: 'Name', field: 'name'}
     ];
     Controller.assignedStudents = {};
