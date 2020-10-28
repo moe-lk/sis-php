@@ -12,6 +12,6 @@ class DropAllWrongTransferTransitions extends AbstractMigration
      */
     public function up()
     {
-        $this->execute("DELETE FROM workflow_transitions where workflow_model_id = 17;");
+        $this->execute("DELETE FROM workflow_transitions where workflow_model_id = 18;");
     }
 }
