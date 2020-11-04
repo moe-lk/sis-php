@@ -104,7 +104,7 @@ class StudentPromotionTable extends AppTable
         $nextGrades = $selectedGrade;
         $this->studentStatus = $this->request->query['student_status'];
         if($this->studentStatus == 5){
-            $nextGrades = $this->EducationGrades->getNextAvailableEducationGrades($selectedGrade);
+            $nextGrades = $this->EducationGrades->getNextAvailableEducationGrades($selectedGrade,true);
             $nextGrades = key($nextGrades);
         }
 
@@ -341,7 +341,7 @@ class StudentPromotionTable extends AppTable
             $gradeName = (!empty($gradeData))? $gradeData->programme_grade_name: $this->getMessage($this->aliasField('noAvailableGrades'));
 
             // to get the notEnrolled message for the reconfirm page
-            $nextGrades = $this->EducationGrades->getNextAvailableEducationGrades($currentData['grade_to_promote']);
+            $nextGrades = $this->EducationGrades->getNextAvailableEducationGrades($currentData['grade_to_promote'],true);
 
             // list of grades available in the institution
             $institutionId = $this->institutionId;
@@ -527,7 +527,7 @@ class StudentPromotionTable extends AppTable
             $options = [];
             $educationGradeId = $request->query('grade_to_promote');
             if (!empty($educationGradeId) && $educationGradeId != -1) {
-                $nextGrades = $this->EducationGrades->getNextAvailableEducationGrades($educationGradeId);
+                $nextGrades = $this->EducationGrades->getNextAvailableEducationGrades($educationGradeId,true);
                 $isLastGrade = $this->EducationGrades->isLastGradeInEducationProgrammes($educationGradeId);
 
                 // If there is no more next grade in the same education programme then the student may be graduated
@@ -595,7 +595,7 @@ class StudentPromotionTable extends AppTable
                 } else {
                     // list of grades available to promote to
                     // 'false' means only displayed the next level within the same grade level.
-                    $listOfGrades = $this->EducationGrades->getNextAvailableEducationGrades($educationGradeId, false);
+                    $listOfGrades = $this->EducationGrades->getNextAvailableEducationGrades($educationGradeId, true);
 
                     // if is not last grade, listOfGrades show the next grade of the current grade only
                     $listOfGrades = [key($listOfGrades) => current($listOfGrades)];
