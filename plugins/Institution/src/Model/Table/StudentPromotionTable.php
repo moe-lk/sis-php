@@ -102,22 +102,21 @@ class StudentPromotionTable extends AppTable
             ->where([$institutionClassTable->aliasField('institution_id') => $this->institutionId])
             ->toArray();
         $selectedGrade = $this->request->query['grade_to_promote'];
-        $nextGrades = $selectedGrade;
+        $nextGrades = [];
         $this->studentStatus = $this->request->query['student_status'];
-        if ($this->studentStatus == 5) {
+        if ($this->studentStatus == 2) {
             $nextGrades = $this->EducationGrades->getNextAvailableEducationGrades($selectedGrade, true);
             $nextGrades = key($nextGrades);
         }
 
         $this->institutionNextClasses = [];
-        $this->nextGrade = $this->request['StudentPromotion']['data']['education_grade_id'];
+        $this->nextGrade = $this->request['data']['StudentPromotion']['education_grade_id'];
         if (!empty($nextGrades)) {
-            $this->nextGrade = $this->EducationGrades->get($nextGrades);
             $this->institutionNextClasses = $institutionClassTable->find('list')
                 ->leftJoinWith('ClassGrades')
                 ->where([
                     $institutionClassTable->aliasField('institution_id') => $this->institutionId,
-                    'ClassGrades.education_grade_id' => $nextGrades
+                    'ClassGrades.education_grade_id' => $this->nextGrade
                 ])
                 ->toArray();
         }
@@ -617,7 +616,7 @@ class StudentPromotionTable extends AppTable
                     // list of next first grades from all next programme available to promote to
                     // 'true' means get all the grades of the next programmes plus the current programme grades
                     // 'true' means get first grade only from all available next programme
-                    $listOfGrades = $this->EducationGrades->getNextAvailableEducationGrades($educationGradeId, true, true);
+                    $listOfGrades = $this->EducationGrades->getNextAvailableEducationGrades($educationGradeId, true);
                 } else {
                     // list of grades available to promote to
                     // 'false' means only displayed the next level within the same grade level.
