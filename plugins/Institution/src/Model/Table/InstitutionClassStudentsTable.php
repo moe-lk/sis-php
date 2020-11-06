@@ -33,6 +33,11 @@ class InstitutionClassStudentsTable extends AppTable
     {
         parent::initialize($config);
 
+        $this->addBehavior('Muffin/Trash.Trash', [
+            'field' => 'deleted_at',
+            'events' => ['Model.beforeFind']
+        ]);
+
         $this->belongsTo('Users', ['className' => 'User.Users', 'foreignKey' => 'student_id', 'joinType' => 'INNER']);
         $this->belongsTo('InstitutionClasses', ['className' => 'Institution.InstitutionClasses', 'joinType' => 'INNER']);
         $this->belongsTo('EducationGrades', ['className' => 'Education.EducationGrades', 'joinType' => 'INNER']);

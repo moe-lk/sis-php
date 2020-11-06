@@ -1,20 +1,21 @@
 <?php
 namespace User\Model\Table;
 
-use App\Model\Table\AppTable;
-use App\Model\Traits\OptionsTrait;
-use App\Model\Traits\UserTrait;
 use ArrayObject;
-use Cake\Datasource\ConnectionManager;
-use Cake\Event\Event;
 use Cake\I18n\Time;
+use Cake\ORM\Query;
+use Cake\ORM\Entity;
+use Cake\Event\Event;
 use Cake\Network\Request;
 use Cake\Network\Session;
-use Cake\ORM\Entity;
-use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Inflector;
+use Lsf\UniqueUid\UniqueUid;
+use App\Model\Table\AppTable;
 use Cake\Validation\Validator;
+use App\Model\Traits\UserTrait;
+use App\Model\Traits\OptionsTrait;
+use Cake\Datasource\ConnectionManager;
 
 class UsersTable extends AppTable
 {
@@ -47,6 +48,8 @@ class UsersTable extends AppTable
     {
         $this->table('security_users');
         parent::initialize($config);
+
+       
 
         self::handleAssociations($this);
 
@@ -121,6 +124,7 @@ class UsersTable extends AppTable
     public function createAuthorisedUser(Event $event, $userName, array $userInfo)
     {
         $openemisNo = $this->getUniqueOpenemisId();
+        $userName = str_replace('-','',$userName);
 
         $GenderTable = TableRegistry::get('User.Genders');
         $genderList = $GenderTable->find('list')->toArray();
@@ -204,7 +208,7 @@ class UsersTable extends AppTable
         $this->field('username', ['visible' => false]);
         $this->field('middle_name', ['visible' => false]);
         $this->field('third_name', ['visible' => false]);
-        $this->field('preferred_name', ['visible' => false]);
+        $this->field('updated_from', ['visible' => false]);
         $this->ControllerAction->field('username', ['visible' => false]);
         $this->ControllerAction->field('super_admin', ['visible' => false]);
         $this->ControllerAction->field('photo_name', ['visible' => false]);
@@ -502,6 +506,17 @@ class UsersTable extends AppTable
         $this->ControllerAction->setFieldOrder($fieldOrder);
     }
 
+
+    public function beforeDelete(Event $event, Entity $entity){
+         //if users tries to delete some data from updated another service
+         if ($entity->updated_from != 'sis') {
+            $event->stopPropagation();
+            $message = __('This record is associated with Examination, You cannot delete this.');
+            $this->Alert->error($message, ['type' => 'string', 'reset' => true]);
+            return false;
+        }
+    }
+
     public function editBeforeAction(Event $event)
     {
         $this->field('preferred_name', ['visible' => true, 'attr' => ['label' => 'Name with Initial']]);
@@ -514,6 +529,7 @@ class UsersTable extends AppTable
         $this->fields['openemis_no']['attr']['readonly'] = true;
         $this->fields['photo_content']['type'] = 'image';
         $this->fields['super_admin']['type'] = 'hidden';
+        $this->fields['updated_from']['type'] = 'hidden';
         $this->fields['super_admin']['value'] = 0;
         $this->fields['gender_id']['type'] = 'select';
         $this->fields['gender_id']['options'] = $this->Genders->find('list', ['keyField' => 'id', 'valueField' => 'name'])->toArray();
@@ -525,35 +541,8 @@ class UsersTable extends AppTable
 
     public function getUniqueOpenemisId($options = [])
     {
-        $prefix = '';
-
-        $prefix = TableRegistry::get('Configuration.ConfigItems')->value('openemis_id_prefix');
-        $prefix = explode(",", $prefix);
-        $prefix = ($prefix[1] > 0) ? $prefix[0] : '';
-
-        $latest = $this->find()
-            ->order($this->aliasField('id') . ' DESC')
-            ->first();
-
-        if (is_array($latest)) {
-            $latestOpenemisNo = $latest['SecurityUser']['openemis_no'];
-        } else {
-            $latestOpenemisNo = $latest->openemis_no;
-        }
-        if (empty($prefix)) {
-            $latestDbStamp = $latestOpenemisNo;
-        } else {
-            $latestDbStamp = substr($latestOpenemisNo, strlen($prefix));
-        }
-
-        $currentStamp = time();
-        if ($latestDbStamp >= $currentStamp) {
-            $newStamp = $latestDbStamp + 1;
-        } else {
-            $newStamp = $currentStamp;
-        }
-
-        return $prefix . $newStamp;
+       $this->uniqueId = new UniqueUid();
+       return $this->uniqueId->getUniqueAlphanumeric();
     }
 
     public function validationDefault(Validator $validator)
@@ -575,8 +564,19 @@ class UsersTable extends AppTable
                 'ruleCheckIfStringGotNoNumber' => [
                     'rule' => 'checkIfStringGotNoNumber',
                 ],
+                'ruleMaxLength' => [
+                    'rule' => ['maxLength',256]
+                ]
             ])
-            ->allowEmpty('preferred_name')
+            ->allowEmpty('preferred_name' ,[
+                'ruleCheckIfStringGotNoNumber' => [
+                    'rule' => 'checkIfStringGotNoNumber'
+                ],
+                'ruleMaxLength' => [
+                    'rule' => ['maxLength',90],
+                    'message' => 'Preferred name should not exceed 90 characters'
+                ]
+            ])
             ->add('openemis_no', [
                 'ruleUnique' => [
                     'rule' => 'validateUnique',
@@ -698,6 +698,15 @@ class UsersTable extends AppTable
                     'rule' => 'checkIfStringGotNoNumber',
                 ],
             ])
+            ->add('preferred_name' ,[
+                'ruleCheckIfStringGotNoNumber' => [
+                    'rule' => 'checkIfStringGotNoNumber'
+                ],
+                'ruleMaxLength' => [
+                    'rule' => ['maxLength',90],
+                    'message' => 'Preferred name should not exceed 90 characters'
+                ]
+            ])
             ->add('openemis_no', [
                 'ruleUnique' => [
                     'rule' => 'validateUnique',
@@ -727,6 +736,8 @@ class UsersTable extends AppTable
         $thisModel->setValidationCode('first_name.ruleCheckIfStringGotNoNumber', 'User.Users');
         $thisModel->setValidationCode('first_name.ruleNotBlank', 'User.Users');
         $thisModel->setValidationCode('last_name.ruleCheckIfStringGotNoNumber', 'User.Users');
+        $thisModel->setValidationCode('preferred_name.ruleCheckIfStringGotNoNumber', 'User.Users');
+        $thisModel->setValidationCode('preferred_name.ruleMaxLength', 'User.Users');
         $thisModel->setValidationCode('openemis_no.ruleUnique', 'User.Users');
         $thisModel->setValidationCode('username.ruleMinLength', 'User.Users');
         $thisModel->setValidationCode('username.ruleUnique', 'User.Users');
@@ -920,7 +931,7 @@ class UsersTable extends AppTable
                 'is_guardian',
             ])
             ->where([
-                'status' => 1,
+                'status' => 1
             ]);
 
         return $query;

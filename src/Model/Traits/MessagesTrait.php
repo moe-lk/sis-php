@@ -2210,7 +2210,7 @@ trait MessagesTrait
         $defaultMessage = (array_key_exists('defaultMessage', $options))? $options['defaultMessage']: true;
 
         $Labels = TableRegistry::get('Labels');
-        $message = Cache::read($code, $Labels->getDefaultConfig());
+        $message = Cache::read($code);
 
         if ($message == false) {
             $message = $this->messages;
