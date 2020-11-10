@@ -290,7 +290,6 @@ class IndividualPromotionTable extends ControllerActionTable
         switch ($action) {
             case 'reconfirm':
                 $educationGradeId = $attr['entity']->education_grade_id;
-
                 $attr['type'] = 'readonly';
                 $attr['attr']['value'] = $this->EducationGrades->get($educationGradeId)->programme_grade_name;
                 break;
@@ -371,7 +370,6 @@ class IndividualPromotionTable extends ControllerActionTable
                     }
                 }
 
-                $attr['type'] = 'select';
                 $attr['options'] = !empty($options)? $options: [];
                 $attr['onChangeReload'] = true;
                 break;
