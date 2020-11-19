@@ -899,8 +899,13 @@ class StudentPromotionTable extends AppTable
             $statusToUpdate = $data[$this->alias()]['student_status_id'];
         }
         if ($statusToUpdate == $studentStatuses['REPEATED']) {
-            $nextEducationGradeId = $currentGrade;
-            $this->isParallel = false;
+            if($data[$this->alias()]['from_academic_period_id'] == $data[$this->alias()]['next_academic_period_id']){
+                $nextEducationGradeId = $data[$this->alias()]['grade_to_promote'];
+                $this->isParallel = false;
+            }else{
+                $nextEducationGradeId = $currentGrade;
+            }
+            
         }
         if ($statusToUpdate == $studentStatuses['PROMOTED']) {
             $successMessage = $this->aliasField('success');
