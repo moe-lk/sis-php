@@ -159,10 +159,12 @@ class EducationGradesTable extends ControllerActionTable
             // Default is to get the list of grades with the next programme grades
             if ($getNextProgrammeGrades) {
                 if ($firstGradeOnly) {
-                    $nextProgrammesGradesOptions = TableRegistry::get('Education.EducationProgrammesNextProgrammes')->getNextProgrammeFirstGradeList($programmeId);
-                } else {
                     $nextProgrammesGradesOptions = TableRegistry::get('Education.EducationProgrammesNextProgrammes')->getNextGradeList($programmeId);
-                }
+
+                //     $nextProgrammesGradesOptions = TableRegistry::get('Education.EducationProgrammesNextProgrammes')->getNextProgrammeFirstGradeList($programmeId);
+                // } else {
+                //     $nextProgrammesGradesOptions = TableRegistry::get('Education.EducationProgrammesNextProgrammes')->getNextGradeList($programmeId);
+                // }
                 $results = $gradeOptions + $nextProgrammesGradesOptions;
             } else {
                 $results = $gradeOptions;
