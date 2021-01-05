@@ -336,7 +336,13 @@ return [
      * To use database sessions, load the SQL file located at config/Schema/sessions.sql
      */
     'Session' => [
-        'defaults' => 'php',
+        'defaults' => 'cake',
+        'timeout' => 30,
+        'cookieTimeout' => 30,
+        'ini' => array(
+            'session.cookie_secure' => true,
+            'session.cookie_httponly' => true
+        )
 //         'defaults' => 'cache',
     ],
     'debug' => true

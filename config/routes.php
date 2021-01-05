@@ -67,8 +67,6 @@ Router::scope('/', function (RouteBuilder $routes) {
      */
     $routes->connect('/pages/*', ['controller' => 'Pages', 'action' => 'display']);
 
-
-
     /**
      * Connect catchall routes for all controllers.
      *
@@ -203,16 +201,16 @@ Router::scope('/restful', [], function ($routes) {
 });
 
 // For restful session
-Router::scope('/session', ['plugin' => 'Restful'], function ($routes) {
-    $routes->scope('/', ['controller' => 'Session'], function ($routes) {
-        $routes->extensions(['json']);
+// Router::scope('/session', ['plugin' => 'Restful'], function ($routes) {
+//     $routes->scope('/', ['controller' => 'Session'], function ($routes) {
+//         $routes->extensions(['json']);
 
-        $routes->connect('/:key', ['action' => 'check', '_method' => 'CHECK'], ['pass' => ['key']]);
-        $routes->connect('/:key', ['action' => 'read', '_method' => 'GET'], ['pass' => ['key']]);
-        $routes->connect('/', ['action' => 'write', '_method' => 'POST']);
-        $routes->connect('/:key', ['action' => 'delete', '_method' => 'DELETE'], ['pass' => ['key']]);
-    });
-});
+//         $routes->connect('/:key', ['action' => 'check', '_method' => 'CHECK'], ['pass' => ['key']]);
+//         $routes->connect('/:key', ['action' => 'read', '_method' => 'GET'], ['pass' => ['key']]);
+//         $routes->connect('/', ['action' => 'write', '_method' => 'POST']);
+//         $routes->connect('/:key', ['action' => 'delete', '_method' => 'DELETE'], ['pass' => ['key']]);
+//     });
+// });
 
 /**
  * Load all plugin routes.  See the Plugin documentation on
