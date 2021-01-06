@@ -33,12 +33,12 @@
 	<table class="table table-lined">
 		<tbody class="table_body">
 			<tr ng-clock>
-				<td>
+				<!-- <td>
 					<div class="list-text">
 						<h4>Introduction</h4>
 					</div>
 					<iframe width="256" src="https://www.youtube.com/embed/2B2zrrMWU4g?rel=0&showinfo=0" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-				</td>
+				</td> -->
 				<td>
 					<div class="list-text">
 						<h4>Introduction to Promotion</h4>
