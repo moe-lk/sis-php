@@ -612,7 +612,7 @@ class StudentPromotionTable extends AppTable
                 $this->isParallel = false;
 
                 $isLastGrade = $this->EducationGrades->isLastGradeInEducationProgrammes($educationGradeId);
-                if ($isLastGrade) {
+                if ($isLastGrade || in_array($educationGradeId,[5,10,12,29,34])) {
                     // list of next first grades from all next programme available to promote to
                     // 'true' means get all the grades of the next programmes plus the current programme grades
                     // 'true' means get first grade only from all available next programme
