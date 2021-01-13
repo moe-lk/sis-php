@@ -348,16 +348,15 @@ class IndividualPromotionTable extends ControllerActionTable
                             ->find('list', [
                                 'keyField' => 'id',
                                 'valueField' => 'programme_grade_name'
-                            ])
-                            ->where([$this->EducationGrades->aliasField('education_programme_id') => $programmeId])
-                            ;
+                            ]);
                         if ($toAcademicPeriodId == $fromAcademicPeriodId) {
                             // if same year is chosen, only show lower grades
                             $query->where([$this->EducationGrades->aliasField('order').' > ' . $gradeOrder])
                             ->where([$this->EducationGrades->aliasField('education_programme_id IN') => [$programmeId , (int)$programmeId - 1]]);
                         } else {
                             // if other year is chosen, show current and lower grades
-                            $query->where([$this->EducationGrades->aliasField('order').' <= ' => $gradeOrder]);
+                            $query->where([$this->EducationGrades->aliasField('order').' <= ' => $gradeOrder])
+                            ->where([$this->EducationGrades->aliasField('education_programme_id') => $programmeId]);
                         }
 
                         $listOfGrades = $query->toArray();
