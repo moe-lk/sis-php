@@ -12,16 +12,22 @@ return [
             'className' => 'Cake\Database\Connection',
             'driver' => 'Cake\Database\Driver\Mysql',
             'persistent' => false,
-            'host' => env('DB_HOST','sis-mysql'),
-            'username' => env('DB_USER','root'),
-            'password' => env('DB_PASS','secret'),
-            'database' => env('DB_NAME','openemis'),
-            'quoteIdentifiers' => true,
+            'host' => 'localhost',
+            /**
+             * CakePHP will use the default DB port based on the driver selected
+             * MySQL on MAMP uses port 8889, MAMP users will want to uncomment
+             * the following line and set the port accordingly
+             */
+            //'port' => 'non_standard_port_number',
+            'username' => 'root',
+            'password' => '',
+            'database' => 'sisdb',
+            'encoding' => 'utf8mb4',
             'timezone' => 'UTC',
             'flags' => [],
             'cacheMetadata' => true,
             'log' => false,
-            // 'unix_socket' => '/home/wso2/lampstack-7.1.27-1/mysql/tmp/mysql.sock',
+
             /**
              * Set identifier quoting to true if you are using reserved words or
              * special characters in your table or column names. Enabling this
@@ -30,6 +36,7 @@ return [
              * decreases performance because each query needs to be traversed and
              * manipulated before being executed.
              */
+            'quoteIdentifiers' => false,
 
             /**
              * During development, if using MySQL < 5.6, uncommenting the
@@ -38,8 +45,7 @@ return [
              * mysql configuration directive 'innodb_stats_on_metadata = 0'
              * which is the recommended value in production environments
              */
-            'init' => ['SET GLOBAL sql_mode="NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION";
-            SET SESSION sql_mode="NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION";'],
+            //'init' => ['SET GLOBAL innodb_stats_on_metadata = 0'],
 
             'url' => env('DATABASE_URL', null),
         ],
@@ -51,26 +57,26 @@ return [
             'className' => 'Cake\Database\Connection',
             'driver' => 'Cake\Database\Driver\Mysql',
             'persistent' => false,
-            'host' => 'myapp-mysql',
+            'host' => 'localhost',
             //'port' => 'non_standard_port_number',
-            'username' => env('MYSQL_USERNAME', 'myapp'),
-            'password' => env('MYSQL_PASSWORD', 'myapp'),
-            'database' => 'myapp',
+            'username' => 'my_app',
+            'password' => 'secret',
+            'database' => 'test_myapp',
             'encoding' => 'utf8mb4',
             'timezone' => 'UTC',
             'cacheMetadata' => true,
-            'quoteIdentifiers' => true,
+            'quoteIdentifiers' => false,
             'log' => false,
             //'init' => ['SET GLOBAL innodb_stats_on_metadata = 0'],
             'url' => env('DATABASE_TEST_URL', null),
         ],
     ],
     'Error' => [
-        'errorLevel' => E_ERROR & E_STRICT,
+        'errorLevel' => E_ALL & ~E_DEPRECATED,
         'exceptionRenderer' => 'Cake\Error\ExceptionRenderer',
         'skipLog' => [],
-        'log' => false,
+        'log' => true,
         'trace' => true,
     ],
-    'debug' => true
+    'debug' =>true,
 ];
