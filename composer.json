@@ -32,7 +32,8 @@
         "psr-4": {
             "App\\": "src",
             "ControllerAction\\": "./plugins/ControllerAction/src",
-            "OAuth\\": "./plugins/OAuth/src"
+            "OAuth\\": "./plugins/OAuth/src",
+            "Examination\\": "./plugins/Examination/src"
         }
     },
     "autoload-dev": {
@@ -40,13 +41,17 @@
             "App\\Test\\": "tests",
             "Cake\\Test\\": "./vendor/cakephp/cakephp/tests",
             "ControllerAction\\Test\\": "./plugins/ControllerAction/tests",
-            "OAuth\\Test\\": "./plugins/OAuth/tests"
+            "OAuth\\Test\\": "./plugins/OAuth/tests",
+            "Examination\\Test\\": "./plugins/Examination/tests"
         }
     },
     "scripts": {
         "post-install-cmd": "App\\Console\\Installer::postInstall",
         "post-create-project-cmd": "App\\Console\\Installer::postInstall",
-        "post-autoload-dump": ["Cake\\Composer\\Installer\\PluginInstaller::postAutoloadDump" , "php -r \"copy('cakephp-plugins.php', 'vendor/cakephp-plugins.php');\""],
+        "post-autoload-dump": [
+            "Cake\\Composer\\Installer\\PluginInstaller::postAutoloadDump",
+            "php -r \"copy('cakephp-plugins.php', 'vendor/cakephp-plugins.php');\""
+        ],
         "check": [
             "@test",
             "@cs-check"
@@ -54,7 +59,6 @@
         "cs-check": "phpcs --colors -p --standard=vendor/cakephp/cakephp-codesniffer/CakePHP ./src ./tests",
         "cs-fix": "phpcbf --colors --standard=vendor/cakephp/cakephp-codesniffer/CakePHP ./src ./tests",
         "test": "phpunit --colors=always"
-
     },
     "minimum-stability": "dev",
     "prefer-stable": true

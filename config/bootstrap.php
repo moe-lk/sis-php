@@ -335,3 +335,5 @@ if (Configure::read('debug')) {
 }
 
 Plugin::load('OAuth', ['routes' => true]);
+
+Plugin::load('Examination', ['bootstrap' => false, 'routes' => true]);

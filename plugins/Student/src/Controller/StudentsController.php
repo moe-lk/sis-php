@@ -47,7 +47,9 @@ class StudentsController extends AppController
         'Immunizations',
         'Medications',
         'Tests',
+        'InsuranceClaims' //Suraksha
     ];
+
 
     public function initialize()
     {
@@ -172,6 +174,10 @@ class StudentsController extends AppController
     public function HealthTests()
     {
         $this->ControllerAction->process(['alias' => __FUNCTION__, 'className' => 'Health.Tests']);
+    }
+    public function HealthInsuranceClaims() //Suraksha
+    {
+        $this->ControllerAction->process(['alias' => __FUNCTION__, 'className' => 'Health.InsuranceClaims']);
     }
     // End Health
     // End
@@ -317,7 +323,8 @@ class StudentsController extends AppController
             $alias = $model->alias;
             $this->Navigation->addCrumb($model->getHeader($alias));
             $header = $header . ' - ' . $model->getHeader($alias);
-
+            // $header = "NAJEEB FASIL MOHAMAD ZAAYIDH NFM ZAAYIDH - Healths";
+            // dd($header);
             // $params = $this->request->params;
             $this->set('contentHeader', $header);
 
