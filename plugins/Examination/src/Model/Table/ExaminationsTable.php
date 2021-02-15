@@ -8,8 +8,9 @@ class ExaminationsTable extends Table
 {
     public function initialize(array $config)
     {
-        $this->setTable('examinations');
+        // $this->setTable('examinations');
 
         $this->table('examinations');
+        parent::initialize($config);
     }
 }

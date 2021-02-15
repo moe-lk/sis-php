@@ -13,7 +13,7 @@ class ExamCenterTable extends Table
         parent::initialize($config);
         $this->belongsTo('Users', ['className' => 'User.Users', 'foreignKey' => 'security_user_id']);
 
-        $this->addBehavior();
+        // $this->addBehavior();
     }
-
+    
 }

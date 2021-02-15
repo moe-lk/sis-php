@@ -8,8 +8,6 @@ class ExaminationCentresExaminationsStudentsTable extends Table
 {
     public function initialize(array $config)
     {
-        $this->setTable('examination_centres_examinations_students');
-
         $this->table('examination_centres_examinations_students');
     }
 }
