@@ -214,7 +214,7 @@ $this->Html->script('ControllerAction.../plugins/datepicker/js/bootstrap-datepic
                     </div>
                 </div>
                 <div class="input select required error">
-                    <label><?=__('Gender')?></label>
+                    <label><?=__('Sex')?></label>
                     <div class="input-select-wrapper">
                         <select name="Students[gender_id]" id="students-gender_id"
                             ng-options="option.id as option.name for option in InstitutionStudentController.genderOptions"
