@@ -341,3 +341,7 @@ Plugin::load('Examination', ['bootstrap' => false, 'routes' => true]);
 Plugin::load('Migrations');
 
 Plugin::load('Migrations');
+
+Plugin::load('Migrations');
+
+Plugin::load('Migrations');
