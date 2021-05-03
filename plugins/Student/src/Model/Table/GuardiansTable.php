@@ -22,6 +22,11 @@ class GuardiansTable extends ControllerActionTable
         $this->table('student_guardians');
         parent::initialize($config);
 
+        $this->addBehavior('Muffin/Trash.Trash', [
+            'field' => 'deleted_at',
+            'events' => ['Model.beforeFind']
+        ]);
+
         $this->belongsTo('StudentUser', ['className' => 'Institution.StudentUser', 'foreignKey' => 'student_id']);
         $this->belongsTo('Users', ['className' => 'Security.Users', 'foreignKey' => 'guardian_id']);
         $this->belongsTo('GuardianRelations', ['className' => 'Student.GuardianRelations', 'foreignKey' => 'guardian_relation_id']);
@@ -124,6 +129,7 @@ class GuardiansTable extends ControllerActionTable
             $studentId = $this->Session->read('Student.Students.id');
         }
         $this->field('student_id', ['type' => 'hidden', 'value' => $studentId]);
+        $this->field('deleted_at',  ['visible' => false]);
         $this->field('guardian_id');
     }
 
@@ -158,6 +164,8 @@ class GuardiansTable extends ControllerActionTable
     {
         $this->field('photo_content', ['type' => 'image', 'order' => 0]);
         $this->field('openemis_no', ['type' => 'readonly', 'order' => 1]);
+        $this->field('deleted_at',  ['visible' => false]);
+
     }
 
     public function viewAfterAction(Event $event, Entity $entity)
