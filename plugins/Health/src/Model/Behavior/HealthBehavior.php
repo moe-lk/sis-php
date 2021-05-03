@@ -81,6 +81,13 @@ class HealthBehavior extends Behavior
                 'text' => __('Tests')
             ];
         }
+        if ($controller->AccessControl->check([$name, 'HealthInsuranceClaims', 'index'])) { //Suraksha
+            $tabElements['InsuranceClaims'] = [
+                'url' => ['plugin' => $plugin, 'controller' => $name, 'action' => 'HealthInsuranceClaims'],
+                'text' => __('InsuranceClaims')
+            ];
+            // dd($tabElements);
+        }
 
         if ($name == 'Students' && $controller->AccessControl->check(['StudentBodyMasses', 'index'])) {
             $session = $this->_table->request->session();

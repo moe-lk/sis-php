@@ -55,7 +55,7 @@
 			$selectedGender = $attr['data']['filter']['genders']['selected'];
 		?>
 			<div class="select">
-				<label><?=__('Gender');?>:</label>
+				<label><?=__('Sex');?>:</label>
 				<div class="input-select-wrapper">
 					<select onchange="window.location.href = this.value">
 						<?php foreach ($genderOptions as $key => $value) { ?>

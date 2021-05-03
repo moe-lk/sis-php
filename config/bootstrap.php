@@ -318,6 +318,7 @@ Plugin::load('Outcome', ['routes' => true, 'autoload' => true]);
 Plugin::load('Theme', ['routes' => true, 'autoload' => true]);
 Plugin::load('StaffAppraisal', ['routes' => true, 'autoload' => true]);
 Plugin::load('Scholarship', ['routes' => true, 'autoload' => true]);
+Configure::write('Muffin/Trash.field', 'deleted_at');
 
 $pluginPath = Configure::read('plugins');
 foreach ($pluginPath as $key => $path) {
@@ -334,3 +335,5 @@ if (Configure::read('debug')) {
 }
 
 Plugin::load('OAuth', ['routes' => true]);
+
+Plugin::load('Examination', ['bootstrap' => false, 'routes' => true]);

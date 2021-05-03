@@ -1,21 +1,21 @@
 <?php
 namespace User\Model\Table;
 
-use App\Model\Table\AppTable;
-use App\Model\Traits\OptionsTrait;
-use App\Model\Traits\UserTrait;
 use ArrayObject;
-use Cake\Datasource\ConnectionManager;
-use Cake\Event\Event;
 use Cake\I18n\Time;
+use Cake\ORM\Query;
+use Cake\ORM\Entity;
+use Cake\Event\Event;
 use Cake\Network\Request;
 use Cake\Network\Session;
-use Cake\ORM\Entity;
-use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Inflector;
+use Lsf\UniqueUid\UniqueUid;
+use App\Model\Table\AppTable;
 use Cake\Validation\Validator;
-use Mohamednizar\MoeUuid\MoeUuid;
+use App\Model\Traits\UserTrait;
+use App\Model\Traits\OptionsTrait;
+use Cake\Datasource\ConnectionManager;
 
 class UsersTable extends AppTable
 {
@@ -49,9 +49,11 @@ class UsersTable extends AppTable
         $this->table('security_users');
         parent::initialize($config);
 
+       
+
         self::handleAssociations($this);
 
-        $this->fieldOrder1 = new ArrayObject(['photo_content', 'openemis_no', 'first_name', 'middle_name', 'third_name', 'last_name', 'preferred_name', 'gender_id', 'date_of_birth', 'address', 'postal_code']);
+        $this->fieldOrder1 = new ArrayObject(['photo_content', 'openemis_no', 'first_name', 'middle_name', 'third_name', 'last_name', 'preferred_name', 'gender_id','date_of_birth', 'address', 'postal_code']);
         $this->fieldOrder2 = new ArrayObject(['status', 'modified_user_id', 'modified', 'created_user_id', 'created']);
 
         $this->addBehavior('ControllerAction.FileUpload', [
@@ -154,6 +156,7 @@ class UsersTable extends AppTable
             'last_name' => $userInfo['lastName'],
             'email' => $userInfo['email'],
             'gender_id' => $gender,
+           // 'student_type_id' => $studentType,
             'date_of_birth' => $dateOfBirth,
             'super_admin' => 0,
             'status' => 1,
@@ -175,9 +178,13 @@ class UsersTable extends AppTable
         $model->belongsTo('BirthplaceAreas', ['className' => 'Area.AreaAdministratives', 'foreignKey' => 'birthplace_area_id']);
         $model->belongsTo('MainNationalities', ['className' => 'FieldOption.Nationalities', 'foreignKey' => 'nationality_id']);
         $model->belongsTo('MainIdentityTypes', ['className' => 'FieldOption.IdentityTypes', 'foreignKey' => 'identity_type_id']);
+       
         $model->hasMany('Identities', ['className' => 'User.Identities', 'foreignKey' => 'security_user_id', 'dependent' => true]);
         $model->hasMany('Nationalities', ['className' => 'User.UserNationalities', 'foreignKey' => 'security_user_id', 'dependent' => true]);
+        
         $model->hasMany('SpecialNeeds', ['className' => 'User.SpecialNeeds', 'foreignKey' => 'security_user_id', 'dependent' => true]);
+        $model->hasMany('StudentType', ['className' => 'User.StudentType', 'foreignKey' => 'security_user_id','dependent' => true]);
+        $model->hasMany('NikayaType', ['className' => 'User.NikayaType', 'foreignKey' => 'security_user_id','dependent' => true]);
         $model->hasMany('Contacts', ['className' => 'User.Contacts', 'foreignKey' => 'security_user_id', 'dependent' => true]);
         $model->hasMany('Attachments', ['className' => 'User.Attachments', 'foreignKey' => 'security_user_id', 'dependent' => true]);
         $model->hasMany('BankAccounts', ['className' => 'User.BankAccounts', 'foreignKey' => 'security_user_id', 'dependent' => true]);
@@ -206,7 +213,8 @@ class UsersTable extends AppTable
         $this->field('username', ['visible' => false]);
         $this->field('middle_name', ['visible' => false]);
         $this->field('third_name', ['visible' => false]);
-        $this->field('preferred_name', ['visible' => false]);
+        $this->field('updated_from', ['visible' => false]);
+      //  $this->field('student_type_id');
         $this->ControllerAction->field('username', ['visible' => false]);
         $this->ControllerAction->field('super_admin', ['visible' => false]);
         $this->ControllerAction->field('photo_name', ['visible' => false]);
@@ -504,6 +512,17 @@ class UsersTable extends AppTable
         $this->ControllerAction->setFieldOrder($fieldOrder);
     }
 
+
+    public function beforeDelete(Event $event, Entity $entity){
+         //if users tries to delete some data from updated another service
+         if ($entity->updated_from != 'sis') {
+            $event->stopPropagation();
+            $message = __('This record is associated with Examination, You cannot delete this.');
+            $this->Alert->error($message, ['type' => 'string', 'reset' => true]);
+            return false;
+        }
+    }
+
     public function editBeforeAction(Event $event)
     {
         $this->field('preferred_name', ['visible' => true, 'attr' => ['label' => 'Name with Initial']]);
@@ -516,6 +535,7 @@ class UsersTable extends AppTable
         $this->fields['openemis_no']['attr']['readonly'] = true;
         $this->fields['photo_content']['type'] = 'image';
         $this->fields['super_admin']['type'] = 'hidden';
+        $this->fields['updated_from']['type'] = 'hidden';
         $this->fields['super_admin']['value'] = 0;
         $this->fields['gender_id']['type'] = 'select';
         $this->fields['gender_id']['options'] = $this->Genders->find('list', ['keyField' => 'id', 'valueField' => 'name'])->toArray();
@@ -527,7 +547,8 @@ class UsersTable extends AppTable
 
     public function getUniqueOpenemisId($options = [])
     {
-       return MoeUuid::getUniqueAlphanumeric(3);
+       $this->uniqueId = new UniqueUid();
+       return $this->uniqueId->getUniqueAlphanumeric();
     }
 
     public function validationDefault(Validator $validator)
@@ -549,8 +570,19 @@ class UsersTable extends AppTable
                 'ruleCheckIfStringGotNoNumber' => [
                     'rule' => 'checkIfStringGotNoNumber',
                 ],
+                'ruleMaxLength' => [
+                    'rule' => ['maxLength',256]
+                ]
             ])
-            ->allowEmpty('preferred_name')
+            ->allowEmpty('preferred_name' ,[
+                'ruleCheckIfStringGotNoNumber' => [
+                    'rule' => 'checkIfStringGotNoNumber'
+                ],
+                'ruleMaxLength' => [
+                    'rule' => ['maxLength',90],
+                    'message' => 'Preferred name should not exceed 90 characters'
+                ]
+            ])
             ->add('openemis_no', [
                 'ruleUnique' => [
                     'rule' => 'validateUnique',
@@ -672,6 +704,15 @@ class UsersTable extends AppTable
                     'rule' => 'checkIfStringGotNoNumber',
                 ],
             ])
+            ->add('preferred_name' ,[
+                'ruleCheckIfStringGotNoNumber' => [
+                    'rule' => 'checkIfStringGotNoNumber'
+                ],
+                'ruleMaxLength' => [
+                    'rule' => ['maxLength',90],
+                    'message' => 'Preferred name should not exceed 90 characters'
+                ]
+            ])
             ->add('openemis_no', [
                 'ruleUnique' => [
                     'rule' => 'validateUnique',
@@ -701,6 +742,8 @@ class UsersTable extends AppTable
         $thisModel->setValidationCode('first_name.ruleCheckIfStringGotNoNumber', 'User.Users');
         $thisModel->setValidationCode('first_name.ruleNotBlank', 'User.Users');
         $thisModel->setValidationCode('last_name.ruleCheckIfStringGotNoNumber', 'User.Users');
+        $thisModel->setValidationCode('preferred_name.ruleCheckIfStringGotNoNumber', 'User.Users');
+        $thisModel->setValidationCode('preferred_name.ruleMaxLength', 'User.Users');
         $thisModel->setValidationCode('openemis_no.ruleUnique', 'User.Users');
         $thisModel->setValidationCode('username.ruleMinLength', 'User.Users');
         $thisModel->setValidationCode('username.ruleUnique', 'User.Users');
@@ -894,7 +937,7 @@ class UsersTable extends AppTable
                 'is_guardian',
             ])
             ->where([
-                'status' => 1,
+                'status' => 1
             ]);
 
         return $query;

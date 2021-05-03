@@ -33,3 +33,6 @@ echo $this->Html->script('Assessment.angular/assessments/assessmentAdminModule')
 echo $this->Html->script('app');
 echo $this->Html->script('app.table');
 echo $this->Html->script('config');
+echo $this->Html->script('matomo');
+echo sprintf('<script async src="https://www.googletagmanager.com/gtag/js?id=UA-167196928-1"></script>');
+echo $this->Html->script('google_analytics');

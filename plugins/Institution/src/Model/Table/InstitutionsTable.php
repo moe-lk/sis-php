@@ -57,6 +57,7 @@ class InstitutionsTable extends ControllerActionTable
          */
         $this->belongsTo('Localities', ['className' => 'Institution.Localities', 'foreignKey' => 'institution_locality_id']);
         $this->belongsTo('Types', ['className' => 'Institution.Types', 'foreignKey' => 'institution_type_id']);
+        $this->belongsTo('NikayaDetails', ['className' => 'Institution.NikayaDetails', 'foreignKey' => 'nikaya_type_id']);
         $this->belongsTo('Ownerships', ['className' => 'Institution.Ownerships', 'foreignKey' => 'institution_ownership_id']);
         $this->belongsTo('Statuses', ['className' => 'Institution.Statuses', 'foreignKey' => 'institution_status_id']);
         $this->belongsTo('Sectors', ['className' => 'Institution.Sectors', 'foreignKey' => 'institution_sector_id']);
@@ -204,6 +205,7 @@ class InstitutionsTable extends ControllerActionTable
         $validator = parent::validationDefault($validator);
 
         $validator
+
             ->add('date_opened', [
                     'ruleCompare' => [
                         'rule' => ['comparison', 'notequal', '0000-00-00'],
@@ -221,6 +223,8 @@ class InstitutionsTable extends ControllerActionTable
                 'rule' => 'checkPendingWorkbench',
                 'last' => true
             ])
+
+        
 
             ->allowEmpty('longitude')
             ->add('longitude', 'ruleLongitude', [
@@ -491,6 +495,13 @@ class InstitutionsTable extends ControllerActionTable
             $this->field('institution_provider_id', ['type' => 'select']);
         }
         $this->field('institution_type_id');
+        $this->field('nikaya_type_id',['type' => 'select', 'onChangeReload' => true]);
+
+        
+        //$Pirivena=($this->field('institution_type_id'));
+
+       // $this->field('nikaya_type_id', ['type' => 'select']);
+       
         $this->field('institution_gender_id', ['type' => 'select']);
         $this->field('area_administrative_id', ['type' => 'areapicker', 'source_model' => 'Area.AreaAdministratives', 'displayCountry' => false]);
         $this->field('area_id', ['type' => 'areapicker', 'source_model' => 'Area.Areas', 'displayCountry' => false]);
@@ -576,6 +587,7 @@ class InstitutionsTable extends ControllerActionTable
 
             $models = [
                 ['Types', $this->aliasField('institution_type_id'), 'Type', 'query' => $this->dashboardQuery],
+               ['Types', $this->aliasField('nikaya_type_id'), 'NikayaType', 'query' => $this->dashboardQuery],
                 ['Sectors', $this->aliasField('institution_sector_id'), 'Sector', 'query' => $this->dashboardQuery],
                 ['Localities', $this->aliasField('institution_locality_id'), 'Locality', 'query' => $this->dashboardQuery],
             ];
@@ -657,11 +669,11 @@ class InstitutionsTable extends ControllerActionTable
         $this->field('logo_content', ['type' => 'image', 'ajaxLoad' => true, 'imageUrl' => $imageUrl, 'imageDefault' => '"'.$imageDefault.'"', 'order' => 0]);
 
         $this->setFieldOrder([
-            'logo_content', 'code', 'name', 'area_id', 'institution_type_id', 'institution_status_id'
+            'logo_content', 'code', 'name', 'area_id', 'institution_type_id','nikaya_type_id', 'institution_status_id'
         ]);
 
         $this->setFieldVisible(['index'], [
-            'logo_content', 'code', 'name', 'area_id', 'institution_type_id', 'institution_status_id'
+            'logo_content', 'code', 'name', 'area_id', 'institution_type_id','nikaya_type_id', 'institution_status_id'
         ]);
         $this->controller->set('ngController', 'AdvancedSearchCtrl');
     }
@@ -739,6 +751,7 @@ class InstitutionsTable extends ControllerActionTable
                 $this->aliasField('institution_status_id'),
                 'Areas.name',
                 'Types.name',
+            
                 'Statuses.name'
             ],
         ];
@@ -746,6 +759,9 @@ class InstitutionsTable extends ControllerActionTable
         $query->contain($extra['query']['contain']);
         $query->select($extra['query']['select']);
 
+        if($this->request['data']['AdvanceSearch']["Institutions"]['belongsTo']["institution_status_id"]==""){
+            $query->where([$this->aliasField('institution_status_id') => 1 ]);
+        }
         // POCOR-3983 if no sort, active status will be followed by inactive status
         if (!isset($this->request->query['sort'])) {
             $query->order([
@@ -806,7 +822,7 @@ class InstitutionsTable extends ControllerActionTable
         $this->setFieldOrder([
             'information_section',
             'logo_content',
-            'name', 'alternative_name', 'code', 'classification','', 'institution_sector_id', 'institution_provider_id','is_special_education_unit_operating', 'institution_type_id',
+            'name', 'alternative_name', 'code', 'classification','', 'institution_sector_id', 'institution_provider_id','is_special_education_unit_operating', 'institution_type_id','nikaya_type_id',
             'institution_ownership_id', 'institution_gender_id', 'date_opened', 'date_closed', 'institution_status_id',
 
             'shift_section',
@@ -865,7 +881,7 @@ class InstitutionsTable extends ControllerActionTable
         $this->setFieldOrder([
             'information_section',
             'logo_content',
-            'name', 'alternative_name', 'code', 'classification', 'institution_sector_id', 'institution_provider_id', 'institution_type_id',
+            'name', 'alternative_name', 'code', 'classification', 'institution_sector_id', 'institution_provider_id', 'institution_type_id','nikaya_type_id',
             'institution_ownership_id', 'institution_gender_id', 'date_opened', 'date_closed', 'institution_status_id',
 
             'location_section',
@@ -889,7 +905,7 @@ class InstitutionsTable extends ControllerActionTable
         $this->setFieldOrder([
             'information_section',
             'logo_content',
-            'name', 'alternative_name', 'code', 'classification', 'institution_sector_id', 'institution_provider_id','is_special_education_unit_operating', 'institution_type_id',
+            'name', 'alternative_name', 'code', 'classification', 'institution_sector_id', 'institution_provider_id','is_special_education_unit_operating', 'institution_type_id','nikaya_type_id',
             'institution_ownership_id', 'institution_gender_id', 'date_opened', 'date_closed', 'institution_status_id',
 
             'location_section',
@@ -1030,6 +1046,10 @@ class InstitutionsTable extends ControllerActionTable
                     $selectedType = $request->data[$this->alias()]['institution_type_id'];
                     $entity->institution_type_id = $selectedType;
                 }
+                else if (array_key_exists('nikaya_type_id', $request->data[$this->alias()])) {
+                    $selectedNikayaType = $request->data[$this->alias()]['nikaya_type_id'];
+                    $entity->nikaya_type_id = $selectedNikayaType;
+                }
             }
         }
     }
@@ -1038,6 +1058,7 @@ class InstitutionsTable extends ControllerActionTable
     {
         $typeOptions = $this->Types->getList()->toArray();
         $selectedType = $this->Types->getDefaultValue();
+        $selectedNikayaType = $this->Types->getDefaultValue();
 
         // $selectedType = $this->queryString('type', $typeOptions);
         // $this->advancedSelectOptions($typeOptions, $selectedType);

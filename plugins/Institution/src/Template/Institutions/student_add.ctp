@@ -206,8 +206,15 @@ $this->Html->script('ControllerAction.../plugins/datepicker/js/bootstrap-datepic
                         <p ng-repeat="error in InstitutionStudentController.postResponse.error.last_name">{{ error }}</p>
                     </div>
                 </div>
+                <div class="input string required">
+                    <label><?=__('Preferred Name')?></label>
+                    <input ng-model="InstitutionStudentController.selectedStudentData.preferred_name" ng-change="InstitutionStudentController.setStudentName()" type="string" ng-init="InstitutionStudentController.selectedStudentData.preferred_name='';">
+                    <div ng-if="InstitutionStudentController.postResponse.error.preferred_name" class="error-message">
+                        <p ng-repeat="error in InstitutionStudentController.postResponse.error.preferred_name">{{ error }}</p>
+                    </div>
+                </div>
                 <div class="input select required error">
-                    <label><?=__('Gender')?></label>
+                    <label><?=__('Sex')?></label>
                     <div class="input-select-wrapper">
                         <select name="Students[gender_id]" id="students-gender_id"
                             ng-options="option.id as option.name for option in InstitutionStudentController.genderOptions"

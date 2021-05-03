@@ -46,7 +46,7 @@ return [
             'host' => 'smtp.gmail.com',
             'port' => 587,
             'timeout' => 30,
-            'username' => 'nsis.moe@gmail.com.com',
+            'username' => 'app@kordit.com',
             'password' => '',
             'client' => null,
             'tls' => true,
