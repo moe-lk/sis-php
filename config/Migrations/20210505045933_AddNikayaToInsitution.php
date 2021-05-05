@@ -13,23 +13,23 @@ class AddNikayaToInsitution extends AbstractMigration
     public function up()
     {   
         $table = $this->table('institutions');
-        $table->addColumn('nikaya', 'string', [
+        $table->addColumn('nikaya_type_id', 'integer', [
             'after' => 'institution_type_id',
             'default' => null,
+            'null' => true
             ])
               ->save();
               
-              $refTable = $this->table('nikaya_details');
-              //  $refTable->addColumn('id', 'integer')
-             $refTable->addForeignKey('nikaya_type_id', 'institution', 'id', ['delete'=> 'RESTRICT', 'update'=> 'CASCADE'])
+             // $refTable = $this->table('nikaya_details'); //  $refTable->addColumn('id', 'integer')
+        $table->addForeignKey('nikaya_type_id', 'institutions', 'id', ['delete'=> 'RESTRICT', 'update'=> 'CASCADE'])
              ->save();
 
-
+ 
     }
 
     public function down(){
         $table = $this->table('institutions');
-        $table->removeColumn('nikaya')
+        $table->removeColumn('nikaya_type_id')
         ->save();
 
     }

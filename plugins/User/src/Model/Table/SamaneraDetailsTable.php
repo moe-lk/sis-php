@@ -56,7 +56,7 @@ class SamaneraDetailsTable extends ControllerActionTable
         ]);
 
         $this->belongsTo('NikayaDetails', [
-            'foreignKey' => 'nikaya_id',
+            'foreignKey' => 'nikaya_type_id',
             'className' => 'User.NikayaDetails'
         ]);
 
@@ -115,7 +115,7 @@ class SamaneraDetailsTable extends ControllerActionTable
     public function beforeAction($event)
     {
         $this->fields['student_type_id']['type'] = 'select';
-        $this->fields['nikaya_id']['type'] = 'select';
+        $this->fields['nikaya_type_id']['type'] = 'select';
     }
 
     private function setupTabElements() {

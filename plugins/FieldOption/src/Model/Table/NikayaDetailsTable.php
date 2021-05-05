@@ -10,7 +10,7 @@ class NikayaTypeTable extends ControllerActionTable
     {
         $this->table('nikaya_details');
         parent::initialize($config);
-        $this->hasMany('SamaneraDetails', ['className' => 'User.SamaneraDetails', 'foreignKey' => 'nikaya_id']);
+        $this->hasMany('SamaneraDetails', ['className' => 'User.SamaneraDetails', 'foreignKey' => 'nikaya_type_id']);
         $this->addBehavior('FieldOption.FieldOption');
     }
 }
