@@ -1,5 +1,4 @@
 <?php
-
 namespace Examination\Model\Table;
 
 use ArrayObject;
@@ -14,11 +13,6 @@ class ExaminationsTable extends ControllerActionTable
 {
     public function initialize(array $config)
     {
-        // $this->setTable('examinations');
-
-        // $this->table('examinations');
-        // parent::initialize($config);
-
         $this->table('examinations');
         parent::initialize($config);
 
@@ -45,9 +39,9 @@ class ExaminationsTable extends ControllerActionTable
             'cascadeCallbacks' => true
         ]);
 
-        $this->toggle('add', false);
-        $this->toggle('edit', false);
-        $this->toggle('remove', false);
+        $this->toggle('add', true); 
+        $this->toggle('edit', true);
+        $this->toggle('remove', true);
     }
 
     public function indexBeforeAction(Event $event, ArrayObject $extra)
@@ -60,35 +54,35 @@ class ExaminationsTable extends ControllerActionTable
 
     public function indexBeforeQuery(Event $event, Query $query, ArrayObject $extra)
     {
-        $institutionId = $this->Session->read('Institution.Institutions.id');
+        // $institutionId = $this->Session->read('Institution.Institutions.id');
 
-        // Academic Periods filter
-        $periodOptions = $this->AcademicPeriods->getYearList(['withLevels' => true, 'isEditable' => true]);
-        $selectedPeriod = !is_null($this->request->query('academic_period_id')) ? $this->request->query('academic_period_id') : $this->AcademicPeriods->getCurrent();
-        $this->controller->set(compact('periodOptions', 'selectedPeriod'));
+        // // Academic Periods filter
+        // $periodOptions = $this->AcademicPeriods->getYearList(['withLevels' => true, 'isEditable' => true]);
+        // $selectedPeriod = !is_null($this->request->query('academic_period_id')) ? $this->request->query('academic_period_id') : $this->AcademicPeriods->getCurrent();
+        // $this->controller->set(compact('periodOptions', 'selectedPeriod'));
 
-        $where[$this->aliasField('academic_period_id')] = $selectedPeriod;
-        //End
+        // $where[$this->aliasField('academic_period_id')] = $selectedPeriod;
+        // //End
 
-        // get available grades in institution
-        $InstitutionGrades = TableRegistry::get('Institution.InstitutionGrades');
-        $educationGrades = $InstitutionGrades
-            ->find('list', [
-                    'keyField' => 'education_grade_id',
-                    'valueField' => 'education_grade_id'
-            ])
-            ->where([$InstitutionGrades->aliasField('institution_id') => $institutionId])
-            ->toArray();
+        // // get available grades in institution
+        // $InstitutionGrades = TableRegistry::get('Institution.InstitutionGrades');
+        // $educationGrades = $InstitutionGrades
+        //     ->find('list', [
+        //             'keyField' => 'education_grade_id',
+        //             'valueField' => 'education_grade_id'
+        //     ])
+        //     ->where([$InstitutionGrades->aliasField('institution_id') => $institutionId])
+        //     ->toArray();
 
-        if (!empty($educationGrades)) {
-            $where[$this->aliasField('education_grade_id IN')] = $educationGrades;
-            $query->where($where);
+        // if (!empty($educationGrades)) {
+        //     $where[$this->aliasField('education_grade_id IN')] = $educationGrades;
+        //     $query->where($where);
 
-        } else {
-            // if no active grades in the institution
-            $this->Alert->warning($this->aliasField('noGrades'));
-            $event->stopPropagation();
-        }
+        // } else {
+        //     // if no active grades in the institution
+        //     $this->Alert->warning($this->aliasField('noGrades'));
+        //     $event->stopPropagation();
+        // }
     }
 
     public function viewBeforeQuery(Event $event, Query $query, ArrayObject $extra)
@@ -99,12 +93,10 @@ class ExaminationsTable extends ControllerActionTable
     public function viewBeforeAction(Event $event, ArrayObject $extra)
     {
         $this->field('examination_items', [
-            'type' => 'element',
-            'element' => 'Examination.examination_items'
+            // 'type' => 'element',
+            // 'element' => 'Examination.examination_items'
         ]);
 
         $this->setFieldOrder(['academic_period_id', 'code', 'name', 'description', 'education_grade_id', 'registration_start_date', 'registration_end_date', 'examination_items']);
     }
-
 } 
-

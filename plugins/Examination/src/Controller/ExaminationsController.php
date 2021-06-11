@@ -55,8 +55,7 @@ class ExaminationsController extends AppController
         parent::initialize();
         // $this->ControllerAction->model('Institution.Institutions', [], ['deleteStrategy' => 'restrict']);
         $this->ControllerAction->models = [
-            // 'Attachments'       => ['className' => 'Examination.ExaminationAttachments'],
-
+            'Attachments'       => ['className' => 'Examination.ExaminationAttachments'],
             'ExaminationCentres'   => ['className' => 'Examination.ExaminationCentres', 'actions' => ['view', 'edit']],
             'Examinations' => ['className' => 'Examination.Examinations', 'actions' => ['view', 'edit']],
             'ExaminationCentrRooms'   => ['className' => 'Examination.ExaminationCentreRooms', 'actions' => ['view', 'edit']],
