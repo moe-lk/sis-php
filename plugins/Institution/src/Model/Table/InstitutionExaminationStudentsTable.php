@@ -502,8 +502,8 @@ class InstitutionExaminationStudentsTable extends ControllerActionTable
                     ->toArray();
             }
 
-            $attr['type'] = 'element';
-            $attr['element'] = 'Examination.students';
+            // $attr['type'] = 'element';
+            // $attr['element'] = 'Examination.students';
             $attr['data'] = $students;
         }
 

@@ -93,8 +93,8 @@ class InstitutionExaminationsTable extends ControllerActionTable
     public function viewBeforeAction(Event $event, ArrayObject $extra)
     {
         $this->field('examination_items', [
-            'type' => 'element',
-            'element' => 'Examination.examination_items'
+            // 'type' => 'element',
+            // 'element' => 'Examination.examination_items'
         ]);
 
         $this->setFieldOrder(['academic_period_id', 'code', 'name', 'description', 'education_grade_id', 'registration_start_date', 'registration_end_date', 'examination_items']);

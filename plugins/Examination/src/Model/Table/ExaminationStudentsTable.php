@@ -102,28 +102,28 @@ class ExaminationStudentsTable extends ControllerActionTable
         $newFields = [];
 
         $newFields[] = [
-            'key' => 'InstitutionExaminationStudents.academic_period_id',
+            'key' => 'ExaminationStudents.academic_period_id',
             'field' => 'academic_period_id',
             'type' => 'integer',
             'label' => '',
         ];
 
         $newFields[] = [
-            'key' => 'InstitutionExaminationStudents.examination_id',
+            'key' => 'ExaminationStudents.examination_id',
             'field' => 'examination_id',
             'type' => 'integer',
             'label' => '',
         ];
 
         $newFields[] = [
-            'key' => 'InstitutionExaminationStudents.examination_centre_id',
+            'key' => 'ExaminationStudents.examination_centre_id',
             'field' => 'examination_centre_id',
             'type' => 'integer',
             'label' => '',
         ];
 
         $newFields[] = [
-            'key' => 'InstitutionExaminationStudents.registration_number',
+            'key' => 'ExaminationStudents.registration_number',
             'field' => 'registration_number',
             'type' => 'integer',
             'label' => '',
@@ -137,7 +137,7 @@ class ExaminationStudentsTable extends ControllerActionTable
         ];
 
         $newFields[] = [
-            'key' => 'InstitutionExaminationStudents.student_id',
+            'key' => 'ExaminationStudents.student_id',
             'field' => 'student_id',
             'type' => 'integer',
             'label' => '',
@@ -165,7 +165,7 @@ class ExaminationStudentsTable extends ControllerActionTable
         ];
 
         $newFields[] = [
-            'key' => 'InstitutionExaminationStudents.institution_id',
+            'key' => 'ExaminationStudents.institution_id',
             'field' => 'institution_id',
             'type' => 'integer',
             'label' => '',
@@ -333,7 +333,7 @@ class ExaminationStudentsTable extends ControllerActionTable
 
             $examinationId = isset($request->data[$this->alias()]['examination_id']) ? $request->data[$this->alias()]['examination_id'] : null;
             $this->advancedSelectOptions($examinationOptions, $examinationId, [
-                'message' => '{{label}} - ' . $this->getMessage('InstitutionExaminationStudents.notAvailableForRegistration'),
+                'message' => '{{label}} - ' . $this->getMessage('ExaminationStudents.notAvailableForRegistration'),
                 'selectOption' => false,
                 'callable' => function($id) use ($Examinations, $todayDate) {
                     return $Examinations
@@ -486,9 +486,9 @@ class ExaminationStudentsTable extends ControllerActionTable
                 $ClassStudents = TableRegistry::get('Institution.InstitutionClassStudents');
                 $students = $ClassStudents->find()
                     ->matching('EducationGrades')
-                    ->leftJoin(['InstitutionExaminationStudents' => 'examination_centres_examinations_students'], [
-                        'InstitutionExaminationStudents.examination_id' => $examinationId,
-                        'InstitutionExaminationStudents.student_id = '.$ClassStudents->aliasField('student_id')
+                    ->leftJoin(['ExaminationStudents' => 'examination_centres_examinations_students'], [
+                        'ExaminationStudents.examination_id' => $examinationId,
+                        'ExaminationStudents.student_id = '.$ClassStudents->aliasField('student_id')
                     ])
                     ->contain('Users.SpecialNeeds.SpecialNeedTypes')
                     ->leftJoinWith('Users.SpecialNeeds')
@@ -497,15 +497,15 @@ class ExaminationStudentsTable extends ControllerActionTable
                         $ClassStudents->aliasField('academic_period_id') => $academicPeriodId,
                         $ClassStudents->aliasField('institution_class_id') => $institutionClassId,
                         $ClassStudents->aliasField('student_status_id') => $enrolledStatus,
-                        'InstitutionExaminationStudents.student_id IS NULL'
+                        'ExaminationStudents.student_id IS NULL'
                     ])
                     ->order(['SpecialNeeds.id' => 'DESC'])
                     ->group($ClassStudents->aliasField('student_id'))
                     ->toArray();
             }
 
-            $attr['type'] = 'element';
-            $attr['element'] = 'Examination.students';
+            // $attr['type'] = 'element';
+            // $attr['element'] = 'Examination.students';
             $attr['data'] = $students;
         }
 
