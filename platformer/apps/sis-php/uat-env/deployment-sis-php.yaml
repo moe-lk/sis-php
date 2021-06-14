@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    reloader.stakater.com/auto: "true"
+  labels:
+    app_environment_id: 2f8b2416-a87a-4168-81f2-72b83f9135b1
+    env_id: 35faeec1-e347-42aa-b3f0-9d37245f4cb1
+    env_name: uat-env
+    organization_id: 3c16315d-43ed-4cad-9248-37efc6b029fb
+    platformer_app_id: 425fe435-0a0e-4ee0-88f0-65e62bc6143c
+    platformer_app_name: sis-php
+    platformer_component: rudder
+    platformer_system: "true"
+    project_id: 6bc2210d-dffb-4093-9bcc-ed80ea32eb0f
+  name: sis-php
+  namespace: uat
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app_environment_id: 2f8b2416-a87a-4168-81f2-72b83f9135b1
+      env_id: 35faeec1-e347-42aa-b3f0-9d37245f4cb1
+      env_name: uat-env
+      organization_id: 3c16315d-43ed-4cad-9248-37efc6b029fb
+      platformer_app_id: 425fe435-0a0e-4ee0-88f0-65e62bc6143c
+      platformer_app_name: sis-php
+      platformer_component: rudder
+      platformer_system: "true"
+      project_id: 6bc2210d-dffb-4093-9bcc-ed80ea32eb0f
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        platformer.com/reload-hash: 09f4febf-5e2d-40ab-9ab0-6fb1e119b202
+      labels:
+        app_environment_id: 2f8b2416-a87a-4168-81f2-72b83f9135b1
+        env_id: 35faeec1-e347-42aa-b3f0-9d37245f4cb1
+        env_name: uat-env
+        organization_id: 3c16315d-43ed-4cad-9248-37efc6b029fb
+        platformer_app_id: 425fe435-0a0e-4ee0-88f0-65e62bc6143c
+        platformer_app_name: sis-php
+        platformer_component: rudder
+        platformer_system: "true"
+        project_id: 6bc2210d-dffb-4093-9bcc-ed80ea32eb0f
+    spec:
+      imagePullSecrets:
+      - name: reg-sis-php-3192360657
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 60
+      volumes:
+      - configMap:
+          defaultMode: 420
+          name: datasource-3620333129
+        name: 674af50b-ac3a-40d4-a9c6-de3c5bb4497f

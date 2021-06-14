@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations: {}
+  labels:
+    app_environment_id: 2f8b2416-a87a-4168-81f2-72b83f9135b1
+    env_id: 35faeec1-e347-42aa-b3f0-9d37245f4cb1
+    env_name: uat-env
+    organization_id: 3c16315d-43ed-4cad-9248-37efc6b029fb
+    platformer_app_id: 425fe435-0a0e-4ee0-88f0-65e62bc6143c
+    platformer_app_name: sis-php
+    platformer_component: rudder
+    platformer_system: "true"
+    project_id: 6bc2210d-dffb-4093-9bcc-ed80ea32eb0f
+  name: sis-php
+  namespace: uat
+spec:
+  ports:
+  - name: port-80
+    port: 80
+    targetPort: 80
+  selector:
+    app_environment_id: 2f8b2416-a87a-4168-81f2-72b83f9135b1
+    env_id: 35faeec1-e347-42aa-b3f0-9d37245f4cb1
+    env_name: uat-env
+    organization_id: 3c16315d-43ed-4cad-9248-37efc6b029fb
+    platformer_app_id: 425fe435-0a0e-4ee0-88f0-65e62bc6143c
+    platformer_app_name: sis-php
+    platformer_component: rudder
+    platformer_system: "true"
+    project_id: 6bc2210d-dffb-4093-9bcc-ed80ea32eb0f
+  type: ClusterIP
