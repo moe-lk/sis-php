@@ -60,6 +60,10 @@ class ExaminationStudentsTable extends ControllerActionTable
             'orientation' => 'landscape'
         ]);
         $this->addBehavior('CompositeKey');
+
+        $this->toggle('add', false); 
+        $this->toggle('edit', false);
+        $this->toggle('remove', false);
     }
 
     public function validationDefault(Validator $validator)
