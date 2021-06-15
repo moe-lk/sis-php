@@ -50,6 +50,16 @@ class InstitutionExaminationStudentsTable extends ControllerActionTable
             'cascadeCallBacks' => true
         ]);
 
+        $this->belongsToMany('ExaminationCentresExaminations', [
+            'className' => 'Examination.ExaminationCentresExaminations',
+            'joinTable' => 'examination_centres_examinations_institutions',
+            'foreignKey' => 'institution_id',
+            'targetForeignKey' => ['examination_centre_id', 'examination_id'],
+            'through' => 'Examination.ExaminationCentresExaminationsInstitutions',
+            'dependent' => true,
+            'cascadeCallbacks' => true
+        ]);
+        
         $this->addBehavior('Examination.RegisteredStudents');
         $this->addBehavior('Excel', [
             'excludes' => ['id', 'education_subject_id', 'examination_item_id'],
