@@ -20,7 +20,8 @@ class InstitutionExaminationsTable extends ControllerActionTable
         $this->belongsTo('EducationGrades', ['className' => 'Education.EducationGrades']);
         $this->hasMany('ExaminationItems', ['className' => 'Examination.ExaminationItems', 'dependent' => true, 'cascadeCallbacks' => true]);
         $this->hasMany('ExaminationItemResults', ['className' => 'Examination.ExaminationItemResults', 'dependent' => true, 'cascadeCallbacks' => true]);
-        $this->belongsTo('ExaminationCentres', ['className' => 'Examnation.Centers', 'foreignKey' => 'examination_centre_id']);
+//         $this->belongsTo('ExaminationCentres', ['className' => 'Examnation.Centers', 'foreignKey' => 'examination_centre_id']);
+        $this->belongsTo('Examination', ['className' => 'Examnation.Centers', 'foreignKey' => 'examination_centre_id']);
         $this->belongsToMany('ExaminationCentres', [
             'className' => 'Examination.ExaminationCentres',
             'joinTable' => 'examination_centres_examinations',
