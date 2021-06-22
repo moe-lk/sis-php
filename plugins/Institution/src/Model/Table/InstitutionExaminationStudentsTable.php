@@ -49,7 +49,7 @@ class InstitutionExaminationStudentsTable extends ControllerActionTable
             'dependent' => true,
             'cascadeCallBacks' => true
         ]);
-
+        
         $this->addBehavior('Examination.RegisteredStudents');
         $this->addBehavior('Excel', [
             'excludes' => ['id', 'education_subject_id', 'examination_item_id'],
