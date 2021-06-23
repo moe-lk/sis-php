@@ -173,6 +173,8 @@ class ExaminationsController extends AppController
     public function exams()
     {
         $this->ControllerAction->process(['alias' => __FUNCTION__, 'className' => 'Examination.Examinations']);
+        $this->ControllerAction->process(['alias' => __FUNCTION__, 'className' => 'Examination.ExaminationStudents']);
+
     }
 
     public function examCentres()
