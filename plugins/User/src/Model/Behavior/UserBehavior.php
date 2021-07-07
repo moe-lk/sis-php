@@ -12,7 +12,6 @@ use Ramsey\Uuid\Uuid;
 use User\Model\Entity\User;
 use Cake\I18n\I18n;
 use Cake\Utility\Text;
-use Mohamednizar\MoeUuid\MoeUuid;
 
 class UserBehavior extends Behavior
 {
@@ -420,6 +419,7 @@ class UserBehavior extends Behavior
                 $value = $this->defaultUserProfileIndex;
             }
         } else {
+            ini_set( 'memory_limit', '256M' );
             $value = base64_encode(stream_get_contents($fileContent));
         }
         return $value;
@@ -479,32 +479,31 @@ class UserBehavior extends Behavior
 
     public function getUniqueOpenemisId($options = [])
     {
-       return MoeUuid::getUniqueAlphanumeric(3);
-//        $prefix = TableRegistry::get('Configuration.ConfigItems')->value('openemis_id_prefix');
-//        $prefix = explode(",", $prefix);
-//        $prefix = ($prefix[1] > 0)? $prefix[0]: '';
-//
-//        $latest = $this->_table->find()
-//            ->order($this->_table->aliasField('id').' DESC')
-//            ->first();
-//
-//
-//        $latestOpenemisNo = $latest->openemis_no;
-//        $latestOpenemisNo = 0;
-//        if (empty($prefix)) {
-//            $latestDbStamp = $latestOpenemisNo;
-//        } else {
-//            $latestDbStamp = substr($latestOpenemisNo, strlen($prefix));
-//        }
-//
-//        $currentStamp = time();
-//        if ($latestDbStamp >= $currentStamp) {
-//            $newStamp = $latestDbStamp + 1;
-//        } else {
-//            $newStamp = $currentStamp;
-//        }
-//
-//        return $prefix.$newStamp;
+       $prefix = TableRegistry::get('Configuration.ConfigItems')->value('openemis_id_prefix');
+       $prefix = explode(",", $prefix);
+       $prefix = ($prefix[1] > 0)? $prefix[0]: '';
+
+       $latest = $this->_table->find()
+           ->order($this->_table->aliasField('id').' DESC')
+           ->first();
+
+
+       $latestOpenemisNo = $latest->openemis_no;
+       $latestOpenemisNo = 0;
+       if (empty($prefix)) {
+           $latestDbStamp = $latestOpenemisNo;
+       } else {
+           $latestDbStamp = substr($latestOpenemisNo, strlen($prefix));
+       }
+
+       $currentStamp = time();
+       if ($latestDbStamp >= $currentStamp) {
+           $newStamp = $latestDbStamp + 1;
+       } else {
+           $newStamp = $currentStamp;
+       }
+
+       return $prefix.$newStamp;
     }
 
     public function getImage($id)

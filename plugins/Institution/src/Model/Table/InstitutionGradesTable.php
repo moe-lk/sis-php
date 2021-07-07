@@ -57,6 +57,7 @@ class InstitutionGradesTable extends ControllerActionTable
 
     public function beforeAction(Event $event, ArrayObject $extra) {
         $this->institutionId = $this->Session->read('Institution.Institutions.id');
+        $this->field('promoted', ['visible' => false]);
     }
 
     public function afterAction(Event $event, ArrayObject $extra)
@@ -65,6 +66,7 @@ class InstitutionGradesTable extends ControllerActionTable
         $this->field('programme');
         $this->field('end_date', ['default_date' => false]);
         $this->field('education_grade_id');
+        $this->field('promoted', ['visible' => false]);
 
         if ($this->action == 'add') {
             $this->setFieldOrder([
