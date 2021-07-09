@@ -27,5 +27,38 @@ class ExaminationItemsTable extends Table
             'dependent' => true,
             'cascadeCallbacks' => true
         ]);
+
+        $this->belongsToMany('ExaminaionStudents', [
+            'className' => 'Examination.ExaminationStudents',
+            'through' => 'Examination.ExaminationItems',
+            'foreignKey' => 'examination_id',
+            'targetForeignKey' => 'student_id',
+            'dependent' => true
+        ]);
+
+        $this->hasMany('ExaminationSchoolStudents', ['className' => 'Examination.ExaminationStudents', 'saveStrategy' => 'replace', 'cascadeCallbacks' => true]);
+
+       //add behaviour
+
+        $this->addBehavior('Restful.RestfulAccessControl',[
+
+            //ExaminationSchoolStudents=> ['view', 'edit']
+        ]);
+
+        
+
+/*
+        $this->field('students', [
+            'label' => '',
+            'override' => true,
+            'type' => 'element',
+            'element' => 'Examinations.Students/students',
+            'data' => [
+                'students' => [],
+                'studentOptions' => []
+            ],
+            'visible' => ['view' => true, 'edit' => true]
+        ]);
+        */
     }
 }

@@ -26,6 +26,9 @@ use App\Model\Traits\OptionsTrait;
 
 class ExaminationCentresTable extends ControllerActionTable
 {
+    const ACADEMIC = 1;
+    const NON_ACADEMIC = 2;
+    
     public function initialize(array $config)
     {
         $this->table('examination_centres');
@@ -45,6 +48,11 @@ class ExaminationCentresTable extends ControllerActionTable
             'dependent' => true,
             'cascadeCallbacks' => true
         ]);
+
+        $this->classificationOptions = [
+            self::ACADEMIC => __('Academic Institution'),
+            self::NON_ACADEMIC => __('Non-Academic Institution')
+        ];
     }
 
     public function afterSave(Event $event, Entity $entity, ArrayObject $options)
@@ -76,5 +84,15 @@ class ExaminationCentresTable extends ControllerActionTable
                 ;
             return $query;
         }
+    }
+
+    public function getNonAcademicConstant()
+    {
+        return self::NON_ACADEMIC;
+    }
+
+    public function getAcademicConstant()
+    {
+        return self::ACADEMIC;
     }
 }
