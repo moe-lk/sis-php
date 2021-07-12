@@ -31,10 +31,13 @@ class ExaminationStudentsTable extends ControllerActionTable
         $this->belongsTo('AcademicPeriods', ['className' => 'AcademicPeriod.AcademicPeriods']);
         $this->belongsTo('Examinations', ['className' => 'Examination.Examinations']);
         $this->belongsTo('ExaminationCentres', ['className' => 'Examination.ExaminationCentres']);
+        $this->belongsTo('ExaminationItems', ['className' => 'Examination.ExaminationItems']);
         $this->belongsTo('ExaminationCentresExaminations', [
             'className' => 'Examination.ExaminationCentresExaminations',
             'foreignKey' => ['examination_centre_id', 'examination_id']
         ]);
+        //added examination id
+     //  $this->belongsTo('examination_id', ['className' => 'Examiantion.examination_id', 'foreignKey' => 'examination_id']);
         $this->belongsToMany('ExaminationCentresExaminationsSubjects', [
             'className' => 'Examination.ExaminationCentresExaminationsSubjects',
             'joinTable' => 'examination_centres_examinations_subjects_students',
@@ -51,6 +54,14 @@ class ExaminationStudentsTable extends ControllerActionTable
             'dependent' => true,
             'cascadeCallBacks' => true
         ]);
+
+          // added Behaviors
+          $this->addBehavior('Year', ['start_date' => 'start_year', 'end_date' => 'end_year']);
+          $this->addBehavior('AcademicPeriod.Period');
+          $this->addBehavior('User.User');
+          $this->addBehavior('User.AdvancedNameSearch');
+          $this->addBehavior('Institution.StudentCascadeDelete'); // for cascade delete on student related tables from an institution
+          $this->addBehavior('AcademicPeriod.AcademicPeriod'); // to make sure it is compatible with v4
 
         $this->addBehavior('Examination.RegisteredStudents');
         $this->addBehavior('Excel', [
@@ -174,6 +185,13 @@ class ExaminationStudentsTable extends ControllerActionTable
             'type' => 'integer',
             'label' => '',
         ];
+// added medium
+        $newFields[] = [
+            'key' => 'ExaminationStudents.medium',
+            'field' => 'medium',
+            'type' => 'string',
+            'label' => '',
+        ];
 
         $fields->exchangeArray($newFields);
     }
@@ -275,9 +293,10 @@ class ExaminationStudentsTable extends ControllerActionTable
         $this->field('student_id', ['entity' => $entity]);
         $this->field('education_grade_id', ['type' => 'hidden']);
         $this->field('registration_number', ['visible' => false]);
+        $this->field('medium', ['visible' => true]); // added medium field
 
         $this->setFieldOrder([
-            'academic_period_id', 'examination_id', 'examination_education_grade', 'examination_centre_id', 'special_needs', 'auto_assign_to_rooms', 'institution_class_id', 'student_id'
+            'academic_period_id', 'examination_id', 'medium','examination_education_grade', 'examination_centre_id', 'special_needs', 'auto_assign_to_rooms', 'institution_class_id', 'student_id'
         ]);
     }
 

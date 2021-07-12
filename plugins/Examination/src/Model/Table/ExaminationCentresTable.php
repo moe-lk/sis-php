@@ -95,4 +95,6 @@ class ExaminationCentresTable extends ControllerActionTable
     {
         return self::ACADEMIC;
     }
+
 }
+
