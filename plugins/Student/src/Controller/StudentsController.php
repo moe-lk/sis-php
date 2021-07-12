@@ -21,6 +21,7 @@ class StudentsController extends AppController
         'GuardianUser',
         'UserLanguages',
         'SpecialNeeds',
+		'SamaneraDetails',			
         'Attachments',
         'Comments',
         // 'UserActivities',
@@ -102,6 +103,10 @@ class StudentsController extends AppController
     {
         $this->ControllerAction->process(['alias' => __FUNCTION__, 'className' => 'User.SpecialNeeds']);
     }
+	 public function SamaneraDetails()
+    {
+        $this->ControllerAction->process(['alias' => __FUNCTION__, 'className' => 'User.SamaneraDetails']);
+    }							   																								   
     public function Contacts()
     {
         $this->ControllerAction->process(['alias' => __FUNCTION__, 'className' => 'User.Contacts']);

@@ -63,6 +63,7 @@ return [
         'System' => $baseDir . '/plugins/System/',
         'User' => $baseDir . '/plugins/User/',
         'Webhook' => $baseDir . '/vendor/korditpteltd/kd-cakephp-webhooks/',
-        'Workflow' => $baseDir . '/plugins/Workflow/'
+        'Workflow' => $baseDir . '/plugins/Workflow/',
+        'Examination' => $baseDir . '/plugins/Examination/'
     ]
 ];

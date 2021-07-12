@@ -202,7 +202,7 @@ class AppController extends Controller
     {
         Cache::clear();
         $themes = null;
-        if (!$themes || $theme == null) {
+        if (!$themes || $themes == null) {
             $folder = new Folder();
             $folder->delete(WWW_ROOT . 'img' . DS . 'themes');
             $themes = TableRegistry::get('Themes')->find()

@@ -10,3 +10,7 @@ Router::plugin(
         $routes->fallbacks(DashedRoute::class);
     }
 );
+
+// Router::scope('/Examination', ['plugin' => 'Examination'], function (RouteBuilder $routes) {
+//     $routes->connect('/', ['controller' => 'Examinations']);
+// });

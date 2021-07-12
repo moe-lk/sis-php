@@ -235,7 +235,7 @@ class InstitutionShiftsTable extends ControllerActionTable
     public function onUpdateFieldAcademicPeriodId(Event $event, array $attr, $action, Request $request)
     {
         $academicPeriodOptions = $this->AcademicPeriods->getYearList();
-        $attr['type'] = 'readonly';
+        // $attr['type'] = 'readonly';
 
         if ($action == 'add') { //set the academic period to thecurrent and readonly
             $attr['attr']['value'] = $academicPeriodOptions[$this->getSelectedAcademicPeriod($this->request)];

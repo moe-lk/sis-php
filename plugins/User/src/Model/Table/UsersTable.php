@@ -53,7 +53,7 @@ class UsersTable extends AppTable
 
         self::handleAssociations($this);
 
-        $this->fieldOrder1 = new ArrayObject(['photo_content', 'openemis_no', 'first_name', 'middle_name', 'third_name', 'last_name', 'preferred_name', 'gender_id', 'date_of_birth', 'address', 'postal_code']);
+        $this->fieldOrder1 = new ArrayObject(['photo_content', 'openemis_no', 'first_name', 'middle_name', 'third_name', 'last_name', 'preferred_name', 'gender_id','date_of_birth', 'address', 'postal_code']);
         $this->fieldOrder2 = new ArrayObject(['status', 'modified_user_id', 'modified', 'created_user_id', 'created']);
 
         $this->addBehavior('ControllerAction.FileUpload', [
@@ -156,6 +156,7 @@ class UsersTable extends AppTable
             'last_name' => $userInfo['lastName'],
             'email' => $userInfo['email'],
             'gender_id' => $gender,
+           // 'student_type_id' => $studentType,
             'date_of_birth' => $dateOfBirth,
             'super_admin' => 0,
             'status' => 1,
@@ -177,9 +178,13 @@ class UsersTable extends AppTable
         $model->belongsTo('BirthplaceAreas', ['className' => 'Area.AreaAdministratives', 'foreignKey' => 'birthplace_area_id']);
         $model->belongsTo('MainNationalities', ['className' => 'FieldOption.Nationalities', 'foreignKey' => 'nationality_id']);
         $model->belongsTo('MainIdentityTypes', ['className' => 'FieldOption.IdentityTypes', 'foreignKey' => 'identity_type_id']);
+       
         $model->hasMany('Identities', ['className' => 'User.Identities', 'foreignKey' => 'security_user_id', 'dependent' => true]);
         $model->hasMany('Nationalities', ['className' => 'User.UserNationalities', 'foreignKey' => 'security_user_id', 'dependent' => true]);
+        
         $model->hasMany('SpecialNeeds', ['className' => 'User.SpecialNeeds', 'foreignKey' => 'security_user_id', 'dependent' => true]);
+        $model->hasMany('StudentType', ['className' => 'User.StudentType', 'foreignKey' => 'security_user_id','dependent' => true]);
+        $model->hasMany('NikayaType', ['className' => 'User.NikayaType', 'foreignKey' => 'security_user_id','dependent' => true]);
         $model->hasMany('Contacts', ['className' => 'User.Contacts', 'foreignKey' => 'security_user_id', 'dependent' => true]);
         $model->hasMany('Attachments', ['className' => 'User.Attachments', 'foreignKey' => 'security_user_id', 'dependent' => true]);
         $model->hasMany('BankAccounts', ['className' => 'User.BankAccounts', 'foreignKey' => 'security_user_id', 'dependent' => true]);
@@ -209,6 +214,7 @@ class UsersTable extends AppTable
         $this->field('middle_name', ['visible' => false]);
         $this->field('third_name', ['visible' => false]);
         $this->field('updated_from', ['visible' => false]);
+      //  $this->field('student_type_id');
         $this->ControllerAction->field('username', ['visible' => false]);
         $this->ControllerAction->field('super_admin', ['visible' => false]);
         $this->ControllerAction->field('photo_name', ['visible' => false]);

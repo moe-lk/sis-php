@@ -11,7 +11,7 @@ class InsuranceClaimsTable extends ControllerActionTable
 {
     public function initialize(array $config)
     {
-        $this->table('insurance_claims');
+        $this->table('student_insurance_claims');
         parent::initialize($config);
 
         $this->belongsTo('Users', ['className' => 'User.Users', 'foreignKey' => 'security_user_id']);

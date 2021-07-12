@@ -20,6 +20,11 @@ class StudentClassesTable extends ControllerActionTable
         $this->table('institution_class_students');
         parent::initialize($config);
 
+        $this->addBehavior('Muffin/Trash.Trash', [
+            'field' => 'deleted_at',
+            'events' => ['Model.beforeFind']
+        ]);
+        
         $this->belongsTo('Users', ['className' => 'User.Users', 'foreignKey' => 'student_id']);
         $this->belongsTo('InstitutionClasses', ['className' => 'Institution.InstitutionClasses']);
         $this->belongsTo('EducationGrades', ['className' => 'Education.EducationGrades']);
