@@ -23,6 +23,7 @@ class IdentitiesTable extends ControllerActionTable
 
 		$this->belongsTo('Users', ['className' => 'User.Users', 'foreignKey' => 'security_user_id']);
 		$this->belongsTo('IdentityTypes', ['className' => 'FieldOption.IdentityTypes']);
+		$this->belongsToMany('ExaminationStudents', ['className' => 'Examination.ExaminationStudents']);
 		$this->addBehavior('Restful.RestfulAccessControl', [
         	'Students' => ['index', 'add'],
         	'Staff' => ['index', 'add']
