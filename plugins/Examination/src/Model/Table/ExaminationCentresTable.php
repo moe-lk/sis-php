@@ -4,7 +4,6 @@ namespace Examination\Model\Table;
 
 use Cake\ORM\Table;
 use ArrayObject;
-
 use Cake\Core\Configure;
 use Cake\ORM\Entity;
 use Cake\ORM\Query;
@@ -20,7 +19,6 @@ use Cake\Network\Session;
 use Cake\Log\Log;
 use Cake\Routing\Router;
 use Cake\Datasource\ResultSetInterface;
-
 use App\Model\Table\ControllerActionTable;
 use App\Model\Traits\OptionsTrait;
 
@@ -96,3 +94,4 @@ class ExaminationCentresTable extends ControllerActionTable
         return self::ACADEMIC;
     }
 }
+

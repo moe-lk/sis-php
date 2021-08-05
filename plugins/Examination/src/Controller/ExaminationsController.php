@@ -2,7 +2,6 @@
 namespace Examination\Controller;
 
 use Examination\Controller\AppController;
-
 use Cake\Event\Event;
 use Cake\ORM\Entity;
 use Cake\ORM\Query;
@@ -16,6 +15,7 @@ use Cake\Controller\Exception\SecurityException;
 use Cake\Core\Configure;
 use App\Model\Traits\OptionsTrait;
 use ControllerAction\Model\Traits\UtilityTrait;
+
 /**
  * Examinations Controller
  *
@@ -173,20 +173,16 @@ class ExaminationsController extends AppController
     public function exams()
     {
         $this->ControllerAction->process(['alias' => __FUNCTION__, 'className' => 'Examination.Examinations']);
-        $this->ControllerAction->process(['alias' => __FUNCTION__, 'className' => 'Examination.ExaminationStudents']);
-
     }
 
     public function examCentres()
     {
         $this->ControllerAction->process(['alias' => __FUNCTION__, 'className' => 'Examination.ExaminationCentres']);
-        // dd($this);
     }
 
     public function registeredStudents()
     {
         $this->ControllerAction->process(['alias' => __FUNCTION__, 'className' => 'Examination.ExaminationStudents']);
-
     }
 
     public function examResults()

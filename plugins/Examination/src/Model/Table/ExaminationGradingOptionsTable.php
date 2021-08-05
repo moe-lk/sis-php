@@ -12,5 +12,6 @@ class ExaminationGradingOptionsTable extends Table
         $this->belongsTo('Examination', ['className' => 'Examnation.GradeTypes', 'foreignKey' => 'examination_grading_type_id']);
         
         parent::initialize($config);
+
     }
 }
