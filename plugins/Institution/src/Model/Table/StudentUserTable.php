@@ -90,6 +90,8 @@ class StudentUserTable extends ControllerActionTable
         $model->hasMany('Identities', ['className' => 'User.Identities', 'foreignKey' => 'security_user_id', 'dependent' => true]);
         $model->hasMany('Nationalities', ['className' => 'User.UserNationalities', 'foreignKey' => 'security_user_id', 'dependent' => true]);
         $model->hasMany('SpecialNeeds', ['className' => 'User.SpecialNeeds', 'foreignKey' => 'security_user_id', 'dependent' => true]);
+		$model->hasMany('StudentType', ['className' => 'User.StudentType', 'foreignKey' => 'security_user_id', 'dependent' => true]);
+        $model->hasMany('NikayaType', ['className' => 'User.NikayaType', 'foreignKey' => 'security_user_id', 'dependent' => true]);																															 
         $model->hasMany('Contacts', ['className' => 'User.Contacts', 'foreignKey' => 'security_user_id', 'dependent' => true]);
         $model->hasMany('Attachments', ['className' => 'User.Attachments', 'foreignKey' => 'security_user_id', 'dependent' => true]);
         $model->hasMany('BankAccounts', ['className' => 'User.BankAccounts', 'foreignKey' => 'security_user_id', 'dependent' => true]);
@@ -235,6 +237,7 @@ class StudentUserTable extends ControllerActionTable
         $this->field('username', ['visible' => false]);
         $this->field('first_name', ['attr' => ['label' => 'Full Name']]);
         $this->field('last_name', ['attr' => ['label' => 'Name with initials']]);
+        $this->field('gender_id', ['attr' => ['label' => 'Sex']]);
         $this->field('openemis_no', ['attr' => ['label' => 'Student ID']]); 
         $this->field('area_administrative_id', ['visible' => false]);
         $this->field('staff_id', ['type' => 'string', 'attr' => ['label' => __('Admission Number')]]);

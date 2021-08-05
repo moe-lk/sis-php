@@ -4,6 +4,4 @@
     RewriteCond %{REQUEST_URI} !=/server-status	
     RewriteRule ^ index.php [L]
 </IfModule>
-<IfModule mod_php7.c>
-    php_flag session.use_trans_sid off
-</IfModule>
+

@@ -5,5 +5,8 @@ use Cake\ORM\Behavior;
 
 class RegisteredStudentsBehavior extends Behavior
 {
-
+    public function initialize(array $config)
+    {
+        parent::initialize($config);
+    }
 }
