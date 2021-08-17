@@ -1,6 +1,8 @@
 <?php
-namespace Institution\Model\Table;
 
+namespace Examination\Model\Table;
+
+use Cake\ORM\Table;
 use ArrayObject;
 use Cake\ORM\Query;
 use Cake\ORM\Entity;
@@ -14,7 +16,7 @@ use App\Model\Traits\OptionsTrait;
 use App\Model\Table\ControllerActionTable;
 use Cake\Utility\Security;
 
-class InstitutionExaminationStudentsTable extends ControllerActionTable
+class ExaminationStudentsTable extends ControllerActionTable
 {
     use OptionsTrait;
 
@@ -23,16 +25,20 @@ class InstitutionExaminationStudentsTable extends ControllerActionTable
     public function initialize(array $config)
     {
         $this->table('examination_centres_examinations_students');
+      // $this->table('examinations_students');
         parent::initialize($config);
         $this->belongsTo('Users', ['className' => 'User.Users', 'foreignKey' => 'student_id']);
         $this->belongsTo('Institutions', ['className' => 'Institution.Institutions']);
         $this->belongsTo('AcademicPeriods', ['className' => 'AcademicPeriod.AcademicPeriods']);
         $this->belongsTo('Examinations', ['className' => 'Examination.Examinations']);
         $this->belongsTo('ExaminationCentres', ['className' => 'Examination.ExaminationCentres']);
+        $this->belongsTo('ExaminationItems', ['className' => 'Examination.ExaminationItems']);
         $this->belongsTo('ExaminationCentresExaminations', [
             'className' => 'Examination.ExaminationCentresExaminations',
             'foreignKey' => ['examination_centre_id', 'examination_id']
         ]);
+        //added examination id
+     //  $this->belongsTo('examination_id', ['className' => 'Examiantion.examination_id', 'foreignKey' => 'examination_id']);
         $this->belongsToMany('ExaminationCentresExaminationsSubjects', [
             'className' => 'Examination.ExaminationCentresExaminationsSubjects',
             'joinTable' => 'examination_centres_examinations_subjects_students',
@@ -49,7 +55,15 @@ class InstitutionExaminationStudentsTable extends ControllerActionTable
             'dependent' => true,
             'cascadeCallBacks' => true
         ]);
-        
+
+       
+
+         
+            
+            
+
+          // added Behaviors
+
         $this->addBehavior('Examination.RegisteredStudents');
         $this->addBehavior('Excel', [
             'excludes' => ['id', 'education_subject_id', 'examination_item_id'],
@@ -58,6 +72,10 @@ class InstitutionExaminationStudentsTable extends ControllerActionTable
             'orientation' => 'landscape'
         ]);
         $this->addBehavior('CompositeKey');
+
+        $this->toggle('add', false); 
+        $this->toggle('edit', false);
+        $this->toggle('remove', false);
     }
 
     public function validationDefault(Validator $validator)
@@ -100,28 +118,28 @@ class InstitutionExaminationStudentsTable extends ControllerActionTable
         $newFields = [];
 
         $newFields[] = [
-            'key' => 'InstitutionExaminationStudents.academic_period_id',
+            'key' => 'ExaminationStudents.academic_period_id',
             'field' => 'academic_period_id',
             'type' => 'integer',
             'label' => '',
         ];
 
         $newFields[] = [
-            'key' => 'InstitutionExaminationStudents.examination_id',
+            'key' => 'ExaminationStudents.examination_id',
             'field' => 'examination_id',
             'type' => 'integer',
             'label' => '',
         ];
 
         $newFields[] = [
-            'key' => 'InstitutionExaminationStudents.examination_centre_id',
+            'key' => 'ExaminationStudents.examination_centre_id',
             'field' => 'examination_centre_id',
             'type' => 'integer',
             'label' => '',
         ];
 
         $newFields[] = [
-            'key' => 'InstitutionExaminationStudents.registration_number',
+            'key' => 'ExaminationStudents.registration_number',
             'field' => 'registration_number',
             'type' => 'integer',
             'label' => '',
@@ -135,7 +153,7 @@ class InstitutionExaminationStudentsTable extends ControllerActionTable
         ];
 
         $newFields[] = [
-            'key' => 'InstitutionExaminationStudents.student_id',
+            'key' => 'ExaminationStudents.student_id',
             'field' => 'student_id',
             'type' => 'integer',
             'label' => '',
@@ -163,11 +181,13 @@ class InstitutionExaminationStudentsTable extends ControllerActionTable
         ];
 
         $newFields[] = [
-            'key' => 'InstitutionExaminationStudents.institution_id',
+            'key' => 'ExaminationStudents.institution_id',
             'field' => 'institution_id',
             'type' => 'integer',
             'label' => '',
         ];
+
+       
 
         $fields->exchangeArray($newFields);
     }
@@ -269,9 +289,11 @@ class InstitutionExaminationStudentsTable extends ControllerActionTable
         $this->field('student_id', ['entity' => $entity]);
         $this->field('education_grade_id', ['type' => 'hidden']);
         $this->field('registration_number', ['visible' => false]);
+       // $this->field('medium', ['visible' => true]);
+       // $this->field('nic', ['visible' => true]); // added medium field
 
         $this->setFieldOrder([
-            'academic_period_id', 'examination_id', 'examination_education_grade', 'examination_centre_id', 'special_needs', 'auto_assign_to_rooms', 'institution_class_id', 'student_id'
+            'academic_period_id', 'examination_id','examination_education_grade', 'examination_centre_id', 'special_needs', 'auto_assign_to_rooms', 'institution_class_id', 'student_id'
         ]);
     }
 
@@ -331,7 +353,7 @@ class InstitutionExaminationStudentsTable extends ControllerActionTable
 
             $examinationId = isset($request->data[$this->alias()]['examination_id']) ? $request->data[$this->alias()]['examination_id'] : null;
             $this->advancedSelectOptions($examinationOptions, $examinationId, [
-                'message' => '{{label}} - ' . $this->getMessage('InstitutionExaminationStudents.notAvailableForRegistration'),
+                'message' => '{{label}} - ' . $this->getMessage('ExaminationStudents.notAvailableForRegistration'),
                 'selectOption' => false,
                 'callable' => function($id) use ($Examinations, $todayDate) {
                     return $Examinations
@@ -484,9 +506,9 @@ class InstitutionExaminationStudentsTable extends ControllerActionTable
                 $ClassStudents = TableRegistry::get('Institution.InstitutionClassStudents');
                 $students = $ClassStudents->find()
                     ->matching('EducationGrades')
-                    ->leftJoin(['InstitutionExaminationStudents' => 'examination_centres_examinations_students'], [
-                        'InstitutionExaminationStudents.examination_id' => $examinationId,
-                        'InstitutionExaminationStudents.student_id = '.$ClassStudents->aliasField('student_id')
+                    ->leftJoin(['ExaminationStudents' => 'examination_centres_examinations_students'], [
+                        'ExaminationStudents.examination_id' => $examinationId,
+                        'ExaminationStudents.student_id = '.$ClassStudents->aliasField('student_id')
                     ])
                     ->contain('Users.SpecialNeeds.SpecialNeedTypes')
                     ->leftJoinWith('Users.SpecialNeeds')
@@ -495,7 +517,7 @@ class InstitutionExaminationStudentsTable extends ControllerActionTable
                         $ClassStudents->aliasField('academic_period_id') => $academicPeriodId,
                         $ClassStudents->aliasField('institution_class_id') => $institutionClassId,
                         $ClassStudents->aliasField('student_status_id') => $enrolledStatus,
-                        'InstitutionExaminationStudents.student_id IS NULL'
+                        'ExaminationStudents.student_id IS NULL'
                     ])
                     ->order(['SpecialNeeds.id' => 'DESC'])
                     ->group($ClassStudents->aliasField('student_id'))

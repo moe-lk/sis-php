@@ -13,14 +13,17 @@ class InstitutionExaminationsTable extends ControllerActionTable
 {
     public function initialize(array $config)
     {
-        $this->table('examinations');
+        $this->table('examination_items');
         parent::initialize($config);
 
-        $this->belongsTo('AcademicPeriods', ['className' => 'AcademicPeriod.AcademicPeriods']);
-        $this->belongsTo('EducationGrades', ['className' => 'Education.EducationGrades']);
-        $this->hasMany('ExaminationItems', ['className' => 'Examination.ExaminationItems', 'dependent' => true, 'cascadeCallbacks' => true]);
+      //  $this->belongsTo('AcademicPeriods', ['className' => 'AcademicPeriod.AcademicPeriods']);
+       // $this->belongsTo('EducationGrades', ['className' => 'Education.EducationGrades']);
+     //   $this->hasMany('ExaminationItems', ['className' => 'Examination.ExaminationItems', 'dependent' => true, 'cascadeCallbacks' => true]);
         $this->hasMany('ExaminationItemResults', ['className' => 'Examination.ExaminationItemResults', 'dependent' => true, 'cascadeCallbacks' => true]);
-        $this->belongsToMany('ExaminationCentres', [
+//         $this->belongsTo('ExaminationCentres', ['className' => 'Examnation.Centers', 'foreignKey' => 'examination_centre_id']);
+//         $this->belongsTo('Examination', ['className' => 'Examnation.Centers', 'foreignKey' => 'examination_centre_id']);
+       $this->hasMany('InstitutionExaminationStudents', ['className' => 'Institution.InstitutionExaminationStudents', 'saveStrategy' => 'replace', 'cascadeCallbacks' => true]);       
+       $this->belongsToMany('ExaminationCentres', [
             'className' => 'Examination.ExaminationCentres',
             'joinTable' => 'examination_centres_examinations',
             'foreignKey' => 'examination_id',
@@ -37,6 +40,14 @@ class InstitutionExaminationsTable extends ControllerActionTable
             'through' => 'Examination.ExaminationCentreRoomsExaminations',
             'dependent' => true,
             'cascadeCallbacks' => true
+        ]);
+
+        $this->belongsToMany('Students', [
+            'className' => 'User.Users',
+            'through' => 'Examination.ExaminationItems',
+            'foreignKey' => 'examination_id',
+            'targetForeignKey' => 'student_id',
+            'dependent' => true
         ]);
 
         $this->toggle('add', false);
@@ -93,8 +104,8 @@ class InstitutionExaminationsTable extends ControllerActionTable
     public function viewBeforeAction(Event $event, ArrayObject $extra)
     {
         $this->field('examination_items', [
-            'type' => 'element',
-            'element' => 'Examination.examination_items'
+            // 'type' => 'element',
+            // 'element' => 'Examination.examination_items'
         ]);
 
         $this->setFieldOrder(['academic_period_id', 'code', 'name', 'description', 'education_grade_id', 'registration_start_date', 'registration_end_date', 'examination_items']);

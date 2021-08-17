@@ -587,7 +587,7 @@ class InstitutionsTable extends ControllerActionTable
 
             $models = [
                 ['Types', $this->aliasField('institution_type_id'), 'Type', 'query' => $this->dashboardQuery],
-               ['Types', $this->aliasField('nikaya_type_id'), 'NikayaType', 'query' => $this->dashboardQuery],
+               //['Types', $this->aliasField('nikaya_type_id'), 'NikayaType', 'query' => $this->dashboardQuery],
                 ['Sectors', $this->aliasField('institution_sector_id'), 'Sector', 'query' => $this->dashboardQuery],
                 ['Localities', $this->aliasField('institution_locality_id'), 'Locality', 'query' => $this->dashboardQuery],
             ];
