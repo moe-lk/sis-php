@@ -4,11 +4,11 @@ namespace Examination\Model\Table;
 
 use Cake\ORM\Table;
 
-class ExaminationItemsTable extends Table
+class InstituionExaminationStudentsTable extends Table
 {
     public function initialize(array $config)
     {
-        $this->table('examination_items');
+        $this->table('examination_students');
         $this->belongsToMany('EducationSubjects', [
             'className' => 'Education.EducationSubjects',
             'joinTable' => 'assessment_items_grading_types',
