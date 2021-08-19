@@ -9,6 +9,14 @@ class InstituionExaminationStudentsTable extends Table
     public function initialize(array $config)
     {
         $this->table('examination_students');
+        
+          $this->belongsTo('Users', ['className' => 'User.Users', 'foreignKey' => 'student_id', 'joinType' => 'INNER']);
+        $this->belongsTo('Institutions', ['className' => 'Institution.Institutions', 'joinType' => 'INNER']);
+        $this->belongsTo('AcademicPeriods', ['className' => 'AcademicPeriod.AcademicPeriods', 'joinType' => 'INNER']);
+        $this->belongsTo('Users', ['className' => 'User.Users', 'foreignKey' => 'student_id', 'joinType' => 'INNER']);
+        $this->belongsTo('InstitutionExamination', ['className' => 'Institution.InstitutionExamination', 'joinType' => 'INNER']);
+        
+        
         $this->belongsToMany('EducationSubjects', [
             'className' => 'Education.EducationSubjects',
             'joinTable' => 'assessment_items_grading_types',
