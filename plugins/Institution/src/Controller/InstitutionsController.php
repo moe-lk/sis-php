@@ -86,6 +86,7 @@ class InstitutionsController extends AppController
         'InstitutionExaminations',
         'InstitutionExaminationsUndoRegistration',
         'InstitutionExaminationStudents',
+        'ExaminationItems',
 
         // positions
         'InstitutionPositions',
@@ -262,6 +263,10 @@ class InstitutionsController extends AppController
     public function ExaminationResults()
     {
         $this->ControllerAction->process(['alias' => __FUNCTION__, 'className' => 'Institution.ExaminationResults']);
+    }
+    public function ExaminationItems()
+    {
+        $this->ControllerAction->process(['alias' => __FUNCTION__, 'className' => 'Institution.ExaminationItems']);
     }
     public function Contacts()
     {
@@ -1439,6 +1444,7 @@ class InstitutionsController extends AppController
             'Attachments' => ['text' => __('Attachments')],
             'Comments' => ['text' => __('Comments')],
             'Guardians' => ['text' => __('Guardians')],
+            'SamaneraDetails' => ['text' => __('Samanera Details')],
             'StudentSurveys' => ['text' => __('Surveys')]
         ];
 
