@@ -16,7 +16,7 @@ class InstitutionExaminationsTable extends ControllerActionTable
         $this->table('examination_items');
         parent::initialize($config);
 
-      //  $this->belongsTo('AcademicPeriods', ['className' => 'AcademicPeriod.AcademicPeriods']);
+        $this->belongsTo('AcademicPeriods', ['className' => 'AcademicPeriod.AcademicPeriods']);
        // $this->belongsTo('EducationGrades', ['className' => 'Education.EducationGrades']);
      //   $this->hasMany('ExaminationItems', ['className' => 'Examination.ExaminationItems', 'dependent' => true, 'cascadeCallbacks' => true]);
         $this->hasMany('ExaminationItemResults', ['className' => 'Examination.ExaminationItemResults', 'dependent' => true, 'cascadeCallbacks' => true]);
