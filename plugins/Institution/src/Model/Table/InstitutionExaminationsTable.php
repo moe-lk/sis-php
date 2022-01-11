@@ -99,6 +99,21 @@ class InstitutionExaminationsTable extends ControllerActionTable
             // 'element' => 'Examination.examination_items'
         ]);
 
-        $this->setFieldOrder(['academic_period_id', 'code', 'name', 'description', 'education_grade_id', 'registration_start_date', 'registration_end_date', 'examination_items']);
+        $this->field('examination_students', [
+            // 'type' => 'element',
+            // 'element' => 'Examination.examination_items'
+
+            'label' => '',
+            'override' => true,
+            'type' => 'element',
+            'element' => 'Institution.Classes/students',
+            'data' => [
+                'students' => [],
+                'studentOptions' => []
+            ],
+            'visible' => ['view' => true, 'edit' => true]
+        ]);
+
+        $this->setFieldOrder(['academic_period_id', 'code', 'name', 'description', 'education_grade_id', 'registration_start_date', 'registration_end_date', 'examination_items','modified_user_id', 'modified', 'created_user_id', 'created', 'examination_students']);
     }
 }
