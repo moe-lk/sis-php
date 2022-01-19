@@ -39,6 +39,17 @@ class ExaminationsTable extends ControllerActionTable
             'cascadeCallbacks' => true
         ]);
 
+        // 19-01-2022
+        $this->belongsToMany('Institutions', [
+            'className' => 'Institution.Institutions',
+            'joinTable' => 'institutions_examinations',
+            'foreignKey' => 'examination_id',
+            'targetForeignKey' => ['institution_id'],
+            'through' => 'Institution.InstitutionsExaminations',
+            'dependent' => true,
+            'cascadeCallbacks' => true
+        ]);
+
         $this->toggle('add', true); 
         $this->toggle('edit', true);
         $this->toggle('remove', true);
