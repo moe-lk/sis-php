@@ -208,7 +208,8 @@ class InstitutionExaminationStudentsTable extends ControllerActionTable
 
     public function beforeAction(Event $event, ArrayObject $extra)
     {
-         $this->institutionId = $this->Session->read('Institution.Institutions.id');
+        // dd($this);
+        $this->institutionId = $this->Session->read('Institution.Institutions.id');
 
         //work around for export button showing in pages not specified
         if ($this->action != 'index') {
@@ -220,6 +221,7 @@ class InstitutionExaminationStudentsTable extends ControllerActionTable
 
     public function indexBeforeAction(Event $event, ArrayObject $extra)
     {
+        dd($this);
         $toolbarButtonsArray = $extra['toolbarButtons']->getArrayCopy();
 
         if (array_key_exists('add', $toolbarButtonsArray)) {
