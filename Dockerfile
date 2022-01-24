@@ -46,9 +46,10 @@ RUN apt-get install -y php7.3 \
     unzip \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-
+RUN sudo apt-get install php-curl
 # Install composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
 
 # Add apache config to enable .htaccess and do some stuff you want
 COPY apache_default /etc/apache2/sites-available/000-default.conf
