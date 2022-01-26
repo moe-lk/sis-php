@@ -46,7 +46,6 @@ RUN apt-get install -y php7.3 \
     unzip \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-RUN service apache2 restart
 # Install composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
