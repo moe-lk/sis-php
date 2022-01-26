@@ -76,7 +76,7 @@ RUN	sed -i -e "s/__SALT__/somerandomsalt/" config/app.php && \
 	chgrp -R www-data logs tmp webroot && \
 	chmod -R g+rw logs tmp webroot
     
-RUN composer install
+RUN composer install --ignore-platform-reqs
 RUN composer dumpautoload
 
 ####################################################
