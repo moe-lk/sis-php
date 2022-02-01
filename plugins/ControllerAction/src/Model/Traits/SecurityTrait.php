@@ -79,7 +79,7 @@ trait SecurityTrait
 //                 throw new SecurityException('Query String has been tampered');
 //             }
 //         }
-        unset($payload[$sessionId]);
+//         unset($payload[$sessionId]);
         return $payload;
     }
 
