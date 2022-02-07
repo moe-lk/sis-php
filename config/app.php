@@ -339,6 +339,6 @@ return [
         'defaults' => 'php',
 //         'defaults' => 'cache',
     ],
-    'debug' => true
+    'debug' => false
 
 ];
