@@ -345,6 +345,6 @@ return [
         )
 //         'defaults' => 'cache',
     ],
-    'debug' => true
+    'debug' => false
 
 ];
