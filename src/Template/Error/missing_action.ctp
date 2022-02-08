@@ -1,9 +1,9 @@
 <?php
 use Cake\Core\Configure;
 
-if (Configure::read('debug')):
+// if (Configure::read('debug')):
     $this->layout = $layout;;
-
+echo "ERROR";
     // $this->assign('title', $message);
     // $this->assign('templateName', 'error404.ctp');
 
@@ -17,5 +17,5 @@ if (Configure::read('debug')):
     // endif;
 
     $this->end();
-endif;
+// endif;
 ?>
