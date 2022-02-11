@@ -3,13 +3,14 @@ use Cake\Core\Configure;
 use Cake\Error\Debugger;
 
 if (Configure::read('debug')):
-    $this->layout = 'dev_error';
+    //$this->layout = 'dev_error';
 
-    $this->assign('title', $message);
-    $this->assign('templateName', 'error500.ctp');
+    //$this->assign('title', $message);
+    //$this->assign('templateName', 'error500.ctp');
 
-    $this->start('file');
+    //$this->start('file');
 ?>
+
 <?php if (!empty($error->queryString)) : ?>
     <p class="notice">
         <strong>SQL Query: </strong>
@@ -21,17 +22,19 @@ if (Configure::read('debug')):
         <?= Debugger::dump($error->params) ?>
 <?php endif; ?>
 <?php
-    echo $this->element('auto_table_warning');
+    //echo $this->element('auto_table_warning');
 
     if (extension_loaded('xdebug')):
-        xdebug_print_function_stack();
+        //xdebug_print_function_stack();
     endif;
 
     $this->end();
 endif;
 ?>
-<h2><?= __d('cake', 'An Internal Error Has Occurred') ?></h2>
-<p class="error">
-    <strong><?= __d('cake', 'Error') ?>: </strong>
-    <?= h($message) ?>
+<!--<h2><?= __d('cake', 'An Internal Error Has Occurred') ?></h2>
+<p class="error">-->
+   <!-- <strong><?= __d('cake', 'Error') ?>: </strong>-->
+    <div class="inner404">
+    <h2>404 Error - Page Not Found</h2>
+</div> 
 </p>
