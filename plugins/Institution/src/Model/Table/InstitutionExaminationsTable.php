@@ -16,12 +16,10 @@ class InstitutionExaminationsTable extends ControllerActionTable
         $this->table('examination_items');
         parent::initialize($config);
 
-        $this->belongsTo('Examinations', ['className' => 'Examination.Examinations']);
-
         $this->belongsTo('AcademicPeriods', [
             'className' => 'AcademicPeriod.AcademicPeriods', 
-            'joinTable' => 'examinations', 
-            'foreignKey' => 'examination_id',
+            // 'joinTable' => 'examinations', 
+            'targetForeignKey' => 'academic_period_id',
             'through' => 'Examination.Examinations'
         ]);
 
@@ -31,35 +29,39 @@ class InstitutionExaminationsTable extends ControllerActionTable
 //         $this->belongsTo('ExaminationCentres', ['className' => 'Examnation.Centers', 'foreignKey' => 'examination_centre_id']);
 //         $this->belongsTo('Examination', ['className' => 'Examnation.Centers', 'foreignKey' => 'examination_centre_id']);
 
-        $this->belongsToMany('ExaminationCentres', [
-            'className' => 'Examination.ExaminationCentres',
-            'joinTable' => 'examination_centres_examinations',
-            'foreignKey' => 'examination_id',
-            'targetForeignKey' => 'examination_centre_id',
-            'through' => 'Examination.ExaminationCentresExaminations',
-            'dependent' => true,
-            'cascadeCallbacks' => true
-        ]);
+        // $this->belongsTo('Examinations', ['className' => 'Examination.Examinations', "conditions" => [
+        //     "Examinations.academic_period_id" => "AcademicPeriods.id"
+        // ]]);
 
-        $this->hasMany('ExaminationStudents', ['className' => 'Institution.InstitutionExaminationStudents', 'saveStrategy' => 'replace', 'cascadeCallbacks' => true]);
+        // $this->belongsToMany('ExaminationCentres', [
+        //     'className' => 'Examination.ExaminationCentres',
+        //     'joinTable' => 'examination_centres_examinations',
+        //     'foreignKey' => 'examination_id',
+        //     'targetForeignKey' => 'examination_centre_id',
+        //     'through' => 'Examination.ExaminationCentresExaminations',
+        //     'dependent' => true,
+        //     'cascadeCallbacks' => true
+        // ]);
 
-        $this->belongsToMany('Students', [
-            'className' => 'User.Users',
-            'through' => 'Institution.InstitutionExaminationStudents',
-            'foreignKey' => 'examination_id',
-            'targetForeignKey' => 'student_id',
-        ]);
+        // $this->hasMany('ExaminationStudents', ['className' => 'Institution.InstitutionExaminationStudents', 'saveStrategy' => 'replace', 'cascadeCallbacks' => true]);
+
+        // $this->belongsToMany('Students', [
+        //     'className' => 'User.Users',
+        //     'through' => 'Institution.InstitutionExaminationStudents',
+        //     'foreignKey' => 'examination_id',
+        //     'targetForeignKey' => 'student_id',
+        // ]);
 
 
-        $this->belongsToMany('ExaminationCentreRooms', [
-            'className' => 'Examination.ExaminationCentreRooms',
-            'joinTable' => 'examination_centre_rooms_examinations',
-            'foreignKey' => 'examination_id',
-            'targetForeignKey' => 'examination_centre_room_id',
-            'through' => 'Examination.ExaminationCentreRoomsExaminations',
-            'dependent' => true,
-            'cascadeCallbacks' => true
-        ]);
+        // $this->belongsToMany('ExaminationCentreRooms', [
+        //     'className' => 'Examination.ExaminationCentreRooms',
+        //     'joinTable' => 'examination_centre_rooms_examinations',
+        //     'foreignKey' => 'examination_id',
+        //     'targetForeignKey' => 'examination_centre_room_id',
+        //     'through' => 'Examination.ExaminationCentreRoomsExaminations',
+        //     'dependent' => true,
+        //     'cascadeCallbacks' => true
+        // ]);
 
         $this->addBehavior('Restful.RestfulAccessControl', ['OpenEMIS_Classroom' => ['index', 'view', 'add', 'edit', 'delete']  ]);
 
@@ -75,7 +77,8 @@ class InstitutionExaminationsTable extends ControllerActionTable
         $extra['elements']['controls'] = ['name' => 'Institution.Examinations/controls', 'data' => [''], 'options' => [], 'order' => 1];
 
         $this->field('description', ['visible' => 'hidden']);
-        $this->setFieldOrder(['academic_period_id', 'code', 'name', 'education_grade_id']);
+        $this->setFieldOrder(['code', 'name', 'education_grade_id']);
+        // $this->setFieldOrder(['academic_period_id', 'code', 'name', 'education_grade_id']);
     }
 
      public function indexBeforeQuery(Event $event, Query $query, ArrayObject $extra)
@@ -138,6 +141,6 @@ class InstitutionExaminationsTable extends ControllerActionTable
             'visible' => ['view' => true, 'edit' => true]
         ]);
 
-        $this->setFieldOrder(['academic_period_id', 'code', 'name', 'description', 'education_grade_id', 'registration_start_date', 'registration_end_date','modified_user_id', 'modified', 'created_user_id', 'created', 'examination_students']);
+        $this->setFieldOrder(['code', 'name', 'description', 'education_grade_id', 'registration_start_date', 'registration_end_date','modified_user_id', 'modified', 'created_user_id', 'created', 'examination_students']);
     }
 }
