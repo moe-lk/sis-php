@@ -34,3 +34,4 @@ jobs:
           image-name: ${{env.SERVICE_NAME}}
           tag: ${{steps.event-version.outputs.SOURCE_TAG }}
           container-id: 5c14849e-0f88-416b-a9b2-8b0ad3ce07fc
+          domain: "https://api.platformer.com"
