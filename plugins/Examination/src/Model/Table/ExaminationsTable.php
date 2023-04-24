@@ -16,9 +16,11 @@ class ExaminationsTable extends ControllerActionTable
         $this->table('examinations');
         parent::initialize($config);
 
-        $this->belongsTo('AcademicPeriods', ['className' => 'AcademicPeriod.AcademicPeriods']);
+        $this->belongsToMany('AcademicPeriods', ['className' => 'AcademicPeriod.AcademicPeriods']);
         $this->belongsTo('EducationGrades', ['className' => 'Education.EducationGrades']);
         $this->hasMany('ExaminationItems', ['className' => 'Examination.ExaminationItems', 'dependent' => true, 'cascadeCallbacks' => true]);
+        $this->hasMany('InstitutionExaminations', ['className' => 'Institution.InstitutionExaminations', 'dependent' => true, 'cascadeCallbacks' => true]);
+        
         $this->hasMany('ExaminationItemResults', ['className' => 'Examination.ExaminationItemResults', 'dependent' => true, 'cascadeCallbacks' => true]);
         $this->belongsToMany('ExaminationCentres', [
             'className' => 'Examination.ExaminationCentres',
@@ -38,6 +40,17 @@ class ExaminationsTable extends ControllerActionTable
             'dependent' => true,
             'cascadeCallbacks' => true
         ]);
+
+        // 19-01-2022
+        // $this->belongsToMany('Institutions', [
+        //     'className' => 'Institution.Institutions',
+        //     'joinTable' => 'institutions_examinations',
+        //     'foreignKey' => 'examination_id',
+        //     'targetForeignKey' => ['institution_id'],
+        //     'through' => 'Institution.InstitutionsExaminations',
+        //     'dependent' => true,
+        //     'cascadeCallbacks' => true
+        // ]);
 
         $this->toggle('add', true); 
         $this->toggle('edit', true);

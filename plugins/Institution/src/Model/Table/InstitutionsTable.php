@@ -129,6 +129,18 @@ class InstitutionsTable extends ControllerActionTable
             'through' => 'Security.SecurityGroupInstitutions',
             'dependent' => true
         ]);
+
+        // 19-01-2022
+        // $this->belongsToMany('Examinations', [
+        //     'className' => 'Examination.Examinations',
+        //     'joinTable' => 'institutions_examinations',
+        //     'foreignKey' => 'institution_id',
+        //     'targetForeignKey' => ['examination_id'],
+        //     'through' => 'Institution.InstitutionsExaminations',
+        //     'dependent' => true,
+        //     'cascadeCallbacks' => true
+        // ]);
+
         if (Configure::read('schoolMode')) {
             $this->toggle('remove', false);
         } else {

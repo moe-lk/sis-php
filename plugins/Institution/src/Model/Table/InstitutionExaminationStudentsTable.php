@@ -26,7 +26,7 @@ class InstitutionExaminationStudentsTable extends ControllerActionTable
         parent::initialize($config);
         $this->belongsTo('Users', ['className' => 'User.Users', 'foreignKey' => 'student_id']);
         $this->belongsTo('Institutions', ['className' => 'Institution.Institutions']);
-        $this->belongsTo('AcademicPeriods', ['className' => 'AcademicPeriod.AcademicPeriods']);
+        $this->belongsTo('AcademicPeriods', ['className' => 'AcademicPeriod.AcademicPeriods', "foreignKey" => "Examination.academic_period_id"]);
         $this->belongsTo('Examinations', ['className' => 'Examination.Examinations']);
         $this->belongsTo('ExaminationCentres', ['className' => 'Examination.ExaminationCentres']);
         $this->belongsTo('ExaminationCentresExaminations', [
@@ -208,7 +208,8 @@ class InstitutionExaminationStudentsTable extends ControllerActionTable
 
     public function beforeAction(Event $event, ArrayObject $extra)
     {
-         $this->institutionId = $this->Session->read('Institution.Institutions.id');
+        // dd($this);
+        $this->institutionId = $this->Session->read('Institution.Institutions.id');
 
         //work around for export button showing in pages not specified
         if ($this->action != 'index') {
@@ -220,6 +221,7 @@ class InstitutionExaminationStudentsTable extends ControllerActionTable
 
     public function indexBeforeAction(Event $event, ArrayObject $extra)
     {
+        dd($this);
         $toolbarButtonsArray = $extra['toolbarButtons']->getArrayCopy();
 
         if (array_key_exists('add', $toolbarButtonsArray)) {
