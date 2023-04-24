@@ -38,6 +38,13 @@ function InstitutionClassStudentsController($scope, $q, $window, $http, UtilsSvc
         primaryKey: []
     };
     Controller.classId = null;
+    // Controller.colDefPrevious = [
+    //     {headerName: 'User ID', field: 'openemis_no'},
+    //     {headerName: 'Name', field: 'name'},
+    //     {headerName: 'Gender', field: 'gender_name'},
+    //     {headerName: 'Education Grade', field: 'education_grade_name'},
+    //     {headerName: 'Student Status', field: 'student_status_name'}
+    // ];
     Controller.colDef = [
         {headerName: 'Student ID', field: 'openemis_no'},
         {headerName: 'Name', field: 'name'}
