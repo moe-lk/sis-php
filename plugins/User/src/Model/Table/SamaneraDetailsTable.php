@@ -60,6 +60,10 @@ class SamaneraDetailsTable extends ControllerActionTable
             'className' => 'User.NikayaDetails'
         ]);
 
+        $this->toggle('add', true); 
+        $this->toggle('edit', true);
+        $this->toggle('remove', true);
+
         
     }
 
